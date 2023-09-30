@@ -1,6 +1,10 @@
-// Import CSS styles, and necessary modules from packages
+import { useEffect, useState } from "react"
+import '@fortawesome/fontawesome-svg-core/styles.css'
 import styles from "./css/NftMinter.module.css";
-import { useAccount, useWalletClient, useContractWrite, usePrepareContractWrite } from "wagmi";
+import BuyEth from "./BuyBtns/BuyEth";
+import BuyYen from "./BuyBtns/BuyYen";
+import { useAccount, useContractWrite, usePrepareContractWrite, useContractReads } from "wagmi";
+import { nftImg } from "@/helpers/nftHelper";
 import { ethers } from "ethers";
 
 interface minterProps {
@@ -15,31 +19,50 @@ export default function NftMinter({
   tokenId
 }: minterProps) {
 
-  const nftImg = (tokenId: number) => {
-    if (tokenId > 100) {
-      return `${tokenId}.jpg`;
-    } else if (tokenId > 9) {
-      return `0${tokenId}.jpg`;
-    } else {
-      return `00${tokenId}.jpg`;
-    }
-  }
+  const [nftPrice, setNftPrice] = useState<string | null>(null)
+  const [nftTokenPrice, setNftTokenPrice] = useState<string | null>(null)
 
-
-  const { address, isDisconnected } = useAccount();
+  const { isDisconnected } = useAccount();
 
   const { config } = usePrepareContractWrite({
     address: contractAddress,
     abi: abi,
     functionName: 'userMint',
-    args: [tokenId]
+    args: [tokenId],
+    value: ethers.parseEther("0.19"),
   })
 
+  const nftContract = {
+    address: contractAddress,
+    abi: abi,
+  }
+
   const { data, isLoading, isSuccess, write } = useContractWrite(config)
+  const { data: readData, isError, isLoading: isReadLoading } = useContractReads({
+    contracts: [
+      {
+        ...nftContract,
+        functionName: 'initialPrice',
+      },
+      {
+        ...nftContract,
+        functionName: 'initialTokenPrice',
+      },
+    ],
+  });
+
+  console.log("readData", readData);
 
   async function mint() {
     write?.()
   }
+
+  useEffect(() => {
+    const price = readData && readData[0].result != undefined ? ethers.formatEther(readData[0].result.toString()) : null;
+    const tokenPrice = readData && readData[1].result != undefined ? ethers.formatEther(readData[1].result.toString()) : null;
+    setNftTokenPrice(tokenPrice)
+    setNftPrice(price)
+  }, [readData])
 
   return (
     <div className={styles.box}>
@@ -49,29 +72,18 @@ export default function NftMinter({
           <div className={styles.nft_media_container}>
             <img src={`./nfts/${nftImg(tokenId)}`} className={styles.nft_media} />
           </div>
-
           <div className={styles.nft_info}>
-            <h3 className={styles.nft_author}>By Alchemy.eth</h3>
             <p className={styles.text}>
-              In the words of the ancients, one should make his decisions within the space of seven breaths. It is a matter of being determined and having the spirit to break through to the other side
-            </p>
-            <hr className={styles.break} />
-            <h3 className={styles.nft_instructions_title}>INSTRUCTIONS</h3>
-            <p className={styles.text}>
-              You can get this NFT paying with Ethereum or YenToken
+              You can mint this NFT with Ethereum or YenToken
             </p>
             {isDisconnected ? (
               <p>Connect your wallet to get started</p>
             ) : (
-              <div>
-                <button
-                  className={"bg-indigo-600 p-3 rounded-lg	text-white mt-2 w-full text-lg"}
-                  disabled={!write} onClick={() => mint()}>
-                  MINT NOW
-                </button>
-                {isLoading && <div>Check Wallet</div>}
-                {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
-              </div>
+              <>
+                <BuyEth nftPrice={nftPrice} mint={mint} isLoading={isLoading} />
+
+                <BuyYen nftPrice={nftTokenPrice} mint={mint} isLoading={isLoading} />
+              </>
             )}
           </div>
         </div>
