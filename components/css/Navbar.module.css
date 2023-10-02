@@ -1,7 +1,7 @@
 .navbar {
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
+	align-items: left;
 	width: 100%;
 	padding: 2rem 4rem 0.8rem 4rem;
 	gap: 2rem;
@@ -9,10 +9,21 @@
 }
 
 .icon {
+	width: 32px;
+	height: 32px;
 	border-radius: 0% !important;
 }
 
 .alchemy_logo {
 	width: 6rem;
 	cursor: pointer;
+}
+
+.navbar a {
+	display: flex;
+	gap: 10px;
+}
+
+.navbar a:hover {
+	color: rgb(161, 161, 161);
 }

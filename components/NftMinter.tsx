@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import '@fortawesome/fontawesome-svg-core/styles.css'
 import styles from "./css/NftMinter.module.css";
 import BuyEth from "./BuyBtns/BuyEth";
 import BuyYen from "./BuyBtns/BuyYen";
@@ -51,8 +50,6 @@ export default function NftMinter({
     ],
   });
 
-  console.log("readData", readData);
-
   async function mint() {
     write?.()
   }
@@ -66,11 +63,11 @@ export default function NftMinter({
 
   return (
     <div className={styles.box}>
-      <h1 className={styles.nft_title}>Blood line N° {tokenId}</h1>
+      <h1 className={styles.nft_title}>Bloodline N° {tokenId}</h1>
       <div className={styles.page_flexBox}>
         <div className={styles.page_container}>
           <div className={styles.nft_media_container}>
-            <img src={`./nfts/${nftImg(tokenId)}`} className={styles.nft_media} />
+            <img src={`/nfts/${nftImg(tokenId)}`} className={styles.nft_media} />
           </div>
           <div className={styles.nft_info}>
             <p className={styles.text}>

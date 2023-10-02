@@ -2,14 +2,11 @@
 import NftMinter from "@/components/NftMinter";
 import Navbar from "@/components/navigation";
 import NFTContractAbi from "@/contracts/abi/samuraiAbi.json"
-import YenTokenAbi from "@/contracts/abi/yenAbi.json"
 
 export default function Home() {
   return (
     <div>
-
       <Navbar />
-
       <div className={"text-center"}>
         <h1 className="text-3xl font-bold underline">
           Minter Dapp
