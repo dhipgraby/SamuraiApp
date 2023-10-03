@@ -1,20 +1,18 @@
 "use client";
 import './globals.css'
 import '@fortawesome/fontawesome-svg-core/styles.css'
-import { WagmiConfig, createConfig, configureChains } from "wagmi";
+import 'react-toastify/dist/ReactToastify.css';
+import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
+import { ToastContainer } from 'react-toastify';
 import { localhost } from "@/contracts/connection"
-import Head from 'next/head';
 
 const config = createConfig(
   getDefaultConfig({
-    // Required API Keys
-    alchemyId: process.env.ALCHEMY_API_KEY, // or infuraId
+    alchemyId: process.env.ALCHEMY_API_KEY,
     walletConnectProjectId: "32cae9a2ad83b78226dd813e5ce6ad4a",
-    // Required
     appName: "SamaraiApp",
-    // Optional
-    appDescription: "Last blood lines DApp",
+    appDescription: "Last Bloodlines DApp",
     appUrl: "https://lastbloodlines.com/",
     appIcon: "../public/graphic_icon.jpg",
     chains: [localhost]
@@ -27,19 +25,19 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <Head>
-        <link rel="shortcut icon" href="../public/graphic_icon.jpg" />
-      </Head>
-      <WagmiConfig config={config}>
-        <ConnectKitProvider mode="dark">
+    <WagmiConfig config={config}>
+      <ConnectKitProvider>
+        <html>
+
           <body>
+            <ToastContainer />
             <div className={"container mx-auto px-4 pb-5"}>
               <div>{children}</div>
             </div>
           </body>
-        </ConnectKitProvider>
-      </WagmiConfig>
-    </html>
+
+        </html>
+      </ConnectKitProvider>
+    </WagmiConfig>
   )
 }

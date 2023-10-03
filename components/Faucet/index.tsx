@@ -1,54 +1,36 @@
 'use client'
-import { useState, useEffect } from "react"
 import styles from "@/app/faucet/index.module.css"
-import { useAccount, useContractWrite, usePrepareContractWrite, useContractReads } from "wagmi";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faYenSign } from "@fortawesome/free-solid-svg-icons";
+import { useAccount } from "wagmi";
 import TokenInfo from "./TokenInfo";
-import ClaimBtn from "./ClaimBtn";
-import { YenToken, readContractDto } from "@/dto/tokenDto";
+import { FaucetProps } from "@/dto/tokenDto";
+import Balance from "../User/Balance";
 
-interface FaucetProps {
-    faucetAddress: `0x${string}` | undefined;
-    tokenAddress: `0x${string}` | undefined;
-    faucetAbi: any[];
-    tokenAbi: any[];
-}
-
-export default function Faucet({
+export default function AdminUI({
     faucetAddress,
     tokenAddress,
     faucetAbi,
     tokenAbi,
 }: FaucetProps) {
 
-    const yenIcon = <span className="text-yellow-400"><FontAwesomeIcon icon={faYenSign} /></span>
-
-    const { isDisconnected, address } = useAccount();
-
-    const tokenContract: readContractDto = {
-        address: tokenAddress,
-        abi: tokenAbi
-    }
-
-    // const { config } = usePrepareContractWrite({
-    //     address: contractAddress,
-    //     abi: YenTokenAbi,
-    //     functionName: 'userMint',
-    //     args: [tokenId],
-    //     value: ethers.parseEther("0.19"),
-    // })
-
-    // const { data, isLoading, isSuccess, write } = useContractWrite(config)  
-
-    // async function mint() {
-    //     write?.()
-    // }
-
     return (
         <>
+            <div className="mt-5 text-center">
+                <h1 className="text-xl">
+                    Come claim every 24 hours free Yen Token.
+                    <br />
+                    You can buy <span className="text-yellow-400">Bloodlines</span> NFT's with Yen Token.
+                    <br />
+                    Aditionally you can stake <span className="text-yellow-400">Yen Pools</span>
+                    <br />
+                    support the community and increasse your earnings
+                </h1>
+            </div>
+            <Balance
+                tokenAddress={tokenAddress}
+                tokenAbi={tokenAbi}
+            />
+
             <TokenInfo address={tokenAddress} abi={tokenAbi} />
-            <ClaimBtn />
         </>
     );
 

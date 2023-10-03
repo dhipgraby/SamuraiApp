@@ -6,8 +6,12 @@ import Link from "next/link";
 export default function Navbar() {
     return (
         <nav className={styles.navbar}>
+
             <Link href="/">
                 <img src="./graphic_icon.jpg" className={styles.icon} width={32} />Last Bloodlines
+            </Link>
+            <Link href="/admin">
+                Admin
             </Link>
             <Link href="/faucet">
                 Claim

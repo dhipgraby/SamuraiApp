@@ -1,6 +1,6 @@
 export const localhost = {
     id: 31337,
-    name: "localhost",
+    name: "ganache",
     network: "localhost",
     nativeCurrency: {
         decimals: 18,

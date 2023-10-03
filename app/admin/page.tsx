@@ -1,11 +1,14 @@
 import Navbar from "@/components/navigation";
-import styles from "./index.module.css"
+import styles from "../faucet/index.module.css"
+import { useAccount } from "wagmi";
 import TokenAbi from "@/contracts/abi/yenAbi.json"
 import FaucetAbi from "@/contracts/abi/faucetAbi.json"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faYenSign } from "@fortawesome/free-solid-svg-icons";
-import Faucet from "@/components/Faucet";
-import { Address } from "@/dto/tokenDto";
+import Balance from "@/components/User/Balance";
+import TokenInfo from "@/components/Faucet/TokenInfo";
+import AdminMint from "@/components/Admin/AdminMint";
+import AdminDeposit from "@/components/Admin/AdminDeposit";
+
+type Address = `0x${string}`;
 
 interface FaucetProps {
     faucetAddress: Address | undefined;
@@ -22,9 +25,8 @@ async function getContracts(): Promise<FaucetProps> {
     }
 }
 
-export default async function FaucetPage() {
+export default async function AdminPage() {
 
-    const yenIcon = <span className="text-yellow-400"><FontAwesomeIcon icon={faYenSign} /></span>
     let contracts = await getContracts()
 
     return (
@@ -32,16 +34,29 @@ export default async function FaucetPage() {
             <Navbar />
             <div className={"text-center"}>
                 <h1 className="text-3xl font-bold underline">
-                    {yenIcon} Claim Free Tokens
+                    Admin Functions
                 </h1>
-                <small>Get free Yen tokens each 24 hours</small>
             </div>
-            <Faucet
-                faucetAddress={contracts.faucetAddress}
+            <Balance
                 tokenAddress={contracts.tokenAddress}
-                faucetAbi={FaucetAbi}
                 tokenAbi={TokenAbi}
             />
+            <TokenInfo
+                address={contracts.tokenAddress}
+                abi={TokenAbi} />
+
+            <AdminMint
+                tokenAddress={contracts.tokenAddress}
+                tokenAbi={TokenAbi}
+            />
+
+            <AdminDeposit
+                faucetAddress={contracts.faucetAddress}
+                faucetAbi={FaucetAbi}
+                tokenAddress={contracts.tokenAddress}
+                tokenAbi={TokenAbi}
+            />
+
         </div>
     )
 }

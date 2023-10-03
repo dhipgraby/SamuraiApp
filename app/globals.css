@@ -14,9 +14,79 @@ body {
   color: white;
   background: black;
   font-family: 'Sohne';
-  font-weight: normal;  
+  font-weight: normal;
+}
+
+.box {
+  max-width: 700px;
+  border: solid 2px rgb(78, 78, 78);
+  padding: 10px;
+  border-radius: 8px;
+  margin: auto;
+  margin-top: 20px;
+  background-color: black;
 }
 
 button:hover {
   cursor: pointer;
+}
+
+.reflect-box {
+  -webkit-box-reflect: below 15px -webkit-linear-gradient(bottom, rgba(255, 255, 255, 0.35) 0%, transparent 50%, transparent 100%);
+}
+
+.mainImgContainer {
+  min-height: 50vh;
+  background-color: black;
+  max-width: 800px;
+  margin: auto;
+  margin-top: 30px;
+  border-radius: 10px;
+  overflow: hidden;
+  perspective: 1500px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.frontImg {
+  cursor: pointer;
+  filter: sepia(1);
+  border-left: 1px solid black;
+  transition: 0.5s;
+  background-size: cover;
+  background-position: center;
+  transform: rotateY(0deg) scale(1);
+  transform-origin: center;
+}
+
+.frontImg:hover {
+  filter: sepia(0);
+  transform: scale(1.1);
+  z-index: 2;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.frontImg:hover~.frontImg {
+  transform: rotateY(20deg) scale(0.8);
+}
+
+.frontImg:first-child {
+  background-image: url('/nfts/001.jpg');
+}
+
+.frontImg:nth-child(2) {
+  background-image: url('/nfts/002.jpg');
+}
+
+.frontImg:nth-child(3) {
+  background-image: url('/nfts/003.jpg');
+}
+
+.frontImg:nth-child(4) {
+  background-image: url('/nfts/004.jpg');
+}
+
+.frontImg:nth-child(5) {
+  background-image: url('/nfts/005.jpg');
 }

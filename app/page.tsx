@@ -1,22 +1,24 @@
 'use client'
-import NftMinter from "@/components/NftMinter";
 import Navbar from "@/components/navigation";
-import NFTContractAbi from "@/contracts/abi/samuraiAbi.json"
 
 export default function Home() {
   return (
     <div>
       <Navbar />
       <div className={"text-center"}>
-        <h1 className="text-3xl font-bold underline">
-          Minter Dapp
+        <h1 className="text-3xl font-bold underline mb-3">
+          Welcome to The Samurai Protocol
         </h1>
-        <small>Mint Unique a Blood Line character</small>
+        <small className="text-yellow-400">Empowering the Art concept inside Blockchain</small>
+
+        <div className="flex mainImgContainer reflect-box">
+          <div className="frontImg w-1/5"></div>
+          <div className="frontImg w-1/5"></div>
+          <div className="frontImg w-1/5"></div>
+          <div className="frontImg w-1/5"></div>
+          <div className="frontImg w-1/5"></div>
+        </div>
       </div>
-      <NftMinter
-        tokenId={13}
-        contractAddress={"0x5FbDB2315678afecb367f032d93F642f64180aa3"}
-        abi={NFTContractAbi} />
     </div>
   )
 }
