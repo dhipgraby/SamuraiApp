@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 import TokenInfo from "./TokenInfo";
 import { FaucetProps } from "@/dto/tokenDto";
 import Balance from "../User/Balance";
+import ClaimBtn from "./ClaimBtn";
 
 export default function AdminUI({
     faucetAddress,
@@ -31,6 +32,12 @@ export default function AdminUI({
             />
 
             <TokenInfo address={tokenAddress} abi={tokenAbi} />
+            <ClaimBtn
+                faucetAddress={faucetAddress}
+                tokenAddress={tokenAddress}
+                faucetAbi={faucetAbi}
+                tokenAbi={tokenAbi}
+            />
         </>
     );
 

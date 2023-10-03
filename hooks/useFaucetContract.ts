@@ -4,7 +4,15 @@ import { ethers } from "ethers";
 import { handlePrepareFaucetError } from "@/helpers/txHelper";
 import { web3Address } from "@/dto/tokenDto";
 
-export function useFaucetContract(faucetAddress: string, tokenAddress: string, faucetAbi: any, tokenAbi: any, amountTo: string) {
+interface FaucetProps {
+    faucetAddress: web3Address | undefined;
+    tokenAddress: web3Address | undefined;
+    faucetAbi: any;
+    tokenAbi: any;
+    amountTo?: string;
+}
+
+export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo = '0' }: FaucetProps) {
     const [needAllowance, setNeedAllowance] = useState(false);
     const { address } = useAccount();
 
@@ -13,13 +21,24 @@ export function useFaucetContract(faucetAddress: string, tokenAddress: string, f
         abi: tokenAbi
     };
 
-    const faucetConfig = usePrepareContractWrite({
+    const faucetContract = {
+        address: faucetAddress as web3Address,
+        abi: faucetAbi
+    };
+
+    const depositTokens = usePrepareContractWrite({
         address: faucetAddress as web3Address,
         abi: faucetAbi,
         functionName: 'depositTokens',
         onError: (e) => handlePrepareFaucetError(e, setNeedAllowance),
         enabled: ((amountTo !== '0' && amountTo !== '')),
         args: (amountTo !== '0' && amountTo !== '') ? [ethers.parseEther(amountTo)] : [amountTo],
+    });
+
+    const requestTokens = usePrepareContractWrite({
+        address: faucetAddress as web3Address,
+        abi: faucetAbi,
+        functionName: 'requestTokens',
     });
 
     const tokenConfig = usePrepareContractWrite({
@@ -30,7 +49,8 @@ export function useFaucetContract(faucetAddress: string, tokenAddress: string, f
         args: [faucetAddress, (amountTo !== '0' && amountTo !== '') ? ethers.parseEther(amountTo) : amountTo],
     });
 
-    const faucetWrite = useContractWrite(faucetConfig.config);
+    const faucetWrite = useContractWrite(depositTokens.config);
+    const faucetClaim = useContractWrite(requestTokens.config);
     const tokenWrite = useContractWrite(tokenConfig.config);
 
     const readData = useContractReads({
@@ -40,12 +60,17 @@ export function useFaucetContract(faucetAddress: string, tokenAddress: string, f
                 functionName: 'allowance',
                 args: [address as web3Address, faucetAddress as web3Address]
             },
+            {
+                ...faucetContract,
+                functionName: 'remainingTokens',
+            },
         ]
     });
 
     return {
         needAllowance,
         faucetWrite,
+        faucetClaim,
         tokenWrite,
         readData
     };

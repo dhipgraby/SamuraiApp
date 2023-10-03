@@ -1,13 +1,9 @@
-import styles from "@/app/faucet/index.module.css"
-import { useEffect, useState } from "react";
-import { useAccount, useContractWrite, usePrepareContractWrite, useContractReads } from "wagmi";
-import { ethers } from "ethers";
+import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRocket } from "@fortawesome/free-solid-svg-icons/faRocket";
 import { FaucetProps } from "@/dto/tokenDto";
 import { toast } from 'react-toastify'
-import AdminMint from "../Admin/AdminMint"
-import YenIcon from "../YenIcon";
+import { useFaucetContract } from "@/hooks/useFaucetContract";
 
 export default function ClaimBtn({
     faucetAddress,
@@ -16,39 +12,34 @@ export default function ClaimBtn({
     tokenAbi,
 }: FaucetProps) {
 
-    const [addressTo, setAddressTo] = useState('')
-    const [amountTo, setAmountTo] = useState('0')
+    const {
+        faucetClaim: { data: claimData, isLoading, isError, isSuccess, write },
+    } = useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, tokenAbi });
 
-    const { config } = usePrepareContractWrite({
-        address: tokenAddress,
-        abi: tokenAbi,
-        functionName: 'mint',
-        args: addressTo ? [addressTo, (amountTo) ? ethers.parseEther(amountTo) : '0'] : [],
-    })
-
-    const { data, isLoading, isError, isSuccess, write } = useContractWrite(config)
-
-    async function mint() {
-        if (Number(amountTo) < 1) {
-            toast.warn('Amount should be greater than 1')
-            return
+    async function claim() {
+        try {
+            write?.()
+        } catch (error) {
+            toast.warn('Claim error, try again or contact support')
         }
-        write?.()
+
     }
 
     useEffect(() => {
-        if (isSuccess) toast.success('Token successfully minted!')
-        if (isError) toast.warn('Error minting, try again or contact support')
+        if (isSuccess) toast.success('Claim success! + 1000 YenTokens')
+        if (isError) toast.warn('Error claiming, try again or contact support')
     }, [isSuccess, isError])
 
     return (
         <div>
             <div className={`mt-4 text-center`}>
                 <button
+                    disabled={isLoading}
                     className={`bg-white text-black p-3 rounded-lg text-lg`}
+                    onClick={() => claim()}
                 >
-                    Claim 100 Yen Tokens <FontAwesomeIcon icon={faRocket} />
-                </button>              
+                    {isLoading ? "Getting reward..." : <span>Claim 100 Yen Tokens <FontAwesomeIcon icon={faRocket} /></span>}
+                </button>
             </div>
         </div >
     );
