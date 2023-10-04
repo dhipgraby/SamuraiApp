@@ -75,7 +75,7 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
         if (allowanceSuccess) toast.success('Allowance increassed!')
         if (allowanceError) toast.warn('Something went wrong with allowance. Try again')
         if (isError) toast.warn('Error depositing, try again or contact support')
-    }, [isSuccess, isError, isReadLoading])
+    }, [isSuccess, isError, isReadLoading, allowanceSuccess, allowanceError])
 
     return (
         <>

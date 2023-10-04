@@ -19,7 +19,7 @@ export default function AdminUI({
                 <h1 className="text-xl">
                     Come claim every 24 hours free Yen Token.
                     <br />
-                    You can buy <span className="text-yellow-400">Bloodlines</span> NFT's with Yen Token.
+                    You can buy <span className="text-yellow-400">Bloodlines</span> NFT with Yen Token.
                     <br />
                     Aditionally you can stake <span className="text-yellow-400">Yen Pools</span>
                     <br />
