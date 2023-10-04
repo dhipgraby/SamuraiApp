@@ -133,7 +133,7 @@
 
   .page_flexBox {
     display: block;
-    width: 500px;
+    max-width: 100% !important;
   }
 
   .nft_info {
