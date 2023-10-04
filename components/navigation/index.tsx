@@ -19,9 +19,11 @@ export default function Navbar() {
                         </span>
                     </li>
                     <li className='w-1/6 pt-1 text-right'>
-                        <span className="logo material-symbols-outlined">
-                            <img src="/graphic_icon.jpg" className={"icon"} width={32} />
-                        </span>
+                        <Link href={"/"}>
+                            <span className="logo material-symbols-outlined">
+                                <img src="/graphic_icon.jpg" className={"icon"} width={32} />
+                            </span>
+                        </Link>
                     </li>
                 </ul>
 
