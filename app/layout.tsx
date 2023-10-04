@@ -14,7 +14,7 @@ const config = createConfig(
     appName: "SamaraiApp",
     appDescription: "Last Bloodlines DApp",
     appUrl: "https://lastbloodlines.com/",
-    appIcon: "../public/graphic_icon.jpg",
+    appIcon: "../public/masklogo.jpg",
     chains: [localhost]
   })
 );

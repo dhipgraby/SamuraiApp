@@ -19,7 +19,10 @@ export default function Navbar() {
             <Link href="/mint">
                 Mint
             </Link>
-            <Link href="/mint">
+            <Link href="/stake">
+                Stake
+            </Link>
+            <Link href="/about">
                 About
             </Link>
 

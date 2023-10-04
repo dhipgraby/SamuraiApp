@@ -13,6 +13,7 @@ interface FaucetProps {
 }
 
 export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo = '0' }: FaucetProps) {
+
     const [needAllowance, setNeedAllowance] = useState(false);
     const { address } = useAccount();
 
@@ -25,6 +26,8 @@ export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, toke
         address: faucetAddress as web3Address,
         abi: faucetAbi
     };
+
+    // ---------------------   WRITE FUNCTIONS ------------------------
 
     const depositTokens = usePrepareContractWrite({
         address: faucetAddress as web3Address,
@@ -53,6 +56,8 @@ export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, toke
     const faucetClaim = useContractWrite(requestTokens.config);
     const tokenWrite = useContractWrite(tokenConfig.config);
 
+    // ---------------------   READ FUNCTIONS ------------------------
+
     const readData = useContractReads({
         contracts: [
             {
@@ -67,11 +72,22 @@ export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, toke
         ]
     });
 
+    const userData = useContractReads({
+        contracts: [
+            {
+                ...faucetContract,
+                functionName: 'lastAccessTime',
+                args: [address as web3Address]
+            },
+        ]
+    });
+
     return {
         needAllowance,
         faucetWrite,
         faucetClaim,
         tokenWrite,
-        readData
+        readData,
+        userData,
     };
 }

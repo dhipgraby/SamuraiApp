@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRocket } from "@fortawesome/free-solid-svg-icons/faRocket";
 import { FaucetProps } from "@/dto/tokenDto";
@@ -12,8 +12,12 @@ export default function ClaimBtn({
     tokenAbi,
 }: FaucetProps) {
 
+    const [claimCooldown, setclaimCooldown] = useState('');
+    const [loadingTimer, setLoadingTimer] = useState(true);
+
     const {
-        faucetClaim: { data: claimData, isLoading, isError, isSuccess, write },
+        faucetClaim: { isLoading, isError, isSuccess, write },
+        userData: { data: claimData, isLoading: isLoadingUser }
     } = useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, tokenAbi });
 
     async function claim() {
@@ -26,6 +30,9 @@ export default function ClaimBtn({
     }
 
     useEffect(() => {
+        console.log("claimData", claimData);
+
+        setLoadingTimer(false)
         if (isSuccess) toast.success('Claim success! + 1000 YenTokens')
         if (isError) toast.warn('Error claiming, try again or contact support')
     }, [isSuccess, isError])
