@@ -20,7 +20,7 @@ export default function Navbar() {
                     </li>
                     <li className='w-1/6 pt-1 text-right'>
                         <span className="logo material-symbols-outlined">
-                            <img src="./graphic_icon.jpg" className={"icon"} width={32} />
+                            <img src="/graphic_icon.jpg" className={"icon"} width={32} />
                         </span>
                     </li>
                 </ul>
@@ -30,7 +30,7 @@ export default function Navbar() {
                         <Link href="/">
                             <span className='items-center flex gap-2 flex'>
                                 <span className="logo material-symbols-outlined">
-                                    <img src="./graphic_icon.jpg" className={"icon rounded-full	"} width={32} />
+                                    <img src="/graphic_icon.jpg" className={"icon rounded-full	"} width={32} />
                                 </span>
                                 <span className="hidden md:flex">
                                     Last Bloodlines
