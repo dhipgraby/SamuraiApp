@@ -21,9 +21,9 @@ export default function AdminUI({
                     <br />
                     You can buy <span className="text-yellow-400">Bloodlines</span> NFT with Yen Token.
                     <br />
-                    Aditionally you can stake <span className="text-yellow-400">Yen Pools</span>
+                    Aditionally you can stake in the <span className="text-yellow-400">Yen Pools</span> to increasse your earnings
                     <br />
-                    support the community and increasse your earnings
+                    Access to token Holders community rewards.
                 </h1>
             </div>
             <Balance
