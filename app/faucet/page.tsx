@@ -1,5 +1,3 @@
-import Navbar from "@/components/navigation";
-import styles from "./index.module.css"
 import TokenAbi from "@/contracts/abi/yenAbi.json"
 import FaucetAbi from "@/contracts/abi/faucetAbi.json"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,8 +26,7 @@ export default async function FaucetPage() {
     let contracts = await getContracts()
 
     return (
-        <div>
-            <Navbar />
+        <div>            
             <div className={"text-center"}>
                 <h1 className="text-3xl font-bold underline">
                     {yenIcon} Claim Free Tokens

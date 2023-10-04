@@ -1,10 +1,8 @@
 'use client'
-import Navbar from "@/components/navigation";
 
 export default function Stake() {
     return (
         <div>
-            <Navbar />
             <div className={"text-center"}>
                 <h1 className="text-3xl font-bold underline mb-3">
                     Samurai Staking Pools

@@ -9,8 +9,7 @@ export default function Page({ params }: { params: { tokenId: string } }) {
     const tokenId = Number(params.tokenId)
 
     return (
-        <div>
-            <Navbar />
+        <div>            
             <div className={"text-center"}>
                 <h1 className="text-3xl font-bold underline">
                     Minter Dapp

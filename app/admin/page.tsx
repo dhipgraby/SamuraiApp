@@ -1,6 +1,3 @@
-import Navbar from "@/components/navigation";
-import styles from "../faucet/index.module.css"
-import { useAccount } from "wagmi";
 import TokenAbi from "@/contracts/abi/yenAbi.json"
 import FaucetAbi from "@/contracts/abi/faucetAbi.json"
 import Balance from "@/components/User/Balance";
@@ -31,7 +28,6 @@ export default async function AdminPage() {
 
     return (
         <div>
-            <Navbar />
             <div className={"text-center"}>
                 <h1 className="text-3xl font-bold underline">
                     Admin Functions

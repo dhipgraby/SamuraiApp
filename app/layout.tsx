@@ -6,6 +6,7 @@ import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { ToastContainer } from 'react-toastify';
 import { localhost } from "@/contracts/connection"
+import Navbar from "@/components/navigation";
 
 const config = createConfig(
   getDefaultConfig({
@@ -31,7 +32,8 @@ export default function RootLayout({
 
           <body>
             <ToastContainer />
-            <div className={"container mx-auto px-4 pb-5"}>
+            <Navbar />
+            <div className={"container mx-auto pt-8 px-4 pb-5"}>
               <div>{children}</div>
             </div>
           </body>
