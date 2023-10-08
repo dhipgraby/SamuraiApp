@@ -3,6 +3,7 @@ import { useContractWrite, usePrepareContractWrite, useContractReads, useAccount
 import { ethers } from "ethers";
 import { handlePrepareFaucetError } from "@/helpers/txHelper";
 import { web3Address } from "@/dto/tokenDto";
+import { useFaucetConfig } from "./config/faucetConfig";
 
 interface FaucetProps {
     faucetAddress: web3Address | undefined;
@@ -29,28 +30,7 @@ export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, toke
 
     // ---------------------   WRITE FUNCTIONS ------------------------
 
-    const depositTokens = usePrepareContractWrite({
-        address: faucetAddress as web3Address,
-        abi: faucetAbi,
-        functionName: 'depositTokens',
-        onError: (e) => handlePrepareFaucetError(e, setNeedAllowance),
-        enabled: ((amountTo !== '0' && amountTo !== '')),
-        args: (amountTo !== '0' && amountTo !== '') ? [ethers.parseEther(amountTo)] : [amountTo],
-    });
-
-    const requestTokens = usePrepareContractWrite({
-        address: faucetAddress as web3Address,
-        abi: faucetAbi,
-        functionName: 'requestTokens',
-    });
-
-    const tokenConfig = usePrepareContractWrite({
-        address: tokenAddress as web3Address,
-        abi: tokenAbi,
-        functionName: 'increaseAllowance',
-        enabled: ((amountTo !== '0' && amountTo !== '')),
-        args: [faucetAddress, (amountTo !== '0' && amountTo !== '') ? ethers.parseEther(amountTo) : amountTo],
-    });
+    const { depositTokens, requestTokens, tokenConfig } = useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo, setNeedAllowance })
 
     const faucetWrite = useContractWrite(depositTokens.config);
     const faucetClaim = useContractWrite(requestTokens.config);
@@ -78,6 +58,10 @@ export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, toke
                 ...faucetContract,
                 functionName: 'lastAccessTime',
                 args: [address as web3Address]
+            },
+            {
+                ...faucetContract,
+                functionName: 'maxAmount',
             },
         ]
     });

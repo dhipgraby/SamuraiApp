@@ -4,6 +4,7 @@ import { faRocket } from "@fortawesome/free-solid-svg-icons/faRocket";
 import { FaucetProps } from "@/dto/tokenDto";
 import { toast } from 'react-toastify'
 import { useFaucetContract } from "@/hooks/useFaucetContract";
+import { ethers } from "ethers";
 
 export default function ClaimBtn({
     faucetAddress,
@@ -13,6 +14,7 @@ export default function ClaimBtn({
 }: FaucetProps) {
 
     const [claimCooldown, setclaimCooldown] = useState('');
+    const [tokenReward, setTokenReward] = useState('');
     const [loadingTimer, setLoadingTimer] = useState(true);
 
     const {
@@ -31,6 +33,9 @@ export default function ClaimBtn({
 
     useEffect(() => {
         console.log("claimData", claimData);
+        const reward = claimData && claimData[1].result != undefined ? parseInt(ethers.formatEther(claimData[1].result.toString())).toLocaleString() : '0';
+
+        setTokenReward(reward)
 
         setLoadingTimer(false)
         if (isSuccess) toast.success('Claim success! + 1000 YenTokens')
@@ -45,7 +50,7 @@ export default function ClaimBtn({
                     className={`bg-white text-black p-3 rounded-lg text-lg`}
                     onClick={() => claim()}
                 >
-                    {isLoading ? "Getting reward..." : <span>Claim 100 Yen Tokens <FontAwesomeIcon icon={faRocket} /></span>}
+                    {isLoading ? "Getting reward..." : <span>Claim {tokenReward} Yen Tokens <FontAwesomeIcon icon={faRocket} /></span>}
                 </button>
             </div>
         </div >
