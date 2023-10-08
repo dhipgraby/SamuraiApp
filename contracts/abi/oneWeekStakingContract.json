@@ -1,0 +1,127 @@
+[
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_adminContract",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_stakingPlatform",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_feeContract",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "adminContract",
+          "type": "address"
+        }
+      ],
+      "name": "AdminContractUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "stakingPlatform",
+          "type": "address"
+        }
+      ],
+      "name": "StakingPlatformUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "adminContract",
+      "outputs": [
+        {
+          "internalType": "contract AdminContract",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "feeContract",
+      "outputs": [
+        {
+          "internalType": "contract FeeManagement",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "stake",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "stakingPlatform",
+      "outputs": [
+        {
+          "internalType": "contract TokenStakingPlatform",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newAdminContract",
+          "type": "address"
+        }
+      ],
+      "name": "updateAdminContract",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newStakingPlatform",
+          "type": "address"
+        }
+      ],
+      "name": "updateStakingPlatform",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]

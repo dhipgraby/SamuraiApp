@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { useContractWrite, usePrepareContractWrite, useContractReads, useAccount } from "wagmi";
-import { ethers } from "ethers";
-import { handlePrepareFaucetError } from "@/helpers/txHelper";
+import { useContractWrite, useContractReads, useAccount } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
 import { useFaucetConfig } from "./config/faucetConfig";
 
