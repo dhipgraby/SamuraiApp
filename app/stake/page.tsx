@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import Input from "@/components/Inputs/Input"
 import PoolCard from '@/components/Cards/PoolCard';
 import StakingInfoCard from '@/components/Cards/StakingInfoCard';
@@ -49,6 +48,7 @@ interface StakeProps {
 export default async function StakePage() {
 
     const { escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress } = await getContracts();
+  
 
   return (
     <div>

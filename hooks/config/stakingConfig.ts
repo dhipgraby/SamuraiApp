@@ -14,15 +14,10 @@ interface StakingProps {
     tokenStakingPlatformAbi: any;
     yenAbi: any;
     amountTo?: string;
-    setNeedAllowance: (allow: boolean) => void;
+    stakeId?: string;
 }
 
-export function useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress, oneDayStakingContractAbi, tokenStakingPlatformAbi, yenAbi, amountTo = '0', setNeedAllowance }: StakingProps) {
-    // const { address } = useAccount();
-
-    // Just for testing purposes
-    const pooltype = 0; // one day staking poolType
-    const duration = 86400; // 1 day duration
+export function useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress, oneDayStakingContractAbi, tokenStakingPlatformAbi, yenAbi, amountTo = '0', stakeId }: StakingProps) {
 
     // Function used to claim from the One Day Staking Pool Contract
     // Args: address, amount, pooltype, duration
@@ -30,9 +25,9 @@ export function useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStaki
     const stakeTokens = usePrepareContractWrite({
         address: stakingPoolAddress as web3Address,
         abi: oneDayStakingContractAbi,
-        functionName: 'initiateStake',
+        functionName: 'stake',
         value: ethers.parseEther("0.0009"),
-        //args: [address, (amountTo !== '0' && amountTo !== '') ? ethers.parseEther(amountTo) : amountTo, pooltype, duration]
+        args: [amountTo]
     });
 
     // Function used to claim from the Main Staking Platform Contract

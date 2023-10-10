@@ -1,4 +1,4 @@
-'use client'
+"use client";
 // app/components/StakingInfoCard.tsx
 import { useStakingContract } from "@/hooks/useStakingContract";
 import escrowAbi from "@/contracts/abi/escrowAbi.json";
@@ -7,6 +7,8 @@ import tokenStakingPlatformAbi from "@/contracts/abi/tokenStakingPlatformAbi.jso
 import yenAbi from "@/contracts/abi/yenAbi.json";
 import { Address } from "@/dto/tokenDto";
 import { useState, useEffect } from "react";
+import { ethers } from "ethers";
+import { useAccount } from "wagmi";
 
 interface StakeProps {
   escrowAddress: Address | undefined;
@@ -15,46 +17,123 @@ interface StakeProps {
   tokenAddress: Address | undefined;
 }
 
-export default function StakingInfoCard({escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress}: StakeProps) {
-  const [readData, setData] = useState({});
-  const [userData, setUser] = useState({});
+export default function StakingInfoCard({
+  escrowAddress,
+  stakingPoolAddress,
+  tokenStakingPlatformAddress,
+  tokenAddress,
+}: StakeProps) {
+  const [escrowBalance, setEscrowBalance] = useState("");
+  const [userStakeIds, setUserStakeIds] = useState([""]);
+  const [userStakeRewards, setUserStakeRewards] = useState([]);
+  const [userStakeBalance, setUserStakeBalance] = useState([]);
+  const [userStakeAllowance, setUserStakeAllowance] = useState();
+  const [userStakeData, setUserStakeData] = useState([]);
+  const { address } = useAccount();
+
+  const {
+    readData: { data: readData },
+    userData: { data: userData },
+  } = useStakingContract({
+    escrowAddress: escrowAddress,
+    stakingPoolAddress: stakingPoolAddress,
+    tokenStakingPlatformAddress: tokenStakingPlatformAddress,
+    tokenAddress: tokenAddress,
+    escrowAbi,
+    oneDayStakingContractAbi,
+    tokenStakingPlatformAbi,
+    yenAbi,
+    amountTo: "1000",
+    stakeId: userStakeIds && userStakeIds[0], // hardcoded for now
+  });
 
   useEffect(() => {
-  const getData = async () => {
-    const { readData, userData } = useStakingContract({
-      escrowAddress: escrowAddress,
-      stakingPoolAddress: stakingPoolAddress,
-      tokenStakingPlatformAddress: tokenStakingPlatformAddress,
-      tokenAddress: tokenAddress,
-      escrowAbi,
-      oneDayStakingContractAbi,
-      tokenStakingPlatformAbi,
-      yenAbi
-    });
-    setData(readData);
-    setUser(userData);
-    return readData;
-  }
+
+    const _balance: any =
+      readData && readData[2].result != undefined
+        ? parseInt(ethers.formatEther(readData[2].result.toString())).toLocaleString()
+        : null;
+
+    const _userStakeAllowance: any =
+      readData && readData[0].result != undefined
+        ? parseInt(ethers.formatEther(readData[0].result.toString())).toLocaleString()
+        : null;
+
+    const _userStakeData: any =
+      readData && readData[1].result != undefined
+        ? readData[1].result
+        : null;
+
     console.log("readData", readData);
-    getData();
-  }, []);
+    setEscrowBalance(_balance);
+    setUserStakeAllowance(_userStakeAllowance);
+    setUserStakeData(_userStakeData);
+  }, [readData]);
 
-    
- 
 
+
+  useEffect(() => {
+
+    const _userStakeRewards: any =
+      userData && userData[0].result != undefined
+        ? parseInt(ethers.formatEther(userData[0].result.toString())).toLocaleString() : null;
+
+    const _userStakeBalance: any =
+      userData && userData[1].result != undefined
+        ? parseInt(ethers.formatEther(userData[1].result.toString())).toLocaleString() : null;
+
+    const _userStakeIds: any =
+      userData && userData[2].result != undefined
+        ? userData[2].result.toString() : null;
+
+
+    setUserStakeIds(_userStakeIds);
+    setUserStakeBalance(_userStakeBalance);
+    setUserStakeRewards(_userStakeRewards);
+  }, [userData])
+
+  console.log("userStakeIds", userStakeIds);
+  console.log("userStakeRewards", userStakeRewards);
+  console.log("userStakeBalance", userStakeBalance);
+  console.log("userStakeAllowance", userStakeAllowance);
+  console.log("userStakeData", userStakeData);
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 w-full">
-      <h2 className="text-2xl font-bold mb-4">Staking Information</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <h3 className="text-xl font-semibold">Read Data</h3>
-          <pre>{JSON.stringify(readData, null, 2)}</pre>
+    <div className="bg-white rounded-lg shadow-lg p-6 w-full text-black">
+      <h2 className="text-xl font-bold mb-4">Staking Data</h2>
+      <div className="grid grid-cols-3 gap-2">
+        <div className=" space-y-2 px-2 py-2 border border-sky-100 rounded-xl shadow-md">
+          <h3 className="text-xs font-semibold text-gray-500 text-left">Yen reward in escrow</h3>
+          <p className="text-xs">YEN: {escrowBalance}</p>
         </div>
-        <div>
-          <h3 className="text-xl font-semibold">User Data</h3>
-          <pre>{JSON.stringify(userData, null, 2)}</pre>
+
+        <div className="col-span-2 space-y-2 px-2 py-2 border border-sky-100 rounded-xl shadow-md">
+          <h3 className="text-xs font-semibold text-gray-500 text-left">User account: </h3>
+          <p className="text-xs">{address}</p>
+          <h3 className="text-xs font-semibold text-gray-500 text-left">User staked balance: </h3>
+          <p className="text-xs">{userStakeBalance}</p>
+          <h3 className="text-xs font-semibold text-gray-500 text-left">User accumulating reward: </h3>
+          <p className="text-xs">{userStakeRewards}</p>
+          <h3 className="text-xs font-semibold text-gray-500 text-left">User StakeIds </h3>
+          <p className="text-xs">[ id: {userStakeIds} ]</p>
+          <h3 className="text-xs font-semibold text-gray-500 text-left">User Stake Allowance </h3>
+          <p className="text-xs">{userStakeAllowance}</p>
+        </div>
+        <div className="text-black col-span-2 space-y-2 px-2 py-2 border border-sky-100 rounded-xl shadow-md">
+          <h3 className="text-xs font-semibold text-gray-500 text-left">User Stake Data </h3>
+          {userStakeData ? (
+            <div>
+              {Object.keys(userStakeData).map((key: any, index: number) => (
+                <p  className="text-xs" key={index}>
+                  {key}: {typeof userStakeData[key] === 'bigint' ? userStakeData[key].toString() : userStakeData[key]}
+                </p>
+              ))}
+            </div>
+          ) : (
+            "Loading..."
+          )}
         </div>
       </div>
     </div>
+
   );
 }
