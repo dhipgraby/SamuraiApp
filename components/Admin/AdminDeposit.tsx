@@ -3,38 +3,45 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { FaucetProps } from "@/dto/tokenDto";
 import { toast } from 'react-toastify'
-import { web3Address } from "@/dto/tokenDto";
 import AmountInput from "./AmountInput";
 import ActionButton from "./ActionButton";
 import { useFaucetContract } from "@/hooks/useFaucetContract";
 import YenIcon from "../YenIcon";
-import { faChevronRight, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TapArrows from "../TapArrows";
+import { parseAmount } from "@/helpers/converter";
 
 export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, tokenAbi }: FaucetProps) {
 
     const [amountTo, setAmountTo] = useState('')
+    const [needAllowance, setNeedAllowance] = useState(false);
     const [currentAllowance, setCurrentAllowance] = useState('')
     const [showPanel, setShowPanel] = useState(false)
     const [loadingAmounts, setLoadingAmounts] = useState(true)
     const [faucetBalance, setFaucetBalance] = useState('0')
 
     const {
-        needAllowance,
         faucetWrite: { data, isLoading, isError, isSuccess, write },
         tokenWrite: { data: dataAllowance, isLoading: loadingAllowance, isError: allowanceError, isSuccess: allowanceSuccess, write: setAllowance },
-        readData: { data: callData, isError: readError, isLoading: isReadLoading }
+        readData: { data: faucetData, refetch: getFaucetData, isError: readError, isLoading: isReadLoading }
     } = useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo });
 
     async function deposit() {
-        console.log('exec deposit');
+
+        const allowanceAmount = Number(currentAllowance.replace(",", ""))
+        console.log('depositing');
 
         if (Number(amountTo) < 1) {
             toast.warn('Amount should be greater than 1')
             return
         }
+
+        if (allowanceAmount < Number(amountTo)) {
+            toast.warn('Amount should be greater or equal to Faucet allowance')
+            return
+        }
+        console.log('should write');
         try {
+            console.log('is writting', write);
             write?.()
         } catch (error) {
             console.log("error", error);
@@ -47,6 +54,7 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
             toast.warn('Amount should be greater than 1')
             return
         }
+
         try {
             setAllowance?.()
         } catch (error) {
@@ -63,19 +71,50 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
         }
     }
 
-    useEffect(() => {
-        console.log('callData', callData);
-        const allowance = callData && callData[0].result != undefined ? parseInt(ethers.formatEther(callData[0].result.toString())).toLocaleString() : '0';
-        const remainingTokens = callData && callData[1].result != undefined ? parseInt(ethers.formatEther(callData[1].result.toString())).toLocaleString() : '0';
-
-        setFaucetBalance(remainingTokens)
+    function setFaucetData(faucetData: any) {
+        const allowance = faucetData && faucetData[0].result != undefined ? parseAmount(faucetData[0].result) : '0';
+        const remainingTokens = faucetData && faucetData[1].result != undefined ? parseAmount(faucetData[1].result) : '0';
         setCurrentAllowance(allowance)
+        setFaucetBalance(remainingTokens)
+        const _allowance = Number(allowance.replace(",", ""))
+
+        console.log("_allowance", _allowance);
+
+        if (_allowance < 1000) {
+            setNeedAllowance(true)
+        } else {
+            setNeedAllowance(false)
+        }
+    }
+
+    async function refetchFaucetData() {
+        const result = await getFaucetData()
+        console.log("refetchData result", result)
+        setFaucetData(result.data)
+    }
+
+    useEffect(() => {
+        setFaucetData(faucetData)
         setLoadingAmounts(isReadLoading)
-        if (isSuccess) toast.success('Token successfully deposited!')
-        if (allowanceSuccess) toast.success('Allowance increassed!')
+    }, [isReadLoading, faucetData])
+
+    // ----------------------------- ALERT MESSAGES -----------------------
+    useEffect(() => {
+
+        if (isSuccess) {
+            toast.success('Token successfully deposited!')
+            refetchFaucetData()
+        }
+
+        if (allowanceSuccess) {
+            toast.success('Allowance increassed!')
+            refetchFaucetData()
+        }
+
         if (allowanceError) toast.warn('Something went wrong with allowance. Try again')
         if (isError) toast.warn('Error depositing, try again or contact support')
-    }, [isSuccess, isError, isReadLoading, allowanceSuccess, allowanceError])
+
+    }, [isSuccess, isError, allowanceSuccess, allowanceError])
 
     return (
         <>
@@ -89,7 +128,7 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
                         <h1 className="text-lg cursor-pointer"
                             onClick={() => setShowPanel(prev => !prev)}>
                             <TapArrows showPanel={showPanel} />
-                            {needAllowance ? <span className="text-yellow-400">Need to increasse Token allowance</span> : 'Deposit to Faucet'}
+                            Deposit to Faucet
                         </h1>
                     </div>
                     <div className="w-1/2 text-right">
@@ -100,7 +139,12 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
                     showPanel
                     && (
                         <div className="mt-3">
-                            {needAllowance ? <span className="text-yellow-400">Max allowance amount</span> : <span className="text-sm">Amount to deposit in YenToken</span>}
+                            {needAllowance ?
+                                <>
+                                    <h2 className="text-yellow-400">Need to increasse Token allowance before depositing</h2>
+                                    <span className="text-yellow-400">Max allowance amount</span>
+                                </>
+                                : <span className="text-sm">Amount to deposit in YenToken</span>}
                             <AmountInput value={amountTo} onChange={handleChange} />
                             <ActionButton
                                 isLoading={isLoading}

@@ -15,7 +15,6 @@ interface FaucetProps {
 
 export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo = '0' }: FaucetProps) {
 
-    const [needAllowance, setNeedAllowance] = useState(false);
     const { address } = useAccount();
 
     const tokenContract = {
@@ -30,7 +29,7 @@ export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, toke
 
     // ---------------------   WRITE FUNCTIONS ------------------------
 
-    const { depositTokens, requestTokens, tokenConfig } = useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo, setNeedAllowance })
+    const { depositTokens, requestTokens, tokenConfig } = useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo })
 
     const faucetWrite = useContractWrite(depositTokens.config);
     const faucetClaim = useContractWrite(requestTokens.config);
@@ -67,7 +66,6 @@ export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, toke
     });
 
     return {
-        needAllowance,
         faucetWrite,
         faucetClaim,
         tokenWrite,

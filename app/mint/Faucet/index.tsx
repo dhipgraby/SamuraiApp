@@ -1,4 +1,6 @@
 'use client'
+import styles from "@/app/faucet/index.module.css"
+import { useAccount } from "wagmi";
 import TokenInfo from "./TokenInfo";
 import { FaucetProps } from "@/dto/tokenDto";
 import Balance from "../User/Balance";

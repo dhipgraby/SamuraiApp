@@ -9,6 +9,12 @@ type ActionProps = {
 
 export default function ActionButton({ isLoading, loadingAllowance, needAllowance, onIncreaseAllowance, onDeposit }:
     ActionProps) {
+
+    const handeDeposit = () => {
+        console.log('calling deposit!');
+        onDeposit()
+    }
+
     return (
         <>
             {needAllowance ?
@@ -21,8 +27,7 @@ export default function ActionButton({ isLoading, loadingAllowance, needAllowanc
                 </button>
                 :
                 <button
-                    disabled={isLoading}
-                    onClick={onDeposit}
+                    onClick={() => handeDeposit()}
                     className={`bg-white text-black p-2 rounded-lg text-lg`}
                 >
                     {isLoading ? "DEPOSITING..." : "DEPOSIT"} <YenIcon />
