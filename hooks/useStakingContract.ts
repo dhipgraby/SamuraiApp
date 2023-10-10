@@ -1,7 +1,8 @@
-import { useState } from "react";
+'use client'
 import { useContractWrite, useContractReads, useAccount } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
 import { useStakingConfig } from "./config/stakingConfig";
+import { useEffect } from "react";
 
 interface StakingProps {
     escrowAddress?: web3Address | undefined;
@@ -11,19 +12,23 @@ interface StakingProps {
     escrowAbi?: any;
     oneDayStakingContractAbi: any;
     tokenStakingPlatformAbi: any;
-    tokenAbi: any;
+    yenAbi: any;
     amountTo?: string;
-    setNeedAllowance: (allow: boolean) => void;
+    //setNeedAllowance: (allow: boolean) => void;
 }
 
-export function useStakingContract({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress, escrowAbi, tokenStakingPlatformAbi, oneDayStakingContractAbi, tokenAbi, amountTo = '0'}: StakingProps) {
+export function useStakingContract({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress, escrowAbi, tokenStakingPlatformAbi, oneDayStakingContractAbi, yenAbi, amountTo = '0' }: StakingProps) {
+  /*   const { address } = useAccount();  // Ensure this is at the top level
 
-    const [needAllowance, setNeedAllowance] = useState(false);
-    const { address } = useAccount();
-
+    useEffect(() => {
+        if (!address) {
+            console.log("no address");
+        }
+    }, [address]); */
+    const address = "0x0000000000000000000000000000000000000000"
     const tokenContract = {
         address: tokenAddress as web3Address,
-        abi: tokenAbi
+        abi: yenAbi
     };
 
     const stakingPoolContract = {
@@ -43,7 +48,7 @@ export function useStakingContract({ escrowAddress, stakingPoolAddress, tokenSta
 
     // ---------------------   WRITE FUNCTIONS ------------------------
 
-    const { claimTokens, stakeTokens, tokenConfig } = useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress, oneDayStakingContractAbi, tokenStakingPlatformAbi, tokenAbi, amountTo, setNeedAllowance})
+    const { claimTokens, stakeTokens, tokenConfig } = useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress, oneDayStakingContractAbi, tokenStakingPlatformAbi, yenAbi, amountTo, setNeedAllowance: () => { } });
 
     const platformClaim = useContractWrite(claimTokens.config);
     const poolStakeWrite = useContractWrite(stakeTokens.config);
@@ -53,15 +58,16 @@ export function useStakingContract({ escrowAddress, stakingPoolAddress, tokenSta
 
     const readData = useContractReads({
         contracts: [
-            {
+            /* {
                 ...tokenContract,
                 functionName: 'allowance',
                 args: [address as web3Address, escrowAddress as web3Address]
-            },
+            }, */
             {
+                // Function used to fetch the stakeData.
                 ...tokenStakingPlatformContract,
                 functionName: 'getStakeData',
-                args: [Number] // stakeId
+                args: [Number] // uint256 stakeId: the stakeId to query.
             },
             {
                 ...escrowContract,
@@ -75,18 +81,26 @@ export function useStakingContract({ escrowAddress, stakingPoolAddress, tokenSta
             {
                 ...escrowContract,
                 functionName: 'userStakeRewards',
-                args: [address as web3Address, Number] // stakeId
+                args: [
+                    address as web3Address,
+                    Number   // uint256 stakeId: the stakeId to query.
+                ]
             },
             {
                 ...escrowContract,
                 functionName: 'userStakeBalances',
                 args: [address as web3Address, Number] // stakeId
             },
+            {
+                //Function to fetch all stake IDs for a user.
+                ...tokenStakingPlatformContract,
+                functionName: 'getUserStakeIds',
+                args: [address as web3Address] // address: The user's address.
+            },
         ]
     });
 
     return {
-        needAllowance,
         platformClaim,
         poolStakeWrite,
         tokenWrite,

@@ -1,5 +1,9 @@
+import React, { useEffect, useState } from 'react';
 import Input from "@/components/Inputs/Input"
-import PoolCard from '../../components/Cards/PoolCard';
+import PoolCard from '@/components/Cards/PoolCard';
+import StakingInfoCard from '@/components/Cards/StakingInfoCard';
+import { Address } from "@/dto/tokenDto";
+
 import poolImg1 from "@/public/nfts/001.jpg"
 import poolImg2 from "@/public/nfts/002.jpg"
 import poolImg3 from "@/public/nfts/003.jpg"
@@ -8,6 +12,7 @@ import poolImg5 from "@/public/nfts/005.jpg"
 import poolImg6 from "@/public/nfts/006.jpg"
 import poolImg7 from "@/public/nfts/007.jpg"
 import poolImg8 from "@/public/nfts/008.jpg"
+
 
 const pools = [
     { index: 1, duration: "1 day", text: "One-Day Staking", reward: "5%", image: poolImg1 },
@@ -20,31 +25,60 @@ const pools = [
     { index: 8, duration: "special2", text: "Special_2 Staking", reward: "Not set", image: poolImg8 },
 ];
 
+interface StakeProps {
+    escrowAddress: Address | undefined;
+    stakingPoolAddress: Address | undefined;
+    tokenStakingPlatformAddress: Address | undefined;
+    tokenAddress: Address | undefined;
+  }
+  
+  async function getContracts(): Promise<StakeProps> {
+    const tokenStakingPlatformAddress = process.env.STAKINGPLATFORM_ADDRESS as Address | undefined;
+    const escrowAddress = process.env.ESCROW_ADDRESS as Address | undefined;
+    const stakingPoolAddress = process.env.ONE_DAY_POOL_ADDRESS as Address | undefined;
+    const tokenAddress = process.env.YENTOKEN_ADDRESS as Address | undefined;
 
+    return {
+      escrowAddress: escrowAddress,
+      stakingPoolAddress: stakingPoolAddress,
+      tokenStakingPlatformAddress: tokenStakingPlatformAddress,
+      tokenAddress: tokenAddress,
+    }
+  }
 
-export default function Stake() {
-    return (
+export default async function StakePage() {
+
+    const { escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress } = await getContracts();
+
+  return (
+    <div>
+      <div className={"text-center"}>
+        <h1 className="text-3xl font-bold underline mb-3">
+          Samurai Staking Pools
+        </h1>
+        <small className="text-yellow-400">Grow up with the community</small>
+      </div>
+      <div className="container w-fit my-12 mx-auto px-4 md:px-12">
         <div>
-            <div className={"text-center"}>
-                <h1 className="text-3xl font-bold underline mb-3">
-                    Samurai Staking Pools
-                </h1>
-                <small className="text-yellow-400">Grow up with the community</small>
-
-            </div>
-            <div className="container w-fit my-12 mx-auto px-4 md:px-12">
-                <div className="flex flex-wrap justify-center">
-                    {pools.map((pool) => (
-                        <div key={pool.index} className="m-4">
-                            <PoolCard {...pool} />
-                            <Input
-                                text={"Stake Yen"}
-                                type={"number"}
-                            />
-                        </div>
-                    ))}
-                </div>
-            </div>
+          <StakingInfoCard 
+              escrowAddress={escrowAddress}
+              stakingPoolAddress={stakingPoolAddress}
+              tokenStakingPlatformAddress={tokenStakingPlatformAddress}
+              tokenAddress={tokenAddress}
+              />
         </div>
-    )
+        <div className="flex flex-wrap justify-center">
+          {pools.map((pool) => (
+            <div key={pool.index} className="m-4">
+              <PoolCard {...pool} />
+              <Input
+                text={"Stake Yen"}
+                type={"number"}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

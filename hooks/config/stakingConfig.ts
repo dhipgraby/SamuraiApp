@@ -12,16 +12,31 @@ interface StakingProps {
     escrowAbi?: any;
     oneDayStakingContractAbi: any;
     tokenStakingPlatformAbi: any;
-    tokenAbi: any;
+    yenAbi: any;
     amountTo?: string;
     setNeedAllowance: (allow: boolean) => void;
 }
 
-export function useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress, oneDayStakingContractAbi, tokenStakingPlatformAbi, tokenAbi, amountTo = '0', setNeedAllowance }: StakingProps) {
-    const { address } = useAccount();
-    const pooltype = 0;
-    const duration = 86400;
-    
+export function useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress, oneDayStakingContractAbi, tokenStakingPlatformAbi, yenAbi, amountTo = '0', setNeedAllowance }: StakingProps) {
+    // const { address } = useAccount();
+
+    // Just for testing purposes
+    const pooltype = 0; // one day staking poolType
+    const duration = 86400; // 1 day duration
+
+    // Function used to claim from the One Day Staking Pool Contract
+    // Args: address, amount, pooltype, duration
+    // Payable function
+    const stakeTokens = usePrepareContractWrite({
+        address: stakingPoolAddress as web3Address,
+        abi: oneDayStakingContractAbi,
+        functionName: 'initiateStake',
+        value: ethers.parseEther("0.0009"),
+        //args: [address, (amountTo !== '0' && amountTo !== '') ? ethers.parseEther(amountTo) : amountTo, pooltype, duration]
+    });
+
+    // Function used to claim from the Main Staking Platform Contract
+    // Payable function
     const claimTokens = usePrepareContractWrite({
         address: tokenStakingPlatformAddress as web3Address,
         abi: tokenStakingPlatformAbi,
@@ -29,17 +44,11 @@ export function useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStaki
         value: ethers.parseEther("0.0009")
     });
 
-    const stakeTokens = usePrepareContractWrite({
-        address: stakingPoolAddress as web3Address,
-        abi: oneDayStakingContractAbi,
-        functionName: 'initiateStake',
-        value: ethers.parseEther("0.0009"),
-        args: [address, (amountTo !== '0' && amountTo !== '') ? ethers.parseEther(amountTo) : amountTo, pooltype, duration]
-    });
-
+    // Function used to increase the allowance from User account to the Escrow Contract
+    // args: escrow address, amount
     const tokenConfig = usePrepareContractWrite({
         address: tokenAddress as web3Address,
-        abi: tokenAbi,
+        abi: yenAbi,
         functionName: 'increaseAllowance',
         enabled: ((amountTo !== '0' && amountTo !== '')),
         args: [escrowAddress, (amountTo !== '0' && amountTo !== '') ? ethers.parseEther(amountTo) : amountTo],
