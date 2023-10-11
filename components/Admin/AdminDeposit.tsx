@@ -99,22 +99,28 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
     }, [isReadLoading, faucetData])
 
     // ----------------------------- ALERT MESSAGES -----------------------
+
     useEffect(() => {
-
         if (isSuccess) {
-            toast.success('Token successfully deposited!')
-            refetchFaucetData()
+            toast.success('Token successfully deposited!');
+            refetchFaucetData();
         }
+    }, [isSuccess]);
 
+    useEffect(() => {
         if (allowanceSuccess) {
-            toast.success('Allowance increassed!')
-            refetchFaucetData()
+            toast.success('Allowance increased!');
+            refetchFaucetData();
         }
+    }, [allowanceSuccess]);
 
-        if (allowanceError) toast.warn('Something went wrong with allowance. Try again')
-        if (isError) toast.warn('Error depositing, try again or contact support')
+    useEffect(() => {
+        if (allowanceError) toast.warn('Something went wrong with allowance. Try again');
+    }, [allowanceError]);
 
-    }, [isSuccess, isError, allowanceSuccess, allowanceError])
+    useEffect(() => {
+        if (isError) toast.warn('Error depositing, try again or contact support');
+    }, [isError]);
 
     return (
         <>

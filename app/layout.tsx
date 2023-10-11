@@ -2,11 +2,12 @@
 import './globals.css'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import 'react-toastify/dist/ReactToastify.css';
-import { WagmiConfig, createConfig } from "wagmi";
+import { WagmiConfig, createConfig, useAccount } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { ToastContainer } from 'react-toastify';
 import { localhost } from "@/contracts/connection"
 import Navbar from "@/components/navigation";
+import { GlobalProvider } from '@/hooks/GlobalContext';
 
 const config = createConfig(
   getDefaultConfig({
@@ -25,20 +26,24 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
+
   return (
     <WagmiConfig config={config}>
       <ConnectKitProvider>
+
         <html>
-
           <body>
-            <ToastContainer />
-            <Navbar />
-            <div className={"container mx-auto pt-8 px-4 pb-5"}>
-              <div>{children}</div>
-            </div>
+            <GlobalProvider>
+              <ToastContainer />
+              <Navbar />
+              <div className={"container mx-auto pt-8 px-4 pb-5"}>
+                <div>{children}</div>
+              </div>
+            </GlobalProvider>
           </body>
-
         </html>
+
       </ConnectKitProvider>
     </WagmiConfig>
   )

@@ -18,7 +18,7 @@ export function useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenA
         address: faucetAddress as web3Address,
         abi: faucetAbi,
         functionName: 'replenishFaucet',
-        enabled: false,
+        enabled: (amountTo !== '0' && amountTo !== ''),
         args: (amountTo !== '0' && amountTo !== '') ? [ethers.parseEther(amountTo)] : [amountTo],
     });
 
@@ -34,7 +34,7 @@ export function useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenA
         address: tokenAddress as web3Address,
         abi: tokenAbi,
         functionName: 'increaseAllowance',
-        enabled: false,
+        enabled: (amountTo !== '0' && amountTo !== ''),
         args: [faucetAddress, (amountTo !== '0' && amountTo !== '') ? ethers.parseEther(amountTo) : amountTo],
     });
 
