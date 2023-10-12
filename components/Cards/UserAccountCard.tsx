@@ -1,58 +1,70 @@
-'use client'
-import { formatEther } from "@/helpers/stakingUtils";
-import { useStakingData} from "@/hooks/useStaking";
-import { Address } from "@/dto/tokenDto";
+// app/components/UserAccountCard.tsx
+'use client';// app/components/UserAccountCard.tsx
+import React, { useEffect, useState } from 'react';
+import { StakePoolAddressesProps } from "@/dto/stakingDto";
+import { GetContractAddresses } from "@/hooks/actions/GetContractAddresses";
+import { useGetStakingData } from "@/hooks/actions/GetStakingData";
 
-interface StakeProps {
-  escrowAddress: Address | undefined;
-  stakingPoolAddress: Address | undefined;
-  tokenStakingPlatformAddress: Address | undefined;
-  tokenAddress: Address | undefined;
-}
+type StakingDataType = {
+  escrowBalance: number;
+  userStakeIds: any[];
+  userStakeRewards: any[];
+  userStakeBalance: any[];
+  userStakeAllowance: any;
+  userStakeData: any[];
+} | null;
 
-const UserAccountCard = ({
-  escrowAddress,
-  stakingPoolAddress,
-  tokenStakingPlatformAddress,
-  tokenAddress,
-}: StakeProps) => {
+const UserAccountCard: React.FC = () => {
+  const [stakingData, setStakingData] = useState<StakingDataType>(null);
 
-  const { 
-    escrowBalance, 
-    userStakeIds, 
-    userStakeRewards, 
-    userStakeBalance, 
-    userStakeAllowance, 
-    userStakeData 
-  } = useStakingData({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const contractAddresses = await GetContractAddresses();
+        const data = useGetStakingData(contractAddresses);
+        setStakingData(data);
+      } catch (error) {
+        console.error('Failed to fetch staking data:', error);
+      }
+    };
 
-  console.log(userStakeData)
+    fetchData();
+  }, []);
+
+  const {
+    escrowBalance,
+    userStakeIds,
+    userStakeRewards,
+    userStakeBalance,
+    userStakeAllowance,
+    userStakeData
+  } = stakingData ?? {};
+
   return (
     <div className="text-center text-purple-500">
-      {userStakeData && (
+      {userStakeData ? (
         <div>
-          <p>Escrow Balance: {escrowBalance}</p>
-          <p>User Stake Ids: {userStakeIds}</p>
-          <p>User Stake Rewards: {userStakeRewards}</p>
-          <p>User Stake Balance: {userStakeBalance}</p>
-          <p>User Stake Allowance: {userStakeAllowance}</p>
+          <p>Escrow Balance: {escrowBalance ?? 'Loading...'}</p>
+          <p>User Stake Ids: {userStakeIds ?? 'Loading...'}</p>
+          <p>User Stake Rewards: {userStakeRewards ?? 'Loading...'}</p>
+          <p>User Stake Balance: {userStakeBalance ?? 'Loading...'}</p>}
+          <p>User Stake Allowance: {userStakeAllowance ?? 'Loading...'}</p>
           <div>
-  <h3>User Stake Data:</h3>
-  {userStakeData ? (
-    <div className="border border-gray-300 rounded">
-      {Object.keys(userStakeData).map((key: any, index) => (
-        <p key={index} className="text-left">
-          {key}: {userStakeData[key]}
-        </p>
-      ))}
-    </div>
-  ) : (
-    "Loading..."
-  )}
-</div>
+            <h3>User Stake Data:</h3>
+            <div className="border border-gray-300 rounded">
+              {Object.keys(userStakeData).map((key: any, index) => (
+                <p key={index} className="text-left">
+                  {key}: {userStakeData[key] ?? 'Loading...'}
+                </p>
+              ))}
+            </div>
+          </div>
         </div>
+      ) : (
+        'Loading...'
       )}
     </div>
   );
 };
+
 export default UserAccountCard;

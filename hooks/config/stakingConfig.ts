@@ -1,32 +1,24 @@
+// @/hooks/config/stakingConfig.ts
 'use client'
-import { useAccount, usePrepareContractWrite } from "wagmi";
-import { web3Address } from "@/dto/tokenDto";
+import { usePrepareContractWrite } from "wagmi";
 import { handlePrepareFaucetError } from "@/helpers/txHelper";
-import { ethers } from "ethers";
+import { parseEther } from "ethers";
+import { web3Address } from "@/dto/tokenDto";
+import { StakingProps } from "@/dto/stakingDto";
+import pools from "@/data/pools";
 
-interface StakingProps {
-    escrowAddress?: web3Address | undefined;
-    stakingPoolAddress: web3Address | undefined;
-    tokenStakingPlatformAddress: web3Address | undefined;
-    tokenAddress: web3Address | undefined;
-    escrowAbi?: any;
-    oneDayStakingContractAbi: any;
-    tokenStakingPlatformAbi: any;
-    yenAbi: any;
-    amountTo?: string;
-    stakeId?: string;
-}
 
-export function useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress, oneDayStakingContractAbi, tokenStakingPlatformAbi, yenAbi, amountTo = '0', stakeId }: StakingProps) {
 
-    // Function used to claim from the One Day Staking Pool Contract
-    // Args: address, amount, pooltype, duration
+export function useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress, tokenStakingPlatformAbi, yenAbi, amountTo, stakeId, pool }: StakingProps) {
+
+
+    // Function used to stake in a pool
     // Payable function
     const stakeTokens = usePrepareContractWrite({
         address: stakingPoolAddress as web3Address,
-        abi: oneDayStakingContractAbi,
+        abi: pool ? pools[pool].abi : undefined,
         functionName: 'stake',
-        value: ethers.parseEther("0.0009"),
+        value: parseEther("0.0009"),
         args: [amountTo]
     });
 
@@ -36,7 +28,8 @@ export function useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStaki
         address: tokenStakingPlatformAddress as web3Address,
         abi: tokenStakingPlatformAbi,
         functionName: 'claimStakeAndReward',
-        value: ethers.parseEther("0.0009")
+        value: parseEther("0.0009"),
+        args: [stakeId]
     });
 
     // Function used to increase the allowance from User account to the Escrow Contract
@@ -46,7 +39,7 @@ export function useStakingConfig({ escrowAddress, stakingPoolAddress, tokenStaki
         abi: yenAbi,
         functionName: 'increaseAllowance',
         enabled: ((amountTo !== '0' && amountTo !== '')),
-        args: [escrowAddress, (amountTo !== '0' && amountTo !== '') ? ethers.parseEther(amountTo) : amountTo],
+        args: [escrowAddress, (amountTo !== '0' && amountTo !== '') ? parseEther(amountTo as string) : amountTo],
     });
 
     return {
