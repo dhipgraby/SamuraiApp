@@ -1,30 +1,29 @@
-"use client";
-// app/components/StakingInfoCard.tsx
+'use client'
+import { useState, useEffect } from "react";
+import { ethers } from "ethers";
 import { useStakingContract } from "@/hooks/useStakingContract";
+import { useAccount } from "wagmi";
 import escrowAbi from "@/contracts/abi/escrowAbi.json";
 import oneDayStakingContractAbi from "@/contracts/abi/oneDayStakingContractAbi.json";
 import tokenStakingPlatformAbi from "@/contracts/abi/tokenStakingPlatformAbi.json";
 import yenAbi from "@/contracts/abi/yenAbi.json";
 import { Address } from "@/dto/tokenDto";
-import { useState, useEffect } from "react";
-import { ethers } from "ethers";
-import { useAccount } from "wagmi";
 
-interface StakeProps {
+export interface StakeProps {
   escrowAddress: Address | undefined;
   stakingPoolAddress: Address | undefined;
   tokenStakingPlatformAddress: Address | undefined;
   tokenAddress: Address | undefined;
 }
 
-export default function StakingInfoCard({
+export const useStakingData = ({
   escrowAddress,
   stakingPoolAddress,
   tokenStakingPlatformAddress,
   tokenAddress,
-}: StakeProps) {
+}: StakeProps) => {
   const [escrowBalance, setEscrowBalance] = useState("");
-  const [userStakeIds, setUserStakeIds] = useState("");
+  const [userStakeIds, setUserStakeIds] = useState([""]);
   const [userStakeRewards, setUserStakeRewards] = useState([]);
   const [userStakeBalance, setUserStakeBalance] = useState([]);
   const [userStakeAllowance, setUserStakeAllowance] = useState();
@@ -92,43 +91,17 @@ export default function StakingInfoCard({
     setUserStakeRewards(_userStakeRewards);
   }, [userData])
 
-  return (
-    <div className="bg-white rounded-lg shadow-lg p-6 w-full text-black">
-      <h2 className="text-xl font-bold mb-4">Staking Data</h2>
-      <div className="grid grid-cols-3 gap-2">
-        <div className=" space-y-2 px-2 py-2 border border-sky-100 rounded-xl shadow-md">
-          <h3 className="text-xs font-semibold text-gray-500 text-left">Yen reward in escrow</h3>
-          <p className="text-xs">YEN: {escrowBalance}</p>
-        </div>
-
-        <div className="col-span-2 space-y-2 px-2 py-2 border border-sky-100 rounded-xl shadow-md">
-          <h3 className="text-xs font-semibold text-gray-500 text-left">User account: </h3>
-          <p className="text-xs">{address}</p>
-          <h3 className="text-xs font-semibold text-gray-500 text-left">User staked balance: </h3>
-          <p className="text-xs">{userStakeBalance}</p>
-          <h3 className="text-xs font-semibold text-gray-500 text-left">User accumulating reward: </h3>
-          <p className="text-xs">{userStakeRewards}</p>
-          <h3 className="text-xs font-semibold text-gray-500 text-left">User StakeIds </h3>
-          <p className="text-xs">[ id: {userStakeIds} ]</p>
-          <h3 className="text-xs font-semibold text-gray-500 text-left">User Stake Allowance </h3>
-          <p className="text-xs">{userStakeAllowance}</p>
-        </div>
-        <div className="text-black col-span-2 space-y-2 px-2 py-2 border border-sky-100 rounded-xl shadow-md">
-          <h3 className="text-xs font-semibold text-gray-500 text-left">User Stake Data </h3>
-          {userStakeData ? (
-            <div>
-              {Object.keys(userStakeData).map((key: any, index: number) => (
-                <p  className="text-xs" key={index}>
-                  {key}: {typeof userStakeData[key] === 'bigint' ? userStakeData[key].toString() : userStakeData[key]}
-                </p>
-              ))}
-            </div>
-          ) : (
-            "Loading..."
-          )}
-        </div>
-      </div>
-    </div>
-
-  );
-}
+  console.log("userStakeIds", userStakeIds);
+  console.log("userStakeRewards", userStakeRewards);
+  console.log("userStakeBalance", userStakeBalance);
+  console.log("userStakeAllowance", userStakeAllowance);
+  console.log("userStakeData", userStakeData);
+  return {
+    escrowBalance,
+    userStakeIds,
+    userStakeRewards,
+    userStakeBalance,
+    userStakeAllowance,
+    userStakeData
+  };
+};

@@ -1,28 +1,42 @@
+
 import React from 'react'
 import Image from 'next/image'
+import UserAccountCard from './UserAccountCard'
+import { StakeProps } from '@/hooks/useStaking';
+import { Address } from '@/dto/tokenDto';
+import { useStakingData } from '@/hooks/useStaking';
 
-const PoolCard = ({ duration, text, reward, image }: any) => {
+async function getContracts(): Promise<StakeProps> {
+    const tokenStakingPlatformAddress = process.env.STAKINGPLATFORM_ADDRESS as Address | undefined;
+    const escrowAddress = process.env.ESCROW_ADDRESS as Address | undefined;
+    const stakingPoolAddress = process.env.ONE_DAY_POOL_ADDRESS as Address | undefined;
+    const tokenAddress = process.env.YENTOKEN_ADDRESS as Address | undefined;
+
+    return {
+      escrowAddress: escrowAddress,
+      stakingPoolAddress: stakingPoolAddress,
+      tokenStakingPlatformAddress: tokenStakingPlatformAddress,
+      tokenAddress: tokenAddress,
+    }
+  }
+  
+const PoolCard = async ({ duration, text, reward }: any) => {
+    const { escrowAddress, stakingPoolAddress, tokenStakingPlatformAddress, tokenAddress } = await getContracts();
+
+
     return (
-        <div>
+        <div className='bg-white rounded-lg shadow-lg'>
             <a href="#" className="block rounded-lg p-4 shadow-sm shadow-indigo-100">
-                <Image
-                    alt="Home"
-                    src={image}
-                    className="h-56 w-full rounded-md object-cover"
-                />
 
                 <div className="mt-2">
                     <dl>
                         <div>
                             <dt className="sr-only">Samurai Staking Pool</dt>
-
                             <dd className="text-sm text-gray-500">Samurai Staking Pool</dd>
                         </div>
-
                         <div>
                             <dt className="sr-only">PoolType</dt>
-
-                            <dd className="font-medium">{text}</dd>
+                            <dd className="font-medium text-sm text-gray-500">{text}</dd>
                         </div>
                     </dl>
 
@@ -45,8 +59,7 @@ const PoolCard = ({ duration, text, reward, image }: any) => {
 
                             <div className="mt-1.5 sm:mt-0">
                                 <p className="text-gray-400">Duration</p>
-
-                                <p className="font-medium">{duration}</p>
+                                <p className="font-medium text-violet-500">{duration}</p>
                             </div>
                         </div>
 
@@ -69,7 +82,7 @@ const PoolCard = ({ duration, text, reward, image }: any) => {
                             <div className="mt-1.5 sm:mt-0">
                                 <p className="text-gray-400">Reward</p>
 
-                                <p className="font-medium">{reward}</p>
+                                <p className="font-medium text-violet-500">{reward}</p>
                             </div>
                         </div>
 
@@ -92,10 +105,17 @@ const PoolCard = ({ duration, text, reward, image }: any) => {
                             <div className="mt-1.5 sm:mt-0">
                                 <p className="text-gray-500">Status</p>
 
-                                <p className="font-medium">Not Staking</p>
+                                <p className="font-medium text-violet-500">Not Staking</p>
                             </div>
                         </div>
                     </div>
+                    <UserAccountCard 
+                        escrowAddress={escrowAddress}
+                        stakingPoolAddress={stakingPoolAddress}
+                        tokenStakingPlatformAddress={tokenStakingPlatformAddress}
+                        tokenAddress={tokenAddress}
+                    />
+                
                 </div>
             </a>
         </div>
