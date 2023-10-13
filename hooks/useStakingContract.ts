@@ -5,7 +5,7 @@ import { useStakingConfig } from "./config/stakingConfig";
 import { StakingProps } from '../dto/stakingDto';
 
 
-export async function useStakingContract({
+export function useStakingContract({
   escrowAddress,
   stakingPoolAddress,
   tokenStakingPlatformAddress,
@@ -72,7 +72,6 @@ export async function useStakingContract({
         functionName: "getRewardBalance",
       },
     ],
-    enabled: true
   });
 
   const userData = useContractReads({

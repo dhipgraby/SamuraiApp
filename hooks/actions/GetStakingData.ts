@@ -39,14 +39,12 @@ export const useGetStakingData = ({
   }, []);
 
 
-  useEffect(() => {
-    const useFetchData = async () => {
-      if (contractAddresses) {
+  
+     
         const {
-          readData: { data: readData },
-          userData: { data: userData },
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        } = await useStakingContract({
+          readData: { data: readsData },
+          userData: { data: usersData },
+        } =  useStakingContract({
           escrowAddress: contractAddresses.escrowAddress,
           stakingPoolAddress: contractAddresses.stakingPoolAddress,
           tokenStakingPlatformAddress: contractAddresses.tokenStakingPlatformAddress,
@@ -58,14 +56,14 @@ export const useGetStakingData = ({
           stakeId: undefined,
           poolType: undefined,
         });
+      
+        useEffect(() => {
+        setReadData(readsData);
+        setUserData(usersData);
+        console.log("readData", readData);
+        }, []);
+  
 
-        setReadData(readData);
-        setUserData(userData);
-      }
-    };
-
-    useFetchData();
-  }, [contractAddresses]);
 
 
   useEffect(() => {
