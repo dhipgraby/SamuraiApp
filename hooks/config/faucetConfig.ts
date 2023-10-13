@@ -10,24 +10,22 @@ interface FaucetProps {
     faucetAbi: any;
     tokenAbi: any;
     amountTo?: string;
-    setNeedAllowance: (allow: boolean) => void;
 }
 
-export function useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo = '0', setNeedAllowance }: FaucetProps) {
+export function useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo = '0' }: FaucetProps) {
 
     const depositTokens = usePrepareContractWrite({
         address: faucetAddress as web3Address,
         abi: faucetAbi,
         functionName: 'replenishFaucet',
-        onError: (e) => handlePrepareFaucetError(e, setNeedAllowance),
-        enabled: ((amountTo !== '0' && amountTo !== '')),
+        enabled: (amountTo !== '0' && amountTo !== ''),
         args: (amountTo !== '0' && amountTo !== '') ? [ethers.parseEther(amountTo)] : [amountTo],
     });
 
     const requestTokens = usePrepareContractWrite({
         address: faucetAddress as web3Address,
         abi: faucetAbi,
-        functionName: 'requestTokens',
+        functionName: 'requestTokens',        
         value: ethers.parseEther("0.0009")
     });
 
@@ -35,7 +33,7 @@ export function useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenA
         address: tokenAddress as web3Address,
         abi: tokenAbi,
         functionName: 'increaseAllowance',
-        enabled: ((amountTo !== '0' && amountTo !== '')),
+        enabled: (amountTo !== '0' && amountTo !== ''),
         args: [faucetAddress, (amountTo !== '0' && amountTo !== '') ? ethers.parseEther(amountTo) : amountTo],
     });
 

@@ -44,6 +44,7 @@ export default function Navbar() {
                         <Link href="/mint" className="px-4 py-2">Mint</Link>
                         <Link href="/stake" className="px-4 py-2">Stake</Link>
                         <Link href="/about" className="px-4 py-2">About</Link>
+                        <Link href="/store" className="px-4 py-2">Store</Link>
                     </li>
                     <li className='flex gap-1 w-fit justify-end'>
                         <ConnectKitButton />

@@ -1,7 +1,7 @@
 'use client'
 import TokenInfo from "./TokenInfo";
 import { FaucetProps } from "@/dto/tokenDto";
-import Balance from "../User/Balance";
+import Balance from "@/components/User/Balance";
 import ClaimBtn from "./ClaimBtn";
 
 export default function AdminUI({
@@ -13,10 +13,7 @@ export default function AdminUI({
 
     return (
         <>
-            <div className="mt-5 ta-c">
-
-                <img width={150} src='/icons/rewardblackbox.png' alt="yengold" />
-
+            <div className="mt-5 text-center">
                 <h1 className="text-xl">
                     Come claim every 24 hours free Yen Token.
                     <br />
