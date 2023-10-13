@@ -5,6 +5,7 @@ import BuyYen from "./BuyBtns/BuyYen";
 import { useAccount, useContractWrite, usePrepareContractWrite, useContractReads } from "wagmi";
 import { nftImg } from "@/helpers/nftHelper";
 import { ethers } from "ethers";
+import Image from "next/image";
 
 interface minterProps {
   contractAddress: `0x${string}` | undefined;
@@ -67,7 +68,7 @@ export default function NftMinter({
       <div className={styles.page_flexBox}>
         <div className={styles.page_container}>
           <div className={styles.nft_media_container}>
-            <img src={`/nfts/${nftImg(tokenId)}`} className={styles.nft_media} />
+            <Image alt={'logo'} width={32} height={32} sizes={'max-width:100%'} src={`/nfts/${nftImg(tokenId)}`} className={styles.nft_media} />
           </div>
           <div className={styles.nft_info}>
             <p className={styles.text}>

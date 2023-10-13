@@ -1,5 +1,4 @@
 export function handlePrepareFaucetError(error: any, setter: (isError: boolean) => void) {
-    console.log("error", error);
 
     const replacer = (key: string, value: any) => {
         if (typeof value === 'bigint') {
