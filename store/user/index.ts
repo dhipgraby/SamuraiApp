@@ -15,7 +15,7 @@ type Action = {
     updateBalance: (tokenBalance: State['tokenBalance']) => void
 }
 
-export const userStore = create<State & Action>((set) => ({
+export const userStore: any = create<State & Action>((set) => ({
     ...initialState,
     updateAddress: (address) => set(() => ({ address: address })),
     updateBalance: (tokenBalance) => set(() => ({ tokenBalance: tokenBalance })),

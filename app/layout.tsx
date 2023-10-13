@@ -2,7 +2,7 @@
 import './globals.css'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import 'react-toastify/dist/ReactToastify.css';
-import { WagmiConfig, createConfig, useAccount } from "wagmi";
+import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { ToastContainer } from 'react-toastify';
 import { localhost } from "@/contracts/connection"

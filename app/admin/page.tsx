@@ -33,10 +33,7 @@ export default async function AdminPage() {
                     Admin Functions
                 </h1>
             </div>
-            <Balance
-                tokenAddress={contracts.tokenAddress}
-                tokenAbi={TokenAbi}
-            />
+            <Balance />
             <TokenInfo
                 address={contracts.tokenAddress}
                 abi={TokenAbi} />

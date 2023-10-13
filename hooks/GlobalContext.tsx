@@ -24,8 +24,6 @@ export const GlobalProvider = ({ children }: {
 
   useEffect(() => {
 
-    console.log('data', data);
-
     if (address) updateUserAddress(address)
     const userBalance = data && data[0].result != undefined ? parseAmount(data[0].result.toString()) : '0';
     if (userBalance) updateUserBalance(userBalance)

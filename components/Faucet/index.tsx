@@ -13,7 +13,10 @@ export default function AdminUI({
 
     return (
         <>
-            <div className="mt-5 text-center">
+            <div className="mt-5 ta-c">
+
+                <img width={150} src='/icons/rewardblackbox.png' alt="yengold" />
+
                 <h1 className="text-xl">
                     Come claim every 24 hours free Yen Token.
                     <br />
@@ -24,10 +27,7 @@ export default function AdminUI({
                     Access to token Holders community rewards.
                 </h1>
             </div>
-            <Balance
-                tokenAddress={tokenAddress}
-                tokenAbi={tokenAbi}
-            />
+            <Balance />
 
             <TokenInfo address={tokenAddress} abi={tokenAbi} />
             <ClaimBtn

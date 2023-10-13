@@ -7,6 +7,7 @@ export default function Store() {
     const firstName = usePersonStore((state) => state.firstName)
     const updateFirstName = usePersonStore((state) => state.updateFirstName)
     const userBalance = userStore((state) => state.tokenBalance)
+    const userAddress = userStore((state) => state.address)
 
     return (
         <div>
@@ -23,6 +24,7 @@ export default function Store() {
                 <div className="box text-left">
                     <h1>User data:</h1>
                     <p>Token balance: {userBalance}</p>
+                    <p>Current address: {userAddress}</p>
 
                     <p className="mt-4">
                         User name:

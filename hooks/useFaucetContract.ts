@@ -1,9 +1,7 @@
-import { useState } from "react";
-import { useContractWrite, usePrepareContractWrite, useContractReads, useAccount } from "wagmi";
-import { ethers } from "ethers";
-import { handlePrepareFaucetError } from "@/helpers/txHelper";
+import { useContractWrite, useContractReads } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
 import { useFaucetConfig } from "./config/faucetConfig";
+import { userStore } from "@/store/user";
 
 interface FaucetProps {
     faucetAddress: web3Address | undefined;
@@ -15,7 +13,7 @@ interface FaucetProps {
 
 export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo = '0' }: FaucetProps) {
 
-    const { address } = useAccount();
+    const address = userStore((state) => state.address)
 
     const tokenContract = {
         address: tokenAddress as web3Address,
@@ -31,7 +29,7 @@ export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, toke
 
     const { depositTokens, requestTokens, tokenConfig } = useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo })
 
-    const faucetWrite = useContractWrite(depositTokens.config);
+    const depositToFaucet = useContractWrite(depositTokens.config);
     const faucetClaim = useContractWrite(requestTokens.config);
     const tokenWrite = useContractWrite(tokenConfig.config);
 
@@ -66,7 +64,7 @@ export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, toke
     });
 
     return {
-        faucetWrite,
+        depositToFaucet,
         faucetClaim,
         tokenWrite,
         readData,

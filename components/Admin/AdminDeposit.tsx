@@ -20,7 +20,7 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
     const [faucetBalance, setFaucetBalance] = useState('0')
 
     const {
-        faucetWrite: { data, isLoading, isError, isSuccess, write },
+        depositToFaucet: { data, isLoading, isError, isSuccess, write },
         tokenWrite: { data: dataAllowance, isLoading: loadingAllowance, isError: allowanceError, isSuccess: allowanceSuccess, write: setAllowance },
         readData: { data: faucetData, refetch: getFaucetData, isError: readError, isLoading: isReadLoading }
     } = useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo });
@@ -88,8 +88,7 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
     }
 
     async function refetchFaucetData() {
-        const result = await getFaucetData()
-        console.log("refetchData result", result)
+        const result = await getFaucetData()        
         setFaucetData(result.data)
     }
 

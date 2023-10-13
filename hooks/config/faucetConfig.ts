@@ -25,8 +25,7 @@ export function useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenA
     const requestTokens = usePrepareContractWrite({
         address: faucetAddress as web3Address,
         abi: faucetAbi,
-        functionName: 'requestTokens',
-        enabled: false,
+        functionName: 'requestTokens',        
         value: ethers.parseEther("0.0009")
     });
 
