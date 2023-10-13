@@ -4,6 +4,7 @@ import { ConnectKitButton } from "connectkit";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faClose } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
 
@@ -21,7 +22,7 @@ export default function Navbar() {
                     <li className='w-1/6 pt-1 text-right'>
                         <Link href={"/"}>
                             <span className="logo material-symbols-outlined">
-                                <img src="/graphic_icon.jpg" className={"icon"} width={32} />
+                                <Image alt={'logo'} width={32} height={32} src="/graphic_icon.jpg" className={"icon"} />
                             </span>
                         </Link>
                     </li>
@@ -32,7 +33,7 @@ export default function Navbar() {
                         <Link href="/">
                             <span className='items-center flex gap-2 flex'>
                                 <span className="logo material-symbols-outlined">
-                                    <img src="/graphic_icon.jpg" className={"icon rounded-full	"} width={32} />
+                                    <Image alt={'logo'} width={32} height={32} src="/graphic_icon.jpg" className={"icon rounded-full"} />
                                 </span>
                                 <span className="hidden md:flex">
                                     Last Bloodlines

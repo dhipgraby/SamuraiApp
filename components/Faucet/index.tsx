@@ -1,15 +1,9 @@
 'use client'
 import TokenInfo from "./TokenInfo";
-import { FaucetProps } from "@/dto/tokenDto";
 import Balance from "../User/Balance";
 import ClaimBtn from "./ClaimBtn";
 
-export default function AdminUI({
-    faucetAddress,
-    tokenAddress,
-    faucetAbi,
-    tokenAbi,
-}: FaucetProps) {
+export default function Page() {
 
     return (
         <>
@@ -29,13 +23,8 @@ export default function AdminUI({
             </div>
             <Balance />
 
-            <TokenInfo address={tokenAddress} abi={tokenAbi} />
-            <ClaimBtn
-                faucetAddress={faucetAddress}
-                tokenAddress={tokenAddress}
-                faucetAbi={faucetAbi}
-                tokenAbi={tokenAbi}
-            />
+            <TokenInfo />
+            <ClaimBtn />
         </>
     );
 

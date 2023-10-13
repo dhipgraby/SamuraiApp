@@ -10,8 +10,7 @@ type ActionProps = {
 export default function ActionButton({ isLoading, loadingAllowance, needAllowance, onIncreaseAllowance, onDeposit }:
     ActionProps) {
 
-    const handeDeposit = () => {
-        console.log('calling deposit!');
+    const handeDeposit = () => {        
         onDeposit()
     }
 

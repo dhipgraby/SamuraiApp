@@ -1,7 +1,5 @@
 'use client'
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
-import { FaucetProps } from "@/dto/tokenDto";
 import { toast } from 'react-toastify'
 import AmountInput from "./AmountInput";
 import ActionButton from "./ActionButton";
@@ -10,7 +8,7 @@ import YenIcon from "../YenIcon";
 import TapArrows from "../TapArrows";
 import { parseAmount } from "@/helpers/converter";
 
-export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, tokenAbi }: FaucetProps) {
+export default function AdminDeposit() {
 
     const [amountTo, setAmountTo] = useState('')
     const [needAllowance, setNeedAllowance] = useState(false);
@@ -20,15 +18,14 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
     const [faucetBalance, setFaucetBalance] = useState('0')
 
     const {
-        depositToFaucet: { data, isLoading, isError, isSuccess, write },
-        tokenWrite: { data: dataAllowance, isLoading: loadingAllowance, isError: allowanceError, isSuccess: allowanceSuccess, write: setAllowance },
-        readData: { data: faucetData, refetch: getFaucetData, isError: readError, isLoading: isReadLoading }
-    } = useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo });
+        depositToFaucet: { isLoading, isError, isSuccess, write },
+        tokenWrite: { isLoading: loadingAllowance, isError: allowanceError, isSuccess: allowanceSuccess, write: setAllowance },
+        readData: { data: faucetData, refetch: getFaucetData, isLoading: isReadLoading }
+    } = useFaucetContract({ amountTo });
 
     async function deposit() {
 
         const allowanceAmount = Number(currentAllowance.replace(",", ""))
-        console.log('depositing');
 
         if (Number(amountTo) < 1) {
             toast.warn('Amount should be greater than 1')
@@ -39,7 +36,6 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
             toast.warn('Amount should be greater or equal to Faucet allowance')
             return
         }
-        console.log('should write');
         try {
             console.log('is writting', write);
             write?.()
@@ -78,8 +74,6 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
         setFaucetBalance(remainingTokens)
         const _allowance = Number(allowance.replace(",", ""))
 
-        console.log("_allowance", _allowance);
-
         if (_allowance < 1000) {
             setNeedAllowance(true)
         } else {
@@ -88,7 +82,7 @@ export default function AdminDeposit({ faucetAddress, tokenAddress, faucetAbi, t
     }
 
     async function refetchFaucetData() {
-        const result = await getFaucetData()        
+        const result = await getFaucetData()
         setFaucetData(result.data)
     }
 

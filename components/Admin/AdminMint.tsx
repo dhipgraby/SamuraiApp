@@ -2,24 +2,22 @@
 import { useEffect, useState } from "react";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ethers } from "ethers";
-import { FaucetProps, web3Address } from "@/dto/tokenDto";
+import { web3Address } from "@/dto/tokenDto";
 import { toast } from 'react-toastify'
 import YenIcon from "../YenIcon";
 import TapArrows from "../TapArrows";
+import { tokenContract } from "@/contracts/contractData";
 
-type TokenProps = Pick<FaucetProps, 'tokenAbi' | 'tokenAddress'>;
+export default function AdminMint() {
 
-export default function AdminMint(props: TokenProps) {
-
-    const { tokenAbi, tokenAddress } = props;
 
     const [addressTo, setAddressTo] = useState('')
     const [amountTo, setAmountTo] = useState('0')
     const [showPanel, setShowPanel] = useState(false)
 
     const { config } = usePrepareContractWrite({
-        address: tokenAddress,
-        abi: tokenAbi,
+        address: tokenContract.address,
+        abi: tokenContract.abi,
         functionName: 'mint',
         enabled: ((addressTo != '')),
         args: (addressTo && addressTo !== '') ? [addressTo, (amountTo) ? ethers.parseEther(amountTo) : '0'] : [addressTo as web3Address, '0'],

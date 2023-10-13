@@ -2,32 +2,19 @@ import { useContractWrite, useContractReads } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
 import { useFaucetConfig } from "./config/faucetConfig";
 import { userStore } from "@/store/user";
+import { faucetContract, tokenContract } from "@/contracts/contractData";
 
 interface FaucetProps {
-    faucetAddress: web3Address | undefined;
-    tokenAddress: web3Address | undefined;
-    faucetAbi: any;
-    tokenAbi: any;
     amountTo?: string;
 }
 
-export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo = '0' }: FaucetProps) {
+export function useFaucetContract({ amountTo = '0' }: FaucetProps) {
 
     const address = userStore((state) => state.address)
 
-    const tokenContract = {
-        address: tokenAddress as web3Address,
-        abi: tokenAbi
-    };
-
-    const faucetContract = {
-        address: faucetAddress as web3Address,
-        abi: faucetAbi
-    };
-
     // ---------------------   WRITE FUNCTIONS ------------------------
 
-    const { depositTokens, requestTokens, tokenConfig } = useFaucetConfig({ faucetAddress, tokenAddress, faucetAbi, tokenAbi, amountTo })
+    const { depositTokens, requestTokens, tokenConfig } = useFaucetConfig({ amountTo })
 
     const depositToFaucet = useContractWrite(depositTokens.config);
     const faucetClaim = useContractWrite(requestTokens.config);
@@ -40,7 +27,7 @@ export function useFaucetContract({ faucetAddress, tokenAddress, faucetAbi, toke
             {
                 ...tokenContract,
                 functionName: 'allowance',
-                args: [address as web3Address, faucetAddress as web3Address]
+                args: [address as web3Address, faucetContract.address as web3Address]
             },
             {
                 ...faucetContract,
