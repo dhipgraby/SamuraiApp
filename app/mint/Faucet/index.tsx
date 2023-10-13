@@ -1,9 +1,7 @@
 'use client'
-import styles from "@/app/faucet/index.module.css"
-import { useAccount } from "wagmi";
 import TokenInfo from "./TokenInfo";
 import { FaucetProps } from "@/dto/tokenDto";
-import Balance from "../User/Balance";
+import Balance from "@/components/User/Balance";
 import ClaimBtn from "./ClaimBtn";
 
 export default function AdminUI({
@@ -26,10 +24,7 @@ export default function AdminUI({
                     Access to token Holders community rewards.
                 </h1>
             </div>
-            <Balance
-                tokenAddress={tokenAddress}
-                tokenAbi={tokenAbi}
-            />
+            <Balance />
 
             <TokenInfo address={tokenAddress} abi={tokenAbi} />
             <ClaimBtn

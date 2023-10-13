@@ -1,8 +1,6 @@
 'use client'
 import { useEffect, useState } from "react"
 import { ethers } from "ethers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import { readContractDto } from "@/dto/tokenDto";
 import { useContractReads } from "wagmi";
 import YenIcon from "../YenIcon";
