@@ -1,53 +1,44 @@
-// app/components/UserAccountCard.tsx
-'use client';// app/components/UserAccountCard.tsx
+'use client';
 import React, { useEffect, useState } from 'react';
-import { StakePoolAddressesProps } from "@/dto/stakingDto";
-import { GetContractAddresses } from "@/hooks/actions/GetContractAddresses";
-import { useGetStakingData } from "@/hooks/actions/GetStakingData";
-
-type StakingDataType = {
-  escrowBalance: number;
-  userStakeIds: any[];
-  userStakeRewards: any[];
-  userStakeBalance: any[];
-  userStakeAllowance: any;
-  userStakeData: any[];
-} | null;
+import { useStakingContract } from '@/hooks/useStakingContract';
 
 const UserAccountCard: React.FC = () => {
-  const [stakingData, setStakingData] = useState<StakingDataType>(null);
+
+  const [amountTo, setAmountTo] = useState('0')
+  const [stakeId, setStakeId] = useState(1)
+  const [poolType, setPoolType] = useState(0)
+
+  const {    
+    allowance,
+    getStakeData,
+    getEscrowRewardBalance,
+    userStakeRewards,
+    getUserStakeIds,
+    getUserStakeIdsInPool
+  } = useStakingContract({
+    amountTo: "0",
+    stakeId,
+    poolType
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const contractAddresses = await GetContractAddresses();
-        const data = useGetStakingData(contractAddresses);
-        setStakingData(data);
-      } catch (error) {
-        console.error('Failed to fetch staking data:', error);
-      }
-    };
 
-    fetchData();
-  }, []);
-
-  const {
-    escrowBalance,
-    userStakeIds,
-    userStakeRewards,
-    userStakeBalance,
-    userStakeAllowance,
-    userStakeData
-  } = stakingData ?? {};
+    console.log("allowance", allowance);
+    console.log("getStakeData", getStakeData);
+    console.log("getEscrowRewardBalance", getEscrowRewardBalance);
+    console.log("userStakeRewards", userStakeRewards);
+    console.log("getUserStakeIds", getUserStakeIds);
+    console.log("getUserStakeIdsInPool", getUserStakeIdsInPool);    
+  }, [])
 
   return (
     <div className="text-center text-purple-500">
-      {userStakeData ? (
+      {/* {userStakeData ? (
         <div>
           <p>Escrow Balance: {escrowBalance ?? 'Loading...'}</p>
           <p>User Stake Ids: {userStakeIds ?? 'Loading...'}</p>
           <p>User Stake Rewards: {userStakeRewards ?? 'Loading...'}</p>
-          <p>User Stake Balance: {userStakeBalance ?? 'Loading...'}</p>}
+          <p>User Stake Balance: {userStakeBalance ?? 'Loading...'}</p>
           <p>User Stake Allowance: {userStakeAllowance ?? 'Loading...'}</p>
           <div>
             <h3>User Stake Data:</h3>
@@ -62,7 +53,7 @@ const UserAccountCard: React.FC = () => {
         </div>
       ) : (
         'Loading...'
-      )}
+      )} */}
     </div>
   );
 };

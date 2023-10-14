@@ -1,18 +1,17 @@
-// @/hooks/actions/useGetStakingData.ts
 'use client'
 import { useState, useEffect } from "react";
 import { formatEther } from "@/helpers/stakingUtils";
 import { useStakingContract } from "@/hooks/useStakingContract";
-import { useAccount } from "wagmi";
 import escrowAbi from "@/contracts/abi/escrowAbi.json";
 import tokenStakingPlatformAbi from "@/contracts/abi/tokenStakingPlatformAbi.json";
 import yenAbi from "@/contracts/abi/yenAbi.json";
-import { StakePoolAddressesProps } from "@/dto/stakingDto";
 import { GetContractAddresses } from "./GetContractAddresses";
+import { userStore } from "@/store/user";
 
-export const useGetStakingData = ({
+export const useGetStakingData = () => {
 
-}: StakePoolAddressesProps) => {
+  const address = userStore((state) => state.address)
+
   const [escrowBalance, setEscrowBalance] = useState();
   const [userStakeIds, setUserStakeIds] = useState();
   const [userStakeRewards, setUserStakeRewards] = useState([]);
@@ -21,7 +20,6 @@ export const useGetStakingData = ({
   const [userStakeData, setUserStakeData] = useState([]);
   const [readData, setReadData] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
-  const { address } = useAccount();
 
   const [contractAddresses, setContractAddresses] = useState<any>(null);
 
@@ -38,33 +36,22 @@ export const useGetStakingData = ({
     fetchContractAddresses();
   }, []);
 
+  const {
+    readData: { data: readsData },
+    userData: { data: usersData },
+  } = useStakingContract({
+    amountTo: "0",
+    stakeId: undefined,
+    poolType: undefined,
+  });
 
-  
-     
-        const {
-          readData: { data: readsData },
-          userData: { data: usersData },
-        } =  useStakingContract({
-          escrowAddress: contractAddresses.escrowAddress,
-          stakingPoolAddress: contractAddresses.stakingPoolAddress,
-          tokenStakingPlatformAddress: contractAddresses.tokenStakingPlatformAddress,
-          tokenAddress: contractAddresses.tokenAddress,
-          escrowAbi,
-          tokenStakingPlatformAbi,
-          yenAbi,
-          amountTo: "0",
-          stakeId: undefined,
-          poolType: undefined,
-        });
-      
-        useEffect(() => {
-        setReadData(readsData);
-        setUserData(usersData);
-        console.log("readData", readData);
-        }, []);
-  
+  useEffect(() => {
+    console.log(readsData);
+    console.log(usersData);
 
-
+    // setReadData(readsData);
+    // setUserData(usersData);
+  }, []);
 
   useEffect(() => {
     const _balance: any =
@@ -87,8 +74,6 @@ export const useGetStakingData = ({
     setUserStakeAllowance(_userStakeAllowance);
     setUserStakeData(_userStakeData);
   }, [readData]);
-
-
 
   useEffect(() => {
 

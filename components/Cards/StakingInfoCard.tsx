@@ -1,5 +1,4 @@
 "use client";
-// app/components/StakingInfoCard.tsx
 import { useStakingContract } from "@/hooks/useStakingContract";
 import escrowAbi from "@/contracts/abi/escrowAbi.json";
 import oneDayStakingContractAbi from "@/contracts/abi/oneDayStakingContractAbi.json";

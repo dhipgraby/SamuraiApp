@@ -2,20 +2,15 @@ import Input from "@/components/Inputs/Input"
 import PoolCard from '@/components/Cards/PoolCard';
 import pools from "@/data/pools";
 import { GetContractAddresses } from "@/hooks/actions/GetContractAddresses";
-import { useGetStakingData }from "@/hooks/actions/GetStakingData";
-
+import { useGetStakingData } from "@/hooks/actions/GetStakingData";
 import { StakingProps } from "@/dto/stakingDto";
-
-
-
 
 export default async function StakePage() {
 
-  
-    const fetchData = async () => {
-      const contractAddresses = await GetContractAddresses();
-      return contractAddresses;
-    };
+  const fetchData = async () => {
+    const contractAddresses = await GetContractAddresses();
+    return contractAddresses;
+  };
 
   return (
     <div>
@@ -29,7 +24,7 @@ export default async function StakePage() {
         <div className="flex flex-wrap justify-center">
           {pools.map(async (pool) => (
             <div key={pool.index} className="m-4">
-              <PoolCard {...pool} useGetStakingData={useGetStakingData} />
+              <PoolCard {...pool} />
               <Input
                 text={"Stake Yen"}
                 type={"number"}

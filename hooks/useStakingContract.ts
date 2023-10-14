@@ -1,48 +1,21 @@
-// @/hooks/useStakingContract.ts
-import { useContractWrite, useContractReads, useAccount } from "wagmi";
+import { useContractWrite, useContractReads, useContractRead } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
 import { useStakingConfig } from "./config/stakingConfig";
 import { StakingProps } from '../dto/stakingDto';
-
+import { tokenContract, stakingPlatformContract, escrowContract } from "@/contracts/contractData";
+import { userStore } from "@/store/user";
 
 export function useStakingContract({
-  escrowAddress,
-  stakingPoolAddress,
-  tokenStakingPlatformAddress,
-  tokenAddress,
-  escrowAbi,
-  tokenStakingPlatformAbi,
-  yenAbi,
   amountTo = "0",
   stakeId,
   poolType
 }: StakingProps) {
-  const { address } = useAccount();
 
-  const tokenContract = {
-    address: tokenAddress as web3Address,
-    abi: yenAbi,
-  };
-
-  const tokenStakingPlatformContract = {
-    address: tokenStakingPlatformAddress as web3Address,
-    abi: tokenStakingPlatformAbi,
-  };
-
-  const escrowContract = {
-    address: escrowAddress as web3Address,
-    abi: escrowAbi,
-  };
+  const address = userStore((state) => state.address)
 
   // ---------------------   WRITE FUNCTIONS ------------------------
 
   const { claimTokens, stakeTokens, tokenConfig } = useStakingConfig({
-    escrowAddress,
-    stakingPoolAddress,
-    tokenStakingPlatformAddress,
-    tokenAddress,
-    tokenStakingPlatformAbi,
-    yenAbi,
     amountTo,
     stakeId,
     poolType
@@ -54,56 +27,47 @@ export function useStakingContract({
 
   // ---------------------   READ FUNCTIONS ------------------------
 
-  const readData = useContractReads({
-    contracts: [
-      {
-        ...tokenContract,
-        functionName: "allowance",
-        args: [address as web3Address, escrowAddress as web3Address],
-      },
-      {
-        // Function used to fetch the stakeData.
-        ...tokenStakingPlatformContract,
-        functionName: "getStakeData",
-        args: [stakeId as number], // uint256 stakeId: the stakeId to query.
-      },
-      { 
-        ...escrowContract,
-        functionName: "getRewardBalance",
-      },
+  const allowance = useContractRead({
+    ...tokenContract,
+    functionName: "allowance",
+    args: [address as web3Address, escrowContract.address as web3Address],
+  });
+
+  const getStakeData = useContractRead({
+    ...stakingPlatformContract,
+    functionName: "getStakeData",
+    args: [stakeId as number], // uint256 stakeId: the stakeId to query.
+  });
+
+  // IF THIS IS 0 THERE IS NO REWARDS LEFT IN THE PLATFORM  
+  const getEscrowRewardBalance = useContractRead({
+    ...escrowContract,
+    functionName: "getRewardBalance",
+  });
+
+  const userStakeRewards = useContractRead({
+    ...escrowContract,
+    functionName: "userStakeRewards",
+    args: [
+      address as web3Address,
+      stakeId as Number, // uint256 stakeId: the stakeId to query.
     ],
   });
 
-  const userData = useContractReads({
-    contracts: [
-      {
-        ...escrowContract,
-        functionName: "userStakeRewards",
-        args: [
-          address as web3Address,
-          stakeId as Number, // uint256 stakeId: the stakeId to query.
-        ],
-      },
-      {
-        ...escrowContract,
-        functionName: "userStakeBalances",
-        args: [address as web3Address, stakeId as Number], // stakeId
-      },
-      {
-        //Function to fetch all stake IDs for a user.
-        ...tokenStakingPlatformContract,
-        functionName: "getUserStakeIds",
-        args: [address as web3Address], // address: The user's address.
-      },
-      {
-        //Function to fetch all stake IDs for a user.
-        ...tokenStakingPlatformContract,
-        functionName: "getUserStakeIdsInPool",
-        args: [
-          address as web3Address, // address: The user's address.
-          poolType as number // uint256 poolType: the poolType to query.
-        ], 
-      },
+  const getUserStakeIds = useContractRead({
+    //Function to fetch all stake IDs for a user.
+    ...stakingPlatformContract,
+    functionName: "getUserStakeIds",
+    args: [address as web3Address], // address: The user's address.
+  });
+
+  const getUserStakeIdsInPool = useContractRead({
+    //Function to fetch all stake IDs for a user.
+    ...stakingPlatformContract,
+    functionName: "getUserStakeIdsInPool",
+    args: [
+      address as web3Address, // address: The user's address.
+      stakeId as number // uint256 poolType: the poolType to query.
     ],
   });
 
@@ -111,7 +75,11 @@ export function useStakingContract({
     platformClaim,
     poolStakeWrite,
     tokenWrite,
-    readData,
-    userData,
+    allowance,
+    getStakeData,
+    getEscrowRewardBalance,
+    userStakeRewards,
+    getUserStakeIds,
+    getUserStakeIdsInPool
   };
 }
