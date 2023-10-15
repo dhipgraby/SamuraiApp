@@ -1,14 +1,11 @@
-// @/hooks/config/stakingConfig.ts
 'use client'
 import { usePrepareContractWrite } from "wagmi";
-import { handlePrepareFaucetError } from "@/helpers/txHelper";
 import { parseEther } from "ethers";
 import { web3Address } from "@/dto/tokenDto";
-import { StakingProps } from "@/dto/stakingDto";
-import pools from "@/data/pools";
+import { pools } from "@/data/pools";
 import { escrowContract, stakingPlatformContract, tokenContract } from "@/contracts/contractData";
 
-export function useStakingConfig({ amountTo = '0', stakeId, poolType }: StakingProps) {
+export function useStakingConfig({ amountTo = '0', stakeId, poolType }: { amountTo: string, stakeId: number, poolType: number }) {
     // Function used to stake in a pool
     // Payable function
     const stakeTokens = usePrepareContractWrite({
