@@ -1,35 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useStakingContract } from '@/hooks/useStakingContract';
 
 const UserAccountCard: React.FC = () => {
-
-  const [amountTo, setAmountTo] = useState('0')
-  const [stakeId, setStakeId] = useState(1)
-  const [poolType, setPoolType] = useState(0)
-
-  const {    
-    allowance,
-    getStakeData,
-    getEscrowRewardBalance,
-    userStakeRewards,
-    getUserStakeIds,
-    getUserStakeIdsInPool
-  } = useStakingContract({
-    amountTo: "0",
-    stakeId,
-    poolType
-  });
-
-  useEffect(() => {
-
-    console.log("allowance", allowance);
-    console.log("getStakeData", getStakeData);
-    console.log("getEscrowRewardBalance", getEscrowRewardBalance);
-    console.log("userStakeRewards", userStakeRewards);
-    console.log("getUserStakeIds", getUserStakeIds);
-    console.log("getUserStakeIdsInPool", getUserStakeIdsInPool);    
-  }, [])
 
   return (
     <div className="text-center text-purple-500">

@@ -11,8 +11,7 @@ export interface StakePoolAddressesProps {
 
 // @notice: this is the interface Props used trigger a staking in a pool
 export interface StakingProps {
-  amountTo?: string | number | undefined;
-  stakeId: number;
+  // stakeId: number;
   poolType: number;
 }
 

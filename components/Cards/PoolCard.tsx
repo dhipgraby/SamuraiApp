@@ -1,4 +1,3 @@
-// components/Cards/PoolCard.tsx
 import React from 'react'
 import UserAccountCard from './UserAccountCard'
 import { PoolCardProps } from '@/dto/stakingDto'
@@ -7,7 +6,7 @@ import starsIcon from '@/public/icons/stars.svg'
 import moonIcon from '@/public/icons/moon.svg'
 import Image from 'next/image'
 
-const PoolCard: React.FC<PoolCardProps> = async ({ duration, text, reward }) => {
+const PoolCard: React.FC<PoolCardProps> = ({ duration, text, reward }) => {
     //const isUserStakingInThisPool = userStakeData && /* logic to determine if user is staking in this pool based on userStakeData */;
 
     return (
