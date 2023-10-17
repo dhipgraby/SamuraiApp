@@ -9,7 +9,6 @@ export function userStakeInPools() {
     const stakingContract = new StakingPlatform();
 
     //----------------- STORES --------------------
-    const userAddress = userStore((state) => state.address);
     const updateStakingData = stakingStore((state) => state.updatePools);
     const poolData = stakingStore((state) => state.poolData);
     const loadingData = stakingStore((state) => state.isLoading);
@@ -29,6 +28,6 @@ export function userStakeInPools() {
             updateStakingData(currentPoolData);
         })();
 
-    }, [loadingData, userAddress]);
+    }, [loadingData]);
 
 }

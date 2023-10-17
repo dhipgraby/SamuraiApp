@@ -15,7 +15,7 @@ export default function LoopCards() {
     const isLoading = stakingStore((state) => state.isLoading)
 
     useEffect(() => {
-        console.log(poolData);
+        console.log("poolData", poolData);
     }, [poolData])
 
     if (isLoading) return (
@@ -27,7 +27,7 @@ export default function LoopCards() {
             <div className="flex flex-wrap justify-center">
                 {poolData.map((pool: PoolProps) => (
                     <div key={pool.id} className="m-4">
-                        <PoolCard {...pool} />                   
+                        <PoolCard {...pool} />
                     </div>
                 ))}
             </div>

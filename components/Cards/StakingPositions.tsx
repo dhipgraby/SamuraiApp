@@ -19,9 +19,9 @@ const StakingPositions: React.FC<{ stakeData: stakeDataInPoolDto[] | undefined }
         </div>
         {
           showPanel && stakeData && stakeData.length > 0 &&
-          <div className='box ta-l text-sm'>
-            <ul>
-              {stakeData.map((item, index) => (
+          stakeData.map((item, index) => (
+            <div className='box ta-l text-sm'>
+              <ul>
                 <li key={index}>
                   <div>
                     <p>Amount: {item.amount}</p>
@@ -42,10 +42,10 @@ const StakingPositions: React.FC<{ stakeData: stakeDataInPoolDto[] | undefined }
                     <p>Reward: {item.reward}</p>
                   </div>
                 </li>
-              ))}
-            </ul>
-          </div>
 
+              </ul>
+            </div>
+          ))
         }
       </div>
     </>
