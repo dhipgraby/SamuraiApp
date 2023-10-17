@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { userStore } from "@/store/user";
 import { stakingStore } from "@/store/contracts/StakingStore";
 import StakingPlatform from "@/contracts/functions/stakingPlatform";
@@ -8,31 +8,27 @@ export function userStakeInPools() {
 
     const stakingContract = new StakingPlatform();
 
-    const [userStakes, setUserStakes] = useState<any>([]);
-
     //----------------- STORES --------------------
     const userAddress = userStore((state) => state.address);
-    const poolData = stakingStore((state) => state.poolData)
-    const loadingData = stakingStore((state) => state.isLoading)
+    const updateStakingData = stakingStore((state) => state.updatePools);
+    const poolData = stakingStore((state) => state.poolData);
+    const loadingData = stakingStore((state) => state.isLoading);
 
     useEffect(() => {
-        if (loadingData) return
+        if (loadingData || poolData[0] === undefined) return;
 
-        const stakeData: any = [];
+        const currentPoolData = poolData;
 
         (async () => {
-            for (let i = 0; i < poolData.length; i++) {
-                poolData[i].stakeIds.map(async (id: number) => {
-                    const data: any = await stakingContract.getStakeData(id)
-                    stakeData.push(data)
-                })
+            for (let i = 0; i < currentPoolData.length; i++) {
+                currentPoolData[i].stakeIds.map(async (id, index) => {
+                    const data = await stakingContract.getStakeData(id);
+                    currentPoolData[i].stakeIds[index] = data;
+                });
             }
-            setUserStakes(stakeData)
+            updateStakingData(currentPoolData);
         })();
 
-    }, [loadingData])
+    }, [loadingData, userAddress]);
 
-    return {
-        userStakes
-    };
 }

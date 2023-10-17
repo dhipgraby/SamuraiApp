@@ -14,10 +14,10 @@ export const pools: Pool[] = [
 ];
 
 export const poolsInfo: any[] = [
-    { index: 0, duration: "1 day", text: "One-Day Pool", reward: "5%", stakeIds: [] },
-    { index: 1, duration: "1 week", text: "One-Week Pool", reward: "7%", stakeIds: [] },
-    { index: 2, duration: "1 month", text: "One-Month Pool", reward: "10%", stakeIds: [] },
-    { index: 3, duration: "6 months", text: "Six-Month Pool", reward: "30%", stakeIds: [] },
-    { index: 4, duration: "12 months", text: "One-Year Pool", reward: "50%", stakeIds: [] },
+    { id: 0, duration: "1 day", text: "One-Day Pool", reward: "5%", stakeIds: [] },
+    { id: 1, duration: "1 week", text: "One-Week Pool", reward: "7%", stakeIds: [] },
+    { id: 2, duration: "1 month", text: "One-Month Pool", reward: "10%", stakeIds: [] },
+    { id: 3, duration: "6 months", text: "Six-Month Pool", reward: "30%", stakeIds: [] },
+    { id: 4, duration: "12 months", text: "One-Year Pool", reward: "50%", stakeIds: [] },
 ];
 

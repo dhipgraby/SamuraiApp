@@ -1,6 +1,8 @@
 import { ethers } from 'ethers';
 import { StakingContractDto } from '@/dto/contractsDto';
 import { stakingPlatformContract } from '../contractData';
+import { parseAmount } from '@/helpers/converter';
+import { stakeDataInPoolDto } from '@/dto/stakingDto';
 
 declare global {
     interface Window {
@@ -41,23 +43,16 @@ export default class StakingPlatform {
         await this.checkConnect();
         const userStakeData = await this.contract?.getStakeData(stakeId);
 
-        const data = {
-            "id": userStakeData[0],
+        const data: stakeDataInPoolDto = {
+            "id": userStakeData[0].toString().replace("n", ""),
             "user": userStakeData[1],
-            "amount": userStakeData[2],
-            "pool": userStakeData[3],
-            "endTime": userStakeData[4],
-            "reward": userStakeData[5],
+            "amount": parseAmount(userStakeData[2]),
+            "pool": userStakeData[3].toString().replace("n", ""),
+            "endTime": userStakeData[4].toString().replace("n", ""),
+            "reward": parseAmount(userStakeData[5]),
             "claimed": userStakeData[6],
         }
 
         return data
-    }
-
-    async fetchMarketAuctions() {
-        await this.checkConnect();
-        const auctions = await this.contract?.fetchMarketAuctions();
-        console.log(auctions);
-        return auctions;
     }
 }

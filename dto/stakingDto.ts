@@ -11,7 +11,7 @@ export interface StakePoolAddressesProps {
 
 // @notice: this is the interface Props used trigger a staking in a pool
 export interface StakingReadProps {
-  stakeId?: number;  
+  stakeId?: number;
   poolType?: number;
 }
 
@@ -26,9 +26,22 @@ export interface Pool {
   abi: ABI;
 }
 
+export type stakeDataInPoolDto = {
+  amount: string;
+  claimed: boolean;
+  endTime: string;
+  id: string;
+  pool: string;
+  reward: string;
+  user: string;
+};
+
+
 // @notice: this is the type of the data that is returned from the useStakingContract hook
-export type PoolCardProps = {
+export type PoolProps = {
+  id: number,
   duration: string;
   text: string;
   reward: string;
+  stakeIds?: stakeDataInPoolDto[]
 };
