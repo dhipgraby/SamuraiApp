@@ -1,6 +1,5 @@
 'use client'
 import { useEffect } from "react";
-import { userStore } from "@/store/user";
 import { stakingStore } from "@/store/contracts/StakingStore";
 import StakingPlatform from "@/contracts/functions/stakingPlatform";
 

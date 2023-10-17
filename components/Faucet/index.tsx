@@ -2,6 +2,7 @@
 import TokenInfo from "./TokenInfo";
 import Balance from "../User/Balance";
 import ClaimBtn from "./ClaimBtn";
+import Image from "next/image";
 
 export default function Page() {
 
@@ -9,7 +10,7 @@ export default function Page() {
         <>
             <div className="mt-5 ta-c">
 
-                <img width={150} src='/icons/rewardblackbox.png' alt="yengold" />
+                <Image width={150} height={150} src='/icons/rewardblackbox.png' alt="yengold" />
 
                 <h1 className="text-xl">
                     Come claim every 24 hours free Yen Token.
