@@ -1,33 +1,24 @@
 'use client'
-import { usePoolData } from "@/hooks/usePoolData";
+import Image from "next/image";
 import LoopCards from "@/components/Cards/LoopCards";
 
 export default function StakePage() {
 
-  const { poolData } = usePoolData()
-
   return (
 
-    <div className={"text-center"}>
-      <h1 className="text-3xl font-bold underline mb-3">
+    <div className={"ta-c"}>
+      <h1 className="text-3xl items-center justify-center font-bold underline mb-3">
         Samurai Staking Pools
       </h1>
       <small className="text-yellow-400">Grow up with the community</small>
-
-      <table className="table-fixed bg-black text-white p-5 w-full mt-8 rounded-lg ta-c">
-        <tr className="bg-slate-500">
-          <td className="p-3">Pool Id</td>
-          <td>Pool Type</td>
-          <td>User Stake Ids</td>
-        </tr>
-        {poolData.map(pool =>
-          <tr key={pool.index}>
-            <td className="p-3">{pool.index}</td>
-            <td>{pool.text}</td>
-            <td>{pool.userIds.map((id: any) => `[${id}] `)}</td>
-          </tr>
-        )}
-      </table>
+      <Image className="mt-4" src={"/icons/fire.png"} alt="fire" width={100} height={100} />
+      <h1 className="text-xl">
+        Stake your <span className="text-yellow-400">Yen Tokens</span> with the pool of your choice.
+        <br />
+        Increate your earnings daily with indifidual pools with fixed time frame.
+        <br />
+        Access to token Holders community rewards and <span className="text-yellow-400">upcoming Airdrops</span>.
+      </h1>
 
       <LoopCards />
     </div>

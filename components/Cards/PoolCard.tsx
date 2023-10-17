@@ -1,66 +1,66 @@
 import React from 'react'
-import UserAccountCard from './UserAccountCard'
-import { PoolCardProps } from '@/dto/stakingDto'
-import bankIcon from '@/public/icons/bank.svg'
-import starsIcon from '@/public/icons/stars.svg'
-import moonIcon from '@/public/icons/moon.svg'
+import StakingPositions from './StakingPositions'
+import { PoolProps } from '@/dto/stakingDto'
+import Calendar from '@/public/icons/calendar.png'
+import YenGold from '@/public/icons/yengold.png'
+import YenBasic from '@/public/icons/yenbasic.png'
+import Bag from '@/public/icons/rewardredbox.png'
+import Fire from '@/public/icons/fire.png'
 import Image from 'next/image'
+import Input from '../Inputs/Input'
 
-const PoolCard: React.FC<PoolCardProps> = ({ duration, text, reward }) => {
-    //const isUserStakingInThisPool = userStakeData && /* logic to determine if user is staking in this pool based on userStakeData */;
+const PoolCard: React.FC<PoolProps> = ({ id, duration, text, reward, stakeIds }) => {
 
     return (
-        <div className='bg-white rounded-lg shadow-lg'>
-            <a href="#" className="block rounded-lg p-4 shadow-sm shadow-indigo-100">
-
-                <div className="mt-2">
-                    <dl>
-                        <div>
-                            <dt className="sr-only">Samurai Staking Pool</dt>
-                            <dd className="text-sm text-gray-500">Samurai Staking Pool</dd>
+        <>
+            <div>
+                <div className="pt-8 pb-5">
+                    <div className='cloudsBg rounded-lg overflow-hidden cursor-pointer'>
+                        <div className="h-52">
+                            <h1 className="font-medium text-xl bg-black py-3 block">{text}</h1>
+                            <Image className='mt-5' width={120} height={120} src={(id < 3) ? YenBasic : YenGold} alt="yentoken" />
                         </div>
-                        <div>
-                            <dt className="sr-only">PoolType</dt>
-                            <dd className="font-medium text-sm text-gray-500">{text}</dd>
-                        </div>
-                    </dl>
+                    </div>
 
-                    <div className="mt-6 flex items-center gap-8 text-xs">
+                    <div className="mt-6 flex items-center gap-8 text-sm box">
                         <div className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
-                            <Image className="h-4 w-4 text-indigo-700" src={bankIcon} alt="bank" />
+                            <Image width={32} height={32} src={Calendar} alt="bank" />
 
                             <div className="mt-1.5 sm:mt-0">
-                                <p className="text-gray-500">Duration</p>
-                                <p className="font-medium text-violet-500">{duration}</p>
+                                <p>Duration</p>
+                                <p className="font-medium text-yellow-400">{duration}</p>
                             </div>
                         </div>
 
                         <div className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
-                            <Image className="h-4 w-4 text-indigo-700" src={starsIcon} alt="stars" />
+                            <Image width={38} height={38} src={Bag} alt="Rocket" />
 
                             <div className="mt-1.5 sm:mt-0">
-                                <p className="text-gray-500">Reward</p>
+                                <p>Reward</p>
 
-                                <p className="font-medium text-violet-500">{reward}</p>
+                                <p className="font-medium text-yellow-400">{reward}</p>
                             </div>
                         </div>
 
                         <div className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
-                            <Image className="h-4 w-4 text-indigo-700" src={moonIcon} alt="moon" />
+                            <Image className={(stakeIds?.length) ? "" : "greyScale"} width={38} height={38} src={Fire} alt="Status" />
 
                             <div className="mt-1.5 sm:mt-0">
-                                <p className="text-gray-500">Status</p>
-                                <p className="font-medium text-violet-500">
-                                    {/*isUserStakingInThisPool ? "Staking" : "Not Staking"*/}
+                                <p>Status</p>
+                                <p className="font-medium text-yellow-400">
+                                    {stakeIds?.length ? `Staking (${stakeIds?.length})` : "Not Staking"}
                                 </p>
                             </div>
                         </div>
                     </div>
-                    <UserAccountCard />
-
+                    {(stakeIds && stakeIds?.length > 0) && <StakingPositions stakeData={stakeIds} />}
                 </div>
-            </a>
-        </div>
+            </div>
+            <Input
+                text={"Stake Yen"}
+                poolId={id}
+            />
+        </>
     )
 }
 

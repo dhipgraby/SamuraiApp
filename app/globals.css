@@ -107,3 +107,28 @@ button:hover {
   text-align: center;
   text-align: -webkit-center;
 }
+
+.ta-l {
+  text-align: left;
+  text-align: -webkit-left;
+}
+
+.ta-r {
+  text-align: right;
+  text-align: -webkit-right;
+}
+
+.greyScale {
+  filter: grayscale(1);
+}
+
+.cloudsBg {
+  background-image: url('/bg/woman-bg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: 0.5s;
+}
+
+.cloudsBg:hover {
+  box-shadow: 0px 10px 20px #855959;
+}
