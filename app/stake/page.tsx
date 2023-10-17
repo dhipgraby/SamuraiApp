@@ -1,10 +1,17 @@
 'use client'
+import { useEffect } from "react";
 import { usePoolData } from "@/hooks/usePoolData";
 import LoopCards from "@/components/Cards/LoopCards";
+import { userStakeInPools } from "@/hooks/userStakeInPools";
 
 export default function StakePage() {
 
-  const { poolData } = usePoolData()
+  usePoolData()
+  const { userStakes } = userStakeInPools()
+
+  useEffect(() => {
+    console.log("userStakes", userStakes);
+  }, [userStakes])
 
   return (
 
@@ -20,13 +27,13 @@ export default function StakePage() {
           <td>Pool Type</td>
           <td>User Stake Ids</td>
         </tr>
-        {poolData.map(pool =>
+        {/* {poolData.map(pool =>
           <tr key={pool.index}>
             <td className="p-3">{pool.index}</td>
             <td>{pool.text}</td>
-            <td>{pool.userIds.map((id: any) => `[${id}] `)}</td>
+            <td>{pool.stakeIds.map((id: any) => `[${id}] `)}</td>
           </tr>
-        )}
+        )} */}
       </table>
 
       <LoopCards />

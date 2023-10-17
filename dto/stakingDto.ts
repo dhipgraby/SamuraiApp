@@ -10,9 +10,9 @@ export interface StakePoolAddressesProps {
 }
 
 // @notice: this is the interface Props used trigger a staking in a pool
-export interface StakingProps {
-  // stakeId: number;
-  poolType: number;
+export interface StakingReadProps {
+  stakeId?: number;  
+  poolType?: number;
 }
 
 type ABI = any;

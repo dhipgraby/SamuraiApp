@@ -1,17 +1,22 @@
 import { useState, useEffect } from "react";
-import { useStakingContract } from "./useStakingContract";
+import { useStakingReadContract } from "./useStakingReadContract";
 import { userStore } from "@/store/user";
 import { poolsInfo } from "@/data/pools";
+import { stakingStore } from "@/store/contracts/StakingStore";
 
 export function usePoolData() {
+
+  const poolData = stakingStore((state) => state.poolData)
+  const updateStakingData = stakingStore((state) => state.updatePools)
+  const updateLoadingData = stakingStore((state) => state.updateLoading)
   const userAddress = userStore((state) => state.address);
-  const [poolData, setPoolData] = useState(poolsInfo);
+
   const stakingContracts: any = [];
 
   for (let i = 0; i < poolData.length; i++) {
     const poolType = i;
 
-    const { getUserStakeIdsInPool } = useStakingContract({ poolType });
+    const { getUserStakeIdsInPool } = useStakingReadContract({ poolType });
 
     stakingContracts.push({ getUserStakeIdsInPool, poolType });
   }
@@ -28,21 +33,19 @@ export function usePoolData() {
 
           if (pool) {
             const result = getUserStakeIdsInPool;
-            const userIds = result.data?.length ? result.data.map((data) => parseInt(data)) : [];
-            return { ...pool, userIds };
+            const stakeIds = result.data?.length ? result.data.map((data) => parseInt(data)) : [];
+            return { ...pool, stakeIds };
           }
 
           return pool;
         })
       );
 
-      setPoolData(updatedData);
+      updateStakingData(updatedData);
+      updateLoadingData(false)
     };
 
     updatePoolData();
   }, [userAddress]);
 
-  return {
-    poolData
-  };
 }
