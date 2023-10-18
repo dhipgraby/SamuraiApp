@@ -37,6 +37,7 @@ export async function usePrepareAllowanceConfig({ amount }) {
     // args: escrow address, amount
     const increaseAllowance = usePrepareContractWrite({
         ...tokenContract,
+        abi: tokenContract.abi,
         functionName: 'increaseAllowance',
         args: [escrowContract.address, amount],
     });

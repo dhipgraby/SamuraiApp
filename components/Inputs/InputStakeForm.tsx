@@ -12,7 +12,7 @@ import Link from "next/link";
 
 
 const InputStakeForm = ({ poolId }: any) => {
-  const [stakeAmount, setStakeAmount] = useState("");
+  const [stakeAmount, setStakeAmount] = useState("0");
 
   const {
     config,
@@ -36,15 +36,15 @@ const InputStakeForm = ({ poolId }: any) => {
     functionName: 'stake',
     value: parseEther("0.0009"),
     args: [stakeAmount],
-    enabled: Boolean(stakeAmount),
-  });
 
+  });
+      
   const { data, error, isError, write } = useContractWrite(config);
 
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess: () => {
-      setStakeAmount("");
+      setStakeAmount("0");
     },
   })
 
@@ -54,6 +54,7 @@ const InputStakeForm = ({ poolId }: any) => {
         className="bg-black relative"
         onSubmit={(e) => {
           e.preventDefault();
+          console.log("stake");
           write?.();
         }}
       >

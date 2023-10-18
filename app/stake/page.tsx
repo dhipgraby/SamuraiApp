@@ -1,6 +1,6 @@
-'use client'
 import Image from "next/image";
 import LoopCards from "@/components/Cards/LoopCards";
+import Approval from "./components/Approval";
 
 export default function StakePage() {
 
@@ -19,7 +19,8 @@ export default function StakePage() {
         <br />
         Access to token Holders community rewards and <span className="text-yellow-400">upcoming Airdrops</span>.
       </h1>
-
+    <br />
+      <Approval />
       <LoopCards />
     </div>
   );
