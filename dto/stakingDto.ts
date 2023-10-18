@@ -15,15 +15,19 @@ export interface StakingReadProps {
   poolType?: number;
 }
 
+// @notice: this is the interface Props used to trigger stake or claim in staking in pool
+export interface StakingWriteProps {
+  amount?: number;
+  stakeId?: number;
+  poolType?: number;
+}
+
 type ABI = any;
 
-// @notice: this is the interface for pools returned from the PoolCard component
+// @notice: this is the interface for the pools ABI's.
 export interface Pool {
   index: number;
-  duration: string;
-  text: string;
-  reward: string;
-  abi: ABI;
+  address: Address;
 }
 
 export type stakeDataInPoolDto = {

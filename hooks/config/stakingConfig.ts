@@ -1,11 +1,10 @@
-'use client'
 import { usePrepareContractWrite } from "wagmi";
 import { parseEther } from "ethers";
 import { web3Address } from "@/dto/tokenDto";
 import { pools } from "@/data/pools";
 import { escrowContract, stakingPlatformContract, tokenContract } from "@/contracts/contractData";
 
-export function useStakingConfig({ amountTo = '0', stakeId, poolType }: { amountTo: string, stakeId: number, poolType: number }) {
+export function usePrepareStakingConfig({ amount, poolType }: any) {
     // Function used to stake in a pool
     // Payable function
     const stakeTokens = usePrepareContractWrite({
@@ -13,8 +12,12 @@ export function useStakingConfig({ amountTo = '0', stakeId, poolType }: { amount
         abi: pools[poolType].abi,
         functionName: 'stake',
         value: parseEther("0.0009"),
-        args: [amountTo]
+        args: [amount]
     });
+    return { stakeTokens }
+};
+
+export async function usePrepareClaimConfig({ stakeId }) {
 
     // Function used to claim from the Main Staking Platform Contract
     // Payable function
@@ -25,19 +28,17 @@ export function useStakingConfig({ amountTo = '0', stakeId, poolType }: { amount
         value: parseEther("0.0009"),
         args: [stakeId]
     });
+    return { claimTokens }
+};
+''
+export async function usePrepareAllowanceConfig({ amount }) {
 
     // Function used to increase the allowance from User account to the Escrow Contract
     // args: escrow address, amount
-    const tokenConfig = usePrepareContractWrite({
+    const increaseAllowance = usePrepareContractWrite({
         ...tokenContract,
         functionName: 'increaseAllowance',
-        enabled: ((amountTo !== '0' && amountTo !== '')),
-        args: [escrowContract.address, amountTo],
+        args: [escrowContract.address, amount],
     });
-
-    return {
-        tokenConfig,
-        stakeTokens,
-        claimTokens
-    }
-}
+    return { increaseAllowance }
+};

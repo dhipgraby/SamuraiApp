@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from "react";
-import { userStakeInPools } from "@/hooks/userStakeInPools";
+import { UserStakeInPools } from "@/hooks/userStakeInPools";
 import PoolCard from "./PoolCard"
 import { stakingStore } from "@/store/contracts/StakingStore";
 import { PoolProps } from "@/dto/stakingDto";
@@ -9,7 +9,7 @@ import { usePoolData } from "@/hooks/usePoolData";
 export default function LoopCards() {
 
     usePoolData()
-    userStakeInPools()
+    UserStakeInPools()
 
     const poolData = stakingStore((state) => state.poolData)
     const isLoading = stakingStore((state) => state.isLoading)

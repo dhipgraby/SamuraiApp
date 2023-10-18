@@ -7,7 +7,7 @@ import YenBasic from '@/public/icons/yenbasic.png'
 import Bag from '@/public/icons/rewardredbox.png'
 import Fire from '@/public/icons/fire.png'
 import Image from 'next/image'
-import Input from '../Inputs/Input'
+import InputStakeForm from '../Inputs/InputStakeForm'
 
 const PoolCard: React.FC<PoolProps> = ({ id, duration, text, reward, stakeIds }) => {
 
@@ -56,9 +56,7 @@ const PoolCard: React.FC<PoolProps> = ({ id, duration, text, reward, stakeIds })
                     {(stakeIds && stakeIds?.length > 0) && <StakingPositions stakeData={stakeIds} />}
                 </div>
             </div>
-            <Input
-                text={"Stake Yen"}
-                poolId={id}
+            <InputStakeForm poolId={id}
             />
         </>
     )
