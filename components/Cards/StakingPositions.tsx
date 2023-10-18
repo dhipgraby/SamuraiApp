@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { stakeDataInPoolDto } from '@/dto/stakingDto';
+import { convertTimestampToDate } from '@/helpers/stakingUtils';
 import React from 'react';
 import TapArrows from '../TapArrows';
 
@@ -30,10 +31,10 @@ const StakingPositions: React.FC<{ stakeData: stakeDataInPoolDto[] | undefined }
                     <p>Claimed: {item.claimed ? 'Yes' : 'No'}</p>
                   </div>
                   <div>
-                    <p>End Time: {item.endTime}</p>
+                    <p>End Time: {convertTimestampToDate(Number(item.endTime))}</p>
                   </div>
                   <div>
-                    <p>ID: {item.id}</p>
+                    <p>StakeId: {item.id}</p>
                   </div>
                   <div>
                     <p>Pool: {item.pool}</p>
