@@ -6,61 +6,50 @@ import { useAccount, useContractWrite, usePrepareContractWrite, useContractReads
 import { nftImg } from "@/helpers/nftHelper";
 import { ethers } from "ethers";
 import Image from "next/image";
+import { toast } from "react-toastify";
+import { parseAmount } from "@/helpers/converter";
+import { useNftContract } from "@/hooks/useNftContract";
 
 interface minterProps {
-  contractAddress: `0x${string}` | undefined;
-  abi: any[],
   tokenId: number
 }
 
 export default function NftMinter({
-  contractAddress,
-  abi,
   tokenId
 }: minterProps) {
+
+  const { nftPrices, isLoading, isSuccess, isError, minNft } = useNftContract({ tokenId })
 
   const [nftPrice, setNftPrice] = useState<string | null>(null)
   const [nftTokenPrice, setNftTokenPrice] = useState<string | null>(null)
 
   const { isDisconnected } = useAccount();
 
-  const { config } = usePrepareContractWrite({
-    address: contractAddress,
-    abi: abi,
-    functionName: 'userMint',
-    args: [tokenId],
-    value: ethers.parseEther("0.19"),
-  })
-
-  const nftContract = {
-    address: contractAddress,
-    abi: abi,
-  }
-
-  const { data, isLoading, isSuccess, write } = useContractWrite(config)
-  const { data: readData, isError, isLoading: isReadLoading } = useContractReads({
-    contracts: [
-      {
-        ...nftContract,
-        functionName: 'initialPrice',
-      },
-      {
-        ...nftContract,
-        functionName: 'initialTokenPrice',
-      },
-    ],
-  });
-
   async function mint() {
-    write?.()
+    try {
+      console.log('minting');
+      minNft?.()
+    } catch (error) {
+      console.log('mint fail: ', error);
+      toast.warn("Error minting. Try again or contact support")
+    }
+
   }
 
   useEffect(() => {
-    const price = readData && readData[0].result != undefined ? ethers.formatEther(readData[0].result.toString()) : null;
-    const tokenPrice = readData && readData[1].result != undefined ? ethers.formatEther(readData[1].result.toString()) : null;
+    const price = nftPrices && nftPrices[0].result != undefined ? parseAmount(nftPrices[0].result) : null;    
+    const tokenPrice = nftPrices && nftPrices[1].result != undefined ? ethers.formatEther(nftPrices[1].result.toString()) : null;
     setNftTokenPrice(tokenPrice)
     setNftPrice(price)
-  }, [readData])
+  }, [nftPrices])
+
+  useEffect(() => {
+    if (isSuccess) toast.success('You mint successfully bloodline #:' + tokenId)
+  }, [isSuccess])
+
+  useEffect(() => {
+    if (isError) toast.warn('Mint error. Try again or contact support')
+  }, [isError])
 
   return (
     <div className={styles.box}>
