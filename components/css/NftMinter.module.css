@@ -20,7 +20,7 @@
 .page_container {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 25px;
 }
 
 .page_header {
@@ -29,11 +29,12 @@
 }
 
 .nft_media_container {
+  cursor: pointer;
   position: relative;
   top: 0;
   left: 0;
   border-radius: 20px;
-  width: 90%;
+  width: 100%;
   margin: auto;
 }
 
