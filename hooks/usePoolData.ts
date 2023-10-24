@@ -17,7 +17,7 @@ export function usePoolData() {
   for (let i = 0; i < poolData.length; i++) {
     const poolType = i;
 
-    const { getUserStakeIdsInPool } = useStakingReadContract({ poolType });
+    const { getUserStakeIdsInPool } = useStakingReadContract({ poolType: BigInt(poolType), stakeId: BigInt('0') });
 
     stakingContracts.push({ getUserStakeIdsInPool, poolType });
   }
