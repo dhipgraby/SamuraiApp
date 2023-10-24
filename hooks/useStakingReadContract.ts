@@ -9,7 +9,7 @@ export function useStakingReadContract({
   stakeId,
 }: StakingReadProps) {
 
-  const address = userStore((state: any) => state.address)  
+  const address = userStore((state: any) => state.address)
   // ---------------------   READ FUNCTIONS ------------------------
 
   const getUserStakeIdsInPool = useContractRead({
@@ -18,7 +18,7 @@ export function useStakingReadContract({
     functionName: "getUserStakeIdsInPool",
     args: [
       address as web3Address,
-      poolType as number
+      BigInt(poolType)
     ],
   });
 
@@ -27,7 +27,7 @@ export function useStakingReadContract({
     ...stakingPlatformContract,
     functionName: "getStakeData",
     args: [
-      stakeId
+      BigInt(stakeId)
     ],
     enabled: (!stakeId)
   });

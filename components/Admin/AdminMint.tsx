@@ -19,8 +19,8 @@ export default function AdminMint() {
         address: tokenContract.address,
         abi: tokenContract.abi,
         functionName: 'mint',
-        enabled: ((addressTo != '')),
-        args: (addressTo && addressTo !== '') ? [addressTo, (amountTo) ? ethers.parseEther(amountTo) : '0'] : [addressTo as web3Address, '0'],
+        enabled: Boolean(addressTo !== undefined && addressTo !== ''),
+        args: [addressTo as web3Address, ethers.parseEther(amountTo)],
     })
 
     const { data, isLoading, isError, isSuccess, write } = useContractWrite(config)

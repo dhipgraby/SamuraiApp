@@ -1,4 +1,4 @@
-[
+export const StakingAbi = [
   {
     "inputs": [
       {
@@ -395,4 +395,4 @@
     "stateMutability": "view",
     "type": "function"
   }
-]
+] as const

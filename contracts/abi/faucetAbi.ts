@@ -1,4 +1,4 @@
-[
+export const FaucetAbi = [
   {
     "inputs": [
       {
@@ -295,4 +295,4 @@
     "stateMutability": "payable",
     "type": "receive"
   }
-]
+] as const 

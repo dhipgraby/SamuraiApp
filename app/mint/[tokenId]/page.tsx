@@ -1,6 +1,5 @@
 'use client'
 import NftMinter from "@/components/NftMinter";
-import NFTContractAbi from "@/contracts/abi/samuraiAbi.json"
 
 export default function Page({ params }: { params: { tokenId: string } }) {
 
@@ -14,10 +13,7 @@ export default function Page({ params }: { params: { tokenId: string } }) {
                 </h1>
                 <small>Mint Unique a Bloodline character</small>
             </div>
-            <NftMinter
-                tokenId={tokenId}
-                contractAddress={"0x5FbDB2315678afecb367f032d93F642f64180aa3"}
-                abi={NFTContractAbi} />
+            <NftMinter tokenId={tokenId} />
         </div>
     )
 }

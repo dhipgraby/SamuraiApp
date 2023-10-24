@@ -15,7 +15,7 @@ export function useFaucetConfig({ amountTo = '0' }: FaucetProps) {
         abi: faucetContract.abi,
         functionName: 'replenishFaucet',
         enabled: (amountTo !== '0' && amountTo !== ''),
-        args: (amountTo !== '0' && amountTo !== '') ? [ethers.parseEther(amountTo)] : [amountTo],
+        args: [ethers.parseEther(amountTo)],
     });
 
     const requestTokens = usePrepareContractWrite({
@@ -30,7 +30,7 @@ export function useFaucetConfig({ amountTo = '0' }: FaucetProps) {
         abi: tokenContract.abi,
         functionName: 'increaseAllowance',
         enabled: (amountTo !== '0' && amountTo !== ''),
-        args: [faucetContract.address, (amountTo !== '0' && amountTo !== '') ? ethers.parseEther(amountTo) : amountTo],
+        args: [faucetContract.address, ethers.parseEther(amountTo)],
     });
 
     return {

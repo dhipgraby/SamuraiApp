@@ -11,8 +11,8 @@ export interface StakePoolAddressesProps {
 
 // @notice: this is the interface Props used trigger a staking in a pool
 export interface StakingReadProps {
-  stakeId?: number;
-  poolType?: number;
+  stakeId: bigint;
+  poolType: bigint;
 }
 
 type ABI = any;

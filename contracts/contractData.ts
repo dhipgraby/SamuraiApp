@@ -1,9 +1,9 @@
 import { web3Address } from "@/dto/tokenDto"
-import SamuraiAbi from "./abi/samuraiAbi.json"
-import YenAbi from "./abi/yenAbi.json"
-import FaucetAbi from "./abi/faucetAbi.json"
-import StakingAbi from "./abi/tokenStakingPlatformAbi.json"
-import EscrowAbi from "./abi/escrowAbi.json"
+import { SamuraiAbi } from "./abi/samuraiAbi"
+import { YenAbi } from "./abi/yenAbi"
+import { FaucetAbi } from "./abi/faucetAbi"
+import { StakingAbi } from "./abi/tokenStakingPlatformAbi"
+import { EscrowAbi } from "./abi/escrowAbi"
 
 export const SAMURAI_ADDRESS = "0x5fbdb2315678afecb367f032d93f642f64180aa3"
 export const YENTOKEN_ADDRESS = "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9"
@@ -15,25 +15,25 @@ export const ESCROW_ADDRESS = "0x0165878a594ca255338adfa4d48449f69242eb8f"
 
 export const samuraiContract = {
     address: SAMURAI_ADDRESS as web3Address,
-    abi: SamuraiAbi as any
+    abi: SamuraiAbi
 }
 
 export const faucetContract = {
     address: FAUCET_ADDRESS as web3Address,
-    abi: FaucetAbi as any
+    abi: FaucetAbi
 }
 
 export const tokenContract = {
     address: YENTOKEN_ADDRESS as web3Address,
-    abi: YenAbi as any
+    abi: YenAbi
 }
 
 export const stakingPlatformContract = {
     address: STAKING_PLATFORM as web3Address,
-    abi: StakingAbi as any,
+    abi: StakingAbi,
 };
 
 export const escrowContract = {
     address: ESCROW_ADDRESS as web3Address,
-    abi: EscrowAbi as any,
+    abi: EscrowAbi,
 };

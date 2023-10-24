@@ -23,7 +23,7 @@ export function useStakingConfig({ amountTo = '0', stakeId, poolType }: { amount
         abi: stakingPlatformContract.abi,
         functionName: 'claimStakeAndReward',
         value: parseEther("0.0009"),
-        args: [stakeId]
+        args: [BigInt(stakeId)]
     });
 
     // Function used to increase the allowance from User account to the Escrow Contract
@@ -32,7 +32,7 @@ export function useStakingConfig({ amountTo = '0', stakeId, poolType }: { amount
         ...tokenContract,
         functionName: 'increaseAllowance',
         enabled: ((amountTo !== '0' && amountTo !== '')),
-        args: [escrowContract.address, amountTo],
+        args: [escrowContract.address, BigInt(amountTo)],
     });
 
     return {
