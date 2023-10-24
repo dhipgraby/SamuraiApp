@@ -1,4 +1,4 @@
-[
+export const EscrowAbi = [
   {
     "inputs": [
       {
@@ -365,4 +365,4 @@
     "stateMutability": "payable",
     "type": "receive"
   }
-]
+] as const

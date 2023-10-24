@@ -1,4 +1,4 @@
-[
+export const SamuraiAbi = [
   {
     "inputs": [
       {
@@ -950,4 +950,4 @@
     "stateMutability": "payable",
     "type": "receive"
   }
-]
+] as const

@@ -1,42 +1,39 @@
-import { usePrepareContractWrite, useContractWrite, useContractReads } from "wagmi";
+
+import { usePrepareContractWrite } from "wagmi";
 import { samuraiContract, tokenContract } from "@/contracts/contractData";
 import { ethers } from "ethers";
 import { handlePrepareMintError } from "@/helpers/txHelper";
-import { userStore } from "@/store/user";
-import { web3Address } from "@/dto/tokenDto";
+import { useNFTConfigProps } from "@/dto/tokenDto";
 
-export function useMintConfig({ tokenId, setErrorMsg, amount = '0' }: { tokenId: number, setErrorMsg: (msg: string) => void, amount: string }) {
-
-    const userAddress = userStore((state) => state.address)
+export function useMintConfig({ tokenId, amount, nftTokenPrice, totalAllowance, isMinted }: useNFTConfigProps) {
 
     // ---------------------   WRITE FUNCTIONS ------------------------
 
     const { config: mintConfig } = usePrepareContractWrite({
         ...samuraiContract,
         functionName: 'userMint',
-        args: [tokenId],
+        args: [BigInt(tokenId)],
         value: ethers.parseEther("0.19"),
-        onError(error) {
-            handlePrepareMintError(error, setErrorMsg)
-        },
+        enabled: !isMinted,
     })
 
     const { config: tokenMintConfig } = usePrepareContractWrite({
         ...samuraiContract,
         functionName: 'userMintWithToken',
-        args: [tokenId],
-        enabled: true,
-        onError(error) {
-            handlePrepareMintError(error, setErrorMsg)
-        },
-        account:userAddress
+        args: [BigInt(tokenId)],
+        // onSettled(data, error) {
+        //     if (error) {
+        //         console.log("onSettled", { error, data, totalAllowance, nftTokenPrice })                
+        //     }
+        // },
+        enabled: Boolean(totalAllowance && Number(nftTokenPrice) <= Number(totalAllowance) && !isMinted)
     })
 
     const { config: allowanceConfig } = usePrepareContractWrite({
         ...tokenContract,
         functionName: 'increaseAllowance',
-        enabled: (amount !== '0' && amount !== ''),
-        args: [samuraiContract.address, (amount !== '0' && amount !== '') ? ethers.parseEther(amount) : amount],
+        enabled: Boolean(amount.toString() !== '0' && amount.toString() !== '' && amount.toString() >= nftTokenPrice),
+        args: [samuraiContract.address, amount],
     })
 
     return {

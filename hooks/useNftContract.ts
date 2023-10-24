@@ -1,48 +1,39 @@
-import { usePrepareContractWrite, useContractWrite, useContractReads } from "wagmi";
-import { samuraiContract, tokenContract } from "@/contracts/contractData";
-import { ethers } from "ethers";
-import { handlePrepareMintError } from "@/helpers/txHelper";
-import { userStore } from "@/store/user";
-import { web3Address } from "@/dto/tokenDto";
+import { useState } from "react";
+import { useContractWrite, useWaitForTransaction } from "wagmi";
+import { useNFTProps } from "@/dto/tokenDto";
 import { useMintConfig } from "./config/mintConfig";
+import { ethers } from "ethers";
+import useDebounce from "./useDebounce";
 
-export function useNftContract({ tokenId, setErrorMsg, amount }: { tokenId: number, setErrorMsg: (msg: string) => void, amount: string }) {
+export function useNftContract({ tokenId, nftTokenPrice, totalAllowance,isMinted }: useNFTProps) {
 
-    const userAddress = userStore((state) => state.address)
+    const [amount, setAmount] = useState('0')
+    const debouncedAmount = useDebounce(ethers.parseEther(amount), 1000);
 
     // ---------------------   WRITE FUNCTIONS ------------------------
-    const { mintConfig, tokenMintConfig, allowanceConfig } = useMintConfig({ tokenId, setErrorMsg, amount })
+    const { mintConfig, tokenMintConfig, allowanceConfig } = useMintConfig({ tokenId, amount: debouncedAmount, nftTokenPrice, totalAllowance,isMinted })
 
     const { isLoading, isError, isSuccess, write: minNft } = useContractWrite(mintConfig)
-    const { isLoading: loadingTokenMint, isError: errorTokenMint, isSuccess: successTokenMint, write: minNftWithToken } = useContractWrite(tokenMintConfig)
-    const { isLoading: loadingAllowance, isError: errorAllowance, isSuccess: successAllowance, write: approve } = useContractWrite(allowanceConfig)
+    const { data: submitMintWithToken, isLoading: loadingTokenMint, isError: errorTokenMint, isSuccess: successTokenMint, write: minNftWithToken } = useContractWrite(tokenMintConfig)
+    const { data: submitTxDataAllowance, error: submitTxAllowanceError, isLoading: loadingAllowance, isError: errorAllowance, isSuccess: successAllowance, write: approve } = useContractWrite(allowanceConfig)
 
-    // ---------------------   READ FUNCTIONS ------------------------
-    const { data: nftData } = useContractReads({
-        contracts: [
-            {
-                ...samuraiContract,
-                functionName: 'initialPrice',
-            },
-            {
-                ...samuraiContract,
-                functionName: 'initialTokenPrice',
-            },
-            {
-                ...samuraiContract,
-                functionName: 'ownerOf',
-                args: [tokenId],
-            },
-            {
-                ...tokenContract,
-                functionName: 'allowance',
-                args: [userAddress as web3Address, samuraiContract.address as web3Address]
-            },
-        ],
-    });
+    const { isLoading: submitTxAllowanceLoading, isSuccess: submitTxAllowanceSuccess, error: submitConfirmTxAllowanceError }
+        = useWaitForTransaction({
+            chainId: 31337,
+            confirmations: 1,
+            cacheTime: Infinity,
+            hash: submitTxDataAllowance?.hash
+        });
+
+    const { isLoading: loadingTxMintWithToken, isSuccess: isSuccessTxMintWithToken, error: isErrorTxMintWithToken }
+        = useWaitForTransaction({
+            chainId: 31337,
+            confirmations: 1,
+            cacheTime: Infinity,
+            hash: submitMintWithToken?.hash
+        });
 
     return {
-        nftData,
         isLoading,
         loadingTokenMint,
         loadingAllowance,
@@ -54,6 +45,14 @@ export function useNftContract({ tokenId, setErrorMsg, amount }: { tokenId: numb
         errorAllowance,
         approve,
         minNft,
-        minNftWithToken
+        minNftWithToken,
+        setAmount,
+        // wait txs
+        submitTxDataAllowance,
+        submitTxAllowanceLoading,
+        submitTxAllowanceSuccess,
+        loadingTxMintWithToken,
+        isSuccessTxMintWithToken,
+        isErrorTxMintWithToken
     };
 }

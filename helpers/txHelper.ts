@@ -18,8 +18,7 @@ export function handlePrepareFaucetError(error: any, setter: (isError: boolean) 
 
 export function handlePrepareMintError(error: any, setter: (msg: string) => void) {
 
-    console.log('error asd:',error);
-    
+    console.log('error asd:',error);    
 
     const replacer = (key: string, value: any) => {
         if (typeof value === 'bigint') {
