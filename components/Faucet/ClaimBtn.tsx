@@ -22,7 +22,7 @@ export default function ClaimBtn() {
     const {
         faucetClaim: { isLoading, isError, isSuccess, write: claimTokens },
         userData: { data: claimData, refetch: getClaimData }
-    } = useFaucetContract({});
+    } = useFaucetContract({ amountTo: BigInt('0') });
 
     async function claim() {
         try {
@@ -39,7 +39,7 @@ export default function ClaimBtn() {
     }
 
     async function checkCooldown() {
-        const refetchCooldown: any = await getClaimData()        
+        const refetchCooldown: any = await getClaimData()
         const userCooldown = refetchCooldown && refetchCooldown.data[0].result != undefined ? parseInt(refetchCooldown.data[0].result.toString().replace('n', '')) : 0;
         const now = Math.floor(Date.now() / 1000);
         const calculation = (userCooldown + 86400) - now;

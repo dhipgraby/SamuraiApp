@@ -8,6 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import { localhost } from "@/contracts/connection"
 import Navbar from "@/components/navigation";
 import { GlobalProvider } from '@/hooks/GlobalContext';
+import { goerli } from 'wagmi/chains';
 
 const config = createConfig(
   getDefaultConfig({
@@ -17,7 +18,7 @@ const config = createConfig(
     appDescription: "Last Bloodlines DApp",
     appUrl: "https://lastbloodlines.com/",
     appIcon: "../public/masklogo.jpg",
-    chains: [localhost]
+    chains: [goerli]
   })
 );
 

@@ -5,17 +5,17 @@ import { ethers } from "ethers";
 import { faucetContract, tokenContract } from "@/contracts/contractData";
 
 interface FaucetProps {
-    amountTo?: string;
+    amountTo: bigint;
 }
 
-export function useFaucetConfig({ amountTo = '0' }: FaucetProps) {
+export function useFaucetConfig({ amountTo }: FaucetProps) {
 
     const depositTokens = usePrepareContractWrite({
         address: faucetContract.address as web3Address,
         abi: faucetContract.abi,
         functionName: 'replenishFaucet',
-        enabled: (amountTo !== '0' && amountTo !== ''),
-        args: [ethers.parseEther(amountTo)],
+        enabled: false,
+        args: [BigInt('0')],
     });
 
     const requestTokens = usePrepareContractWrite({
@@ -29,8 +29,8 @@ export function useFaucetConfig({ amountTo = '0' }: FaucetProps) {
         address: tokenContract.address as web3Address,
         abi: tokenContract.abi,
         functionName: 'increaseAllowance',
-        enabled: (amountTo !== '0' && amountTo !== ''),
-        args: [faucetContract.address, ethers.parseEther(amountTo)],
+        enabled: Boolean(amountTo !== BigInt('0') && amountTo !== BigInt('')),
+        args: [faucetContract.address, amountTo],
     });
 
     return {
