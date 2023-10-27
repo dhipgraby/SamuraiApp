@@ -5,10 +5,10 @@ import { userStore } from "@/store/user";
 import { faucetContract, tokenContract } from "@/contracts/contractData";
 
 interface FaucetProps {
-    amountTo?: string;
+    amountTo: bigint;
 }
 
-export function useFaucetContract({ amountTo = '0' }: FaucetProps) {
+export function useFaucetContract({ amountTo = BigInt('0') }: FaucetProps) {
 
     const address = userStore((state) => state.address)
 

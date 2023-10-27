@@ -21,7 +21,7 @@ export default function AdminDeposit() {
         depositToFaucet: { isLoading, isError, isSuccess, write },
         tokenWrite: { isLoading: loadingAllowance, isError: allowanceError, isSuccess: allowanceSuccess, write: setAllowance },
         readData: { data: faucetData, refetch: getFaucetData, isLoading: isReadLoading }
-    } = useFaucetContract({ amountTo });
+    } = useFaucetContract({ amountTo: BigInt(amountTo) });
 
     async function deposit() {
 
