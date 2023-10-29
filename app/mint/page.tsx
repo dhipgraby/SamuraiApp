@@ -13,7 +13,7 @@ export default function Mint() {
 
     const Nfts: NftsProps[] = TestNfts
     return (
-        <div>            
+        <div>
             <div className={"text-center"}>
                 <h1 className="text-3xl font-bold underline mb-3">
                     Bloodlines Releases
@@ -27,7 +27,7 @@ export default function Mint() {
                             <div key={el.id} className="my-3 px-1 w-full md:w-1/2 lg:my-4 lg:px-4 lg:w-1/3">
                                 <article className="overflow-hidden">
                                     <a href={`/mint/${el.id}`}>
-                                        <Image width={100} height={100} sizes={"max-width:100%"} alt="bloodline" className="block h-auto w-full rounded-lg shadow-lg" src={`/nfts/${el.img}`} />
+                                        <Image priority={true} width={100} height={100} sizes={"max-width:100%"} alt="bloodline" className="block h-auto w-full rounded-lg shadow-lg" src={`/nfts/${el.img}`} />
                                     </a>
 
                                     <div className="box">

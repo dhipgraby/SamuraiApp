@@ -18,15 +18,19 @@ export const GlobalProvider = ({ children }: {
   const [isLoading, setIsLoading] = useState(true);
 
   const { address } = useAccount()
-  const { userData: { data } } = useUserData()
+  const { userBalance } = useUserData()
   const updateUserAddress = userStore((state) => state.updateAddress)
   const updateUserBalance = userStore((state) => state.updateBalance)
 
   useEffect(() => {
 
-    if (address) updateUserAddress(address)
-    const userBalance = data && data[0].result != undefined ? parseAmount(data[0].result.toString()) : '0';
-    if (userBalance) updateUserBalance(userBalance)
+    if (address) {
+      updateUserAddress(address)
+      const balance = userBalance ? parseAmount(userBalance.toString()) : '0';
+      if (balance) updateUserBalance(balance)
+    } else {
+      updateUserAddress('')
+    }
 
     const fetchData = async () => {
       await sleep(1000);
@@ -34,7 +38,7 @@ export const GlobalProvider = ({ children }: {
     };
     fetchData();
 
-  }, [data, address])
+  }, [userBalance, address])
 
   if (isLoading) return <div>Loading...</div>;
 

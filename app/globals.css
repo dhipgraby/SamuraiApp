@@ -108,6 +108,11 @@ button:hover {
   text-align: -webkit-center;
 }
 
+.all-c * {
+  text-align: center;
+  text-align: -webkit-center;
+}
+
 .ta-l {
   text-align: left;
   text-align: -webkit-left;
@@ -116,6 +121,10 @@ button:hover {
 .ta-r {
   text-align: right;
   text-align: -webkit-right;
+}
+
+.self-center * {
+  align-self: center !important;
 }
 
 .greyScale {
@@ -131,4 +140,26 @@ button:hover {
 
 .cloudsBg:hover {
   box-shadow: 0px 10px 20px #855959;
+}
+
+.desktopMenu {
+  display: flex;
+}
+
+.mobileMenu {
+  display: none;
+}
+
+@media screen and (max-width: 1200px) {
+  .desktopMenu {
+    display: none !important;
+  }
+
+  .mobileMenu {
+    display: flex !important;
+  }
+
+  .hideMenu {
+    display: none !important;
+  }
 }

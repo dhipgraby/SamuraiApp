@@ -1,32 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
-const CountdownTimer = ({ epochTimestamp }: { epochTimestamp: number }) => {
+type CountDownProps = {
+    secondsLeft: number,
+}
 
-    const now = Math.floor(Date.now() / 1000);
-    const calculation = (epochTimestamp + 86400) - now;
+const CountdownTimer = ({ secondsLeft }: CountDownProps) => {
 
-    const [secondsLeft, setSecondsLeft] = useState(calculation);
 
-    useEffect(() => {
-
-        if (secondsLeft > 0) {
-            const timer = setTimeout(() => {
-                const now = Math.floor(Date.now() / 1000);
-                const calculation = (epochTimestamp + 86400) - now;
-                setSecondsLeft(calculation);
-            }, 1000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [secondsLeft]);
 
     const hours = Math.floor(secondsLeft / 3600);
     const minutes = Math.floor((secondsLeft % 3600) / 60);
     const seconds = secondsLeft % 60;
-
-    if (secondsLeft <= 0) {
-        return null;
-    }
 
     return (
         <div>
