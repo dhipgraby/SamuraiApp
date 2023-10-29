@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faClose } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import Image from "next/image";
+import Balance from "../User/Balance";
 
 export default function Navbar() {
 
@@ -13,22 +14,8 @@ export default function Navbar() {
     return (
         <>
             <nav className='dark-theme relative flex items-center min-w-screen'>
-                <ul className='bg-black flex p-3 w-full items-center justify-between sm:hidden'>
-                    <li onClick={() => setShowMenu(prev => !prev)} className='w-full pt-1 ml-3 cursor-pointer'>
-                        <span className="menu material-symbols-outlined">
-                            <FontAwesomeIcon icon={(showMenu) ? faClose : faBars} />
-                        </span>
-                    </li>
-                    <li className='w-1/6 pt-1 text-right'>
-                        <Link href={"/"}>
-                            <span className="logo material-symbols-outlined">
-                                <Image alt={'logo'} width={32} height={32} src="/graphic_icon.jpg" className={"icon"} />
-                            </span>
-                        </Link>
-                    </li>
-                </ul>
 
-                <ul className='hidden p-4 w-full h-20 gap-4 md:px-8 lg:px-12 xl:px-16 2xl:px-20 items-center justify-between sm:flex'>
+                <ul className='desktopMenu p-4 w-full h-20 gap-4 lg items-center justify-between sm:flex'>
                     <li className='flex gap-8 justify-between items-center'>
                         <Link href="/">
                             <span className='items-center flex gap-2 flex'>
@@ -40,25 +27,43 @@ export default function Navbar() {
                                 </span>
                             </span>
                         </Link>
-                        <Link href="/admin" className="px-4 py-2">Admin</Link>
                         <Link href="/faucet" className="px-4 py-2">Claim</Link>
                         <Link href="/mint" className="px-4 py-2">Mint</Link>
                         <Link href="/stake" className="px-4 py-2">Stake</Link>
                         <Link href="/about" className="px-4 py-2">About</Link>
                         <Link href="/store" className="px-4 py-2">Store</Link>
+
                     </li>
-                    <li className='flex gap-1 w-fit justify-end'>
+
+                    <li className='flex gap-1 w-fit justify-end self-center'>
+                        <Balance />
                         <ConnectKitButton />
                     </li>
                 </ul>
+
+                <ul className='mobileMenu bg-black flex p-3 w-full items-center justify-between'>
+                    <li onClick={() => setShowMenu(prev => !prev)} className='w-1/4 pt-1 ml-3 cursor-pointer'>
+                        <span className="menu material-symbols-outlined">
+                            <FontAwesomeIcon icon={(showMenu) ? faClose : faBars} />
+                        </span>
+                    </li>
+                    <li className="mx-auto w-fit">
+                        <Balance />
+                    </li>
+                    <li className='w-1/4 pt-1 ta-r'>
+                        <Link href={"/"}>
+                            <span className="logo material-symbols-outlined">
+                                <Image alt={'logo'} width={32} height={32} src="/graphic_icon.jpg" className={"icon"} />
+                            </span>
+                        </Link>
+                    </li>
+                </ul>
+
             </nav>
 
             {/* Conditionally render dropdown based on showMenu state */}
-            <ul className={`bg-black w-full origin-top hover:shadow-lg transition-all duration-300 absolute z-10 top-12 flex-col gap-3 nav-menu ${showMenu ? '' : 'hidden'} p-4`}>
+            <ul className={`${showMenu ? '' : 'hideMenu'} mobileMenu bg-black w-full origin-top hover:shadow-lg transition-all duration-300 absolute z-10 top-15 flex-col gap-3 nav-menu p-4`}>
 
-                <li className='w-full'>
-                    <Link onClick={() => setShowMenu(false)} href="/admin" className="w-full px-2">Admin</Link>
-                </li>
                 <li className="mt-4">
                     <Link onClick={() => setShowMenu(false)} href="/faucet" className="px-2">Claim</Link>
                 </li>
@@ -70,6 +75,9 @@ export default function Navbar() {
                 </li>
                 <li className="mt-4">
                     <Link onClick={() => setShowMenu(false)} href="/about" className="px-2">About</Link>
+                </li>
+                <li className="mt-4">
+                    <Balance />
                 </li>
                 <li
                     onClick={() => setShowMenu(false)}

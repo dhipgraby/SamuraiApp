@@ -1,60 +1,42 @@
-import { useContractWrite, useContractReads } from "wagmi";
+import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
-import { useFaucetConfig } from "./config/faucetConfig";
-import { userStore } from "@/store/user";
-import { faucetContract, tokenContract } from "@/contracts/contractData";
+import { faucetContract } from "@/contracts/contractData";
+import { ethers } from "ethers";
 
-interface FaucetProps {
-    amountTo: bigint;
-}
+export function useFaucetContract({ readyToClaim }: { readyToClaim: boolean }) {
 
-export function useFaucetContract({ amountTo = BigInt('0') }: FaucetProps) {
+    // ---------------------   WRITE FUNCTIONS ------------------------    
 
-    const address = userStore((state) => state.address)
-
-    // ---------------------   WRITE FUNCTIONS ------------------------
-
-    const { depositTokens, requestTokens, tokenConfig } = useFaucetConfig({ amountTo })
-
-    const depositToFaucet = useContractWrite(depositTokens.config);
-    const faucetClaim = useContractWrite(requestTokens.config);
-    const tokenWrite = useContractWrite(tokenConfig.config);
-
-    // ---------------------   READ FUNCTIONS ------------------------
-
-    const readData = useContractReads({
-        contracts: [
-            {
-                ...tokenContract,
-                functionName: 'allowance',
-                args: [address as web3Address, faucetContract.address as web3Address]
-            },
-            {
-                ...faucetContract,
-                functionName: 'remainingTokens',
-            },
-        ]
+    const claimConfig = usePrepareContractWrite({
+        address: faucetContract.address as web3Address,
+        abi: faucetContract.abi,
+        enabled: Boolean(readyToClaim),
+        functionName: 'requestTokens',
+        value: ethers.parseEther("0.0009")
     });
 
-    const userData = useContractReads({
-        contracts: [
-            {
-                ...faucetContract,
-                functionName: 'lastAccessTime',
-                args: [address as web3Address]
-            },
-            {
-                ...faucetContract,
-                functionName: 'maxAmount',
-            },
-        ]
-    });
+    const { data: submitTxFaucetClaim,
+        error: errorFaucetClaim,
+        isSuccess: successFaucetClaim,
+        write: FaucetClaim
+    } = useContractWrite(claimConfig.config);
+
+    const { isLoading: loadingTxFaucetClaim, isSuccess: isSuccessTxFaucetClaim, error: isErrorTxFaucetClaim, refetch: refetchTxFaucetClaim }
+        = useWaitForTransaction({
+            chainId: 31337,
+            confirmations: 1,
+            cacheTime: Infinity,
+            hash: submitTxFaucetClaim?.hash
+        });
 
     return {
-        depositToFaucet,
-        faucetClaim,
-        tokenWrite,
-        readData,
-        userData,
+        FaucetClaim,
+        successFaucetClaim,
+        errorFaucetClaim,
+        loadingTxFaucetClaim,
+        isSuccessTxFaucetClaim,
+        isErrorTxFaucetClaim,
+        refetchTxFaucetClaim,
+        submitTxFaucetClaim
     };
 }

@@ -1,6 +1,5 @@
 'use client'
 import TokenInfo from "./TokenInfo";
-import Balance from "../User/Balance";
 import ClaimBtn from "./ClaimBtn";
 import Image from "next/image";
 
@@ -21,10 +20,7 @@ export default function Page() {
                     <br />
                     Access to token Holders community rewards.
                 </h1>
-            </div>
-            <Balance />
-
-            <TokenInfo />
+            </div>            
             <ClaimBtn />
         </>
     );

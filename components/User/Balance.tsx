@@ -8,7 +8,7 @@ export default function Balance() {
     const userBalance = userStore((state) => state.tokenBalance)
 
     return (
-        <div className={'box'}>
+        <div className={'bg-black rounded-lg p-2 border-2 border-gray-500'}>
             {
                 (!userAddress || userAddress === '')
                     ?
