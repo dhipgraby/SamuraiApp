@@ -1,6 +1,7 @@
 import { ethers } from "ethers"
 
 export function parseAmount(amount: any) {
+    if(!amount) return 0
     return parseFloat(ethers.formatEther(amount.toString())).toLocaleString()
 }
 
