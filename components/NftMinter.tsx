@@ -40,7 +40,8 @@ export default function NftMinter({
     errorAllowance,
     approve,
     minNft,
-    minNftWithToken,
+    mintNftWithToken,
+    setTokenContract,
     submitTxDataAllowance,
     submitTxAllowanceLoading,
     submitTxAllowanceSuccess,
@@ -85,7 +86,9 @@ export default function NftMinter({
   async function mintWithToken() {
     try {
       console.log('minting usin yen');
-      minNftWithToken?.()
+      console.log('mintNftWithToken', mintNftWithToken);
+
+      mintNftWithToken?.()
     } catch (error) {
       console.log('mint with yen fail: ', error);
       toast.warn("Error minting. Try again or contact support")
@@ -118,7 +121,7 @@ export default function NftMinter({
     console.log("initialTokenPriceData", initialTokenPriceData);
 
     setData(price, tokenPrice, allowance)
- 
+
   }, [])
 
   useEffect(() => {
@@ -138,7 +141,8 @@ export default function NftMinter({
   }, [isSuccess, successTokenMint, isSuccessTxMintWithToken])
 
   useEffect(() => {
-    if (isError || errorTokenMint) toast.warn('Mint error. Try again or contact support')
+    if (isError) toast.warn(`Mint error. Try again or contact support:  ${isError}`)
+    if (errorTokenMint) toast.warn(`Mint with Token error. Try again or contact support:  ${errorTokenMint}`)
   }, [isError, errorTokenMint])
 
   // wait for txn
@@ -195,6 +199,9 @@ export default function NftMinter({
                             approveSpend={approveSpend}
                             loadingAllowance={loadingAllowance}
                             isLoading={loadingTokenMint} />
+                          <button
+                            onClick={() => setTokenContract()}
+                            className="btn btn-success">SET ERC20</button>
                         </>
                       )
                     }

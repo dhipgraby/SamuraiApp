@@ -21,11 +21,11 @@ export function useMintConfig({ tokenId, amount, nftTokenPrice, totalAllowance, 
         ...samuraiContract,
         functionName: 'userMintWithToken',
         args: [BigInt(tokenId)],
-        // onSettled(data, error) {
-        //     if (error) {
-        //         console.log("onSettled", { error, data, totalAllowance, nftTokenPrice })                
-        //     }
-        // },
+        onSettled(data, error) {
+            if (error) {
+                console.log("onSettled", { error, data, totalAllowance, nftTokenPrice })
+            }
+        },
         enabled: Boolean(totalAllowance && Number(nftTokenPrice) <= Number(totalAllowance) && !isMinted)
     })
 
@@ -36,9 +36,16 @@ export function useMintConfig({ tokenId, amount, nftTokenPrice, totalAllowance, 
         args: [samuraiContract.address, amount],
     })
 
+    const { config: setTokenConfig } = usePrepareContractWrite({
+        ...samuraiContract,
+        functionName: 'setERC20TokenAddress',
+        args: [tokenContract.address],
+    })
+
     return {
         mintConfig,
         tokenMintConfig,
-        allowanceConfig
+        allowanceConfig,
+        setTokenConfig
     };
 }

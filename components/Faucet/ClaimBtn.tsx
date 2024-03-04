@@ -24,9 +24,8 @@ export default function ClaimBtn() {
     const [readyToClaim, setReadyToClaim] = useState(false);
     const [loadingCooldown, setLoadingCooldown] = useState(false);
 
-    const { refetchUserBalance } = useUserData()
+    const { updateUserBalance } = useUserData()
     const userAddress = userStore((state: any) => state.address)
-    const updateBalance = userStore((state: any) => state.updateBalance)
 
     const {
         FaucetClaim,
@@ -56,12 +55,6 @@ export default function ClaimBtn() {
         }
     }
 
-    async function updateUserBalance() {
-        const getBalance: any = await refetchUserBalance()
-        const updatedBalance = parseAmount(getBalance.data.toString());
-        updateBalance(updatedBalance)
-    }
-
     async function checkCooldown() {
 
         if (loadingCooldown) return;
@@ -85,8 +78,6 @@ export default function ClaimBtn() {
 
         setLoadingCooldown(false)
 
-
-
     }
 
     async function fetchFaucetBalance() {
@@ -94,6 +85,10 @@ export default function ClaimBtn() {
         const updatedFaucetBalance = parseAmount(refetch?.data?.toString())
         setFaucetBalance(updatedFaucetBalance)
     }
+
+    useEffect(() => {
+        console.log('errorFaucetClaim ----> ', errorFaucetClaim)
+    }, [errorFaucetClaim])
 
     //SET FAUCET DATA
     useEffect(() => {
@@ -112,7 +107,6 @@ export default function ClaimBtn() {
     useEffect(() => {
 
         if (submitTxFaucetClaim) console.log("submitTxFaucetClaim", submitTxFaucetClaim);
-
 
         if (isErrorTxFaucetClaim) {
             toast.info('Transaction track error. Refreshing current transactions...')
@@ -138,7 +132,6 @@ export default function ClaimBtn() {
 
     //SUCCESS CASE
     useEffect(() => {
-
         if (isSuccessTxFaucetClaim) {
             toast.success(`Claim success! + ${tokenReward}  YenTokens`)
             fetchFaucetBalance()

@@ -1,7 +1,9 @@
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
+import { BaseError, ContractFunctionRevertedError, ContractFunctionExecutionError } from 'viem';
 import { web3Address } from "@/dto/tokenDto";
 import { faucetContract } from "@/contracts/contractData";
 import { ethers } from "ethers";
+import { toast } from "react-toastify";
 
 export function useFaucetContract({ readyToClaim }: { readyToClaim: boolean }) {
 
@@ -12,6 +14,14 @@ export function useFaucetContract({ readyToClaim }: { readyToClaim: boolean }) {
         abi: faucetContract.abi,
         enabled: Boolean(readyToClaim),
         functionName: 'requestTokens',
+        onError: (error) => {
+            if (error instanceof ContractFunctionExecutionError) {
+                const cause = error.cause
+                    .walk()
+                    .message
+                toast.warning(`Claim tokens contract: ${cause}`)
+            }
+        },
         value: ethers.parseEther("0.0009")
     });
 

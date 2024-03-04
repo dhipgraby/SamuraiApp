@@ -11,22 +11,57 @@ export function useNftContract({ tokenId, nftTokenPrice, totalAllowance, isMinte
     const debouncedAmount = useDebounce(ethers.parseEther(amount), 1000);
 
     // ---------------------   WRITE FUNCTIONS ------------------------
-    const { mintConfig, tokenMintConfig, allowanceConfig } = useMintConfig({ tokenId, amount: debouncedAmount, nftTokenPrice, totalAllowance, isMinted })
+    const {
+        mintConfig,
+        tokenMintConfig,
+        allowanceConfig,
+        setTokenConfig
+    } = useMintConfig({ tokenId, amount: debouncedAmount, nftTokenPrice, totalAllowance, isMinted })
 
-    const { isLoading, isError, isSuccess, write: minNft } = useContractWrite(mintConfig)
-    const { data: submitMintWithToken, isLoading: loadingTokenMint, isError: errorTokenMint, isSuccess: successTokenMint, write: minNftWithToken } = useContractWrite(tokenMintConfig)
-    const { data: submitTxDataAllowance, error: submitTxAllowanceError, isLoading: loadingAllowance, isError: errorAllowance, isSuccess: successAllowance, write: approve } = useContractWrite(allowanceConfig)
+    //Mint NFT with ETH
+    const {
+        isLoading,
+        isError,
+        isSuccess,
+        write: minNft } = useContractWrite(mintConfig)
 
-    const { isLoading: submitTxAllowanceLoading, isSuccess: submitTxAllowanceSuccess, error: submitConfirmTxAllowanceError }
-        = useWaitForTransaction({
+    //Mint NFT with YEN TOKEN
+    const {
+        data: submitMintWithToken,
+        isLoading: loadingTokenMint,
+        isError: errorTokenMint,
+        isSuccess: successTokenMint,
+        write: mintNftWithToken } = useContractWrite(tokenMintConfig)
+
+    //Token Allowance
+    const {
+        data: submitTxDataAllowance,
+        error: submitTxAllowanceError,
+        isLoading: loadingAllowance,
+        isError: errorAllowance,
+        isSuccess: successAllowance,
+        write: approve } = useContractWrite(allowanceConfig)
+
+    const { write: setTokenContract } = useContractWrite(setTokenConfig)
+
+    // ---------------------   WAIT FOR TXS ------------------------
+
+    //Wait for alloance approval
+    const {
+        isLoading: submitTxAllowanceLoading,
+        isSuccess: submitTxAllowanceSuccess,
+        error: submitConfirmTxAllowanceError } = useWaitForTransaction({
             chainId: 31337,
             confirmations: 1,
             cacheTime: Infinity,
             hash: submitTxDataAllowance?.hash
         });
 
-    const { isLoading: loadingTxMintWithToken, isSuccess: isSuccessTxMintWithToken, error: isErrorTxMintWithToken }
-        = useWaitForTransaction({
+    //Wait for Yen Token mint transaction
+    const {
+        isLoading: loadingTxMintWithToken,
+        isSuccess: isSuccessTxMintWithToken,
+        error: isErrorTxMintWithToken } = useWaitForTransaction({
             chainId: 31337,
             confirmations: 1,
             cacheTime: Infinity,
@@ -38,6 +73,7 @@ export function useNftContract({ tokenId, nftTokenPrice, totalAllowance, isMinte
         loadingTokenMint,
         loadingAllowance,
         isSuccess,
+        setTokenContract,
         successTokenMint,
         successAllowance,
         isError,
@@ -45,7 +81,7 @@ export function useNftContract({ tokenId, nftTokenPrice, totalAllowance, isMinte
         errorAllowance,
         approve,
         minNft,
-        minNftWithToken,
+        mintNftWithToken,
         setAmount,
         // wait txs
         submitTxDataAllowance,
