@@ -41,7 +41,6 @@ export default function NftMinter({
     approve,
     minNft,
     mintNftWithToken,
-    setTokenContract,
     submitTxDataAllowance,
     submitTxAllowanceLoading,
     submitTxAllowanceSuccess,
@@ -198,10 +197,7 @@ export default function NftMinter({
                             needAllowance={needAllowance}
                             approveSpend={approveSpend}
                             loadingAllowance={loadingAllowance}
-                            isLoading={loadingTokenMint} />
-                          <button
-                            onClick={() => setTokenContract()}
-                            className="btn btn-success">SET ERC20</button>
+                            isLoading={loadingTokenMint} />                          
                         </>
                       )
                     }
