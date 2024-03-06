@@ -1,11 +1,11 @@
 'use client'
 import { useState } from "react"
-import { ConnectKitButton } from "connectkit";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faClose } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import Image from "next/image";
 import Balance from "../User/Balance";
+import ConnectWalletBtn from "../ConnectWalletBtn";
 
 export default function Navbar() {
 
@@ -35,7 +35,7 @@ export default function Navbar() {
 
                     <li className='flex gap-1 w-fit justify-end self-center'>
                         <Balance />
-                        <ConnectKitButton />
+                        <ConnectWalletBtn />
                     </li>
                 </ul>
 
@@ -80,7 +80,7 @@ export default function Navbar() {
                 <li
                     onClick={() => setShowMenu(false)}
                     className="mt-4">
-                    <ConnectKitButton />
+                    <ConnectWalletBtn />
                 </li>
             </ul>
         </>

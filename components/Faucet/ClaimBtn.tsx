@@ -7,10 +7,10 @@ import { useReadFaucetContract } from "@/hooks/useReadFaucetContract";
 import { useUserData } from '@/hooks/userHook'
 import { parseAmount } from "@/helpers/converter";
 import { userStore } from "@/store/user";
-import { ConnectKitButton } from "connectkit";
 import CountdownTimer from "./CountDownTimer";
 import YenIcon from "../YenIcon";
 import TxListener from "@/contracts/functions/txListener";
+import ConnectWalletBtn from "../ConnectWalletBtn";
 
 export default function ClaimBtn() {
 
@@ -187,7 +187,7 @@ export default function ClaimBtn() {
                         Connect your wallet to claim
                     </h1>
                     <div className="w-fit">
-                        <ConnectKitButton />
+                        <ConnectWalletBtn />
                     </div>
                 </div>
             }

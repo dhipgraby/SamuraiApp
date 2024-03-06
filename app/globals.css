@@ -150,6 +150,14 @@ button:hover {
   display: none;
 }
 
+.connetWalletBtn button div {
+  background-color: #bc3730;
+  margin: auto;
+  color: white;
+  width: 140px;
+}
+
+
 @media screen and (max-width: 1200px) {
   .desktopMenu {
     display: none !important;

@@ -10,8 +10,10 @@ import { toast } from "react-toastify";
 import { parseAmount } from "@/helpers/converter";
 import { useNftContract } from "@/hooks/useNftContract";
 import { shortAddr, handleCopyClick } from "@/helpers/converter";
+
 import { userStore } from "@/store/user";
 import { useReadNftContract } from "@/hooks/useReadNftContract";
+import ConnectWalletBtn from "./ConnectWalletBtn";
 
 interface minterProps {
   tokenId: number
@@ -184,7 +186,10 @@ export default function NftMinter({
                   You can mint this NFT with Ethereum or YenToken
                 </p>
                 {(isDisconnected || userAddress === '' || userAddress.length < 10) ?
-                  <p>Connect your wallet to get started</p>
+                  <div>
+                    <p>Connect your wallet to get started</p>
+                    <ConnectWalletBtn className="mt-5" />
+                  </div>
                   :
                   <>
                     {nftPrice !== null && nftTokenPrice !== null &&
@@ -197,7 +202,7 @@ export default function NftMinter({
                             needAllowance={needAllowance}
                             approveSpend={approveSpend}
                             loadingAllowance={loadingAllowance}
-                            isLoading={loadingTokenMint} />                          
+                            isLoading={loadingTokenMint} />
                         </>
                       )
                     }

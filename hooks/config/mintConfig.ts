@@ -45,7 +45,6 @@ export function useMintConfig({ tokenId, amount, nftTokenPrice, totalAllowance, 
     return {
         mintConfig,
         tokenMintConfig,
-        allowanceConfig,
-        setTokenConfig
+        allowanceConfig
     };
 }

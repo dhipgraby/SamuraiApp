@@ -14,8 +14,7 @@ export function useNftContract({ tokenId, nftTokenPrice, totalAllowance, isMinte
     const {
         mintConfig,
         tokenMintConfig,
-        allowanceConfig,
-        setTokenConfig
+        allowanceConfig
     } = useMintConfig({ tokenId, amount: debouncedAmount, nftTokenPrice, totalAllowance, isMinted })
 
     //Mint NFT with ETH
@@ -42,7 +41,8 @@ export function useNftContract({ tokenId, nftTokenPrice, totalAllowance, isMinte
         isSuccess: successAllowance,
         write: approve } = useContractWrite(allowanceConfig)
 
-    const { write: setTokenContract } = useContractWrite(setTokenConfig)
+    //Set ERC20 token to mint from
+    // const { write: setTokenContract } = useContractWrite(setTokenConfig)
 
     // ---------------------   WAIT FOR TXS ------------------------
 
@@ -72,8 +72,7 @@ export function useNftContract({ tokenId, nftTokenPrice, totalAllowance, isMinte
         isLoading,
         loadingTokenMint,
         loadingAllowance,
-        isSuccess,
-        setTokenContract,
+        isSuccess,        
         successTokenMint,
         successAllowance,
         isError,
