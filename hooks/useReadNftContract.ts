@@ -1,21 +1,8 @@
 import { useMemo } from "react";
 import { useContractReads, useContractRead } from "wagmi";
-import { samuraiContract, tokenContract } from "@/contracts/contractData";
-import { web3Address } from "@/dto/tokenDto";
-import { userStore } from "@/store/user";
+import { samuraiContract } from "@/contracts/contractData";
 
 export function useReadNftContract({ tokenId }: { tokenId: number }) {
-
-    const userAddress = userStore((state) => state.address)
-
-    // ---------------------   READ FUNCTIONS ------------------------
-    const { data: allowanceData, refetch: refetchAllowance } = useContractRead(
-        {
-            ...tokenContract,
-            functionName: 'allowance',
-            args: [userAddress as web3Address, samuraiContract.address as web3Address]
-        }
-    );
 
     const { data: initialPriceData, refetch: refetchInitialPrice } = useContractRead(
         {
@@ -48,8 +35,6 @@ export function useReadNftContract({ tokenId }: { tokenId: number }) {
     }, [_ownerOfData]);
 
     return {
-        allowanceData,
-        refetchAllowance,
         initialPriceData,
         refetchInitialPrice,
         initialTokenPriceData,

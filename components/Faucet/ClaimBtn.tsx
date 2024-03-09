@@ -4,7 +4,7 @@ import { faRocket } from "@fortawesome/free-solid-svg-icons/faRocket";
 import { toast } from 'react-toastify'
 import { useFaucetContract } from "@/hooks/useFaucetContract";
 import { useReadFaucetContract } from "@/hooks/useReadFaucetContract";
-import { useUserData } from '@/hooks/userHook'
+import { useUser } from '@/hooks/userHook'
 import { parseAmount } from "@/helpers/converter";
 import { userStore } from "@/store/user";
 import CountdownTimer from "./CountDownTimer";
@@ -24,13 +24,14 @@ export default function ClaimBtn() {
     const [readyToClaim, setReadyToClaim] = useState(false);
     const [loadingCooldown, setLoadingCooldown] = useState(false);
 
-    const { updateUserBalance } = useUserData()
+    const { updateUserBalance } = useUser()
     const userAddress = userStore((state: any) => state.address)
 
     const {
         FaucetClaim,
         successFaucetClaim,
         errorFaucetClaim,
+        loadingClaim,
         loadingTxFaucetClaim,
         isSuccessTxFaucetClaim,
         isErrorTxFaucetClaim,
@@ -58,7 +59,7 @@ export default function ClaimBtn() {
     async function checkCooldown() {
 
         if (loadingCooldown) return;
-        console.log('loading cooldown');
+
         setLoadingCooldown(true)
         const userCD = await refetchLastAccessTime()
         const faucetCD = cooldownTime ? Number(cooldownTime.toString().replace('n', '')) : 300;
@@ -72,7 +73,6 @@ export default function ClaimBtn() {
         setSecondsLeft(calculation)
         setClaimCooldown(userCooldown)
         setTimeout(() => {
-            console.log('setReadyToClaim');
             setReadyToClaim(isReady)
         }, 2000)
 
@@ -105,29 +105,22 @@ export default function ClaimBtn() {
 
     //ERROR CASE
     useEffect(() => {
-
         if (submitTxFaucetClaim) console.log("submitTxFaucetClaim", submitTxFaucetClaim);
-
         if (isErrorTxFaucetClaim) {
             toast.info('Transaction track error. Refreshing current transactions...')
             setTimeout(async () => {
                 refetchTxFaucetClaim()
                 if (submitTxFaucetClaim) {
-                    console.log('listening');
-                    if (submitTxFaucetClaim) {
-                        const tx = await listener.getTransaction(submitTxFaucetClaim?.hash)
-                        console.log("tx", tx);
-                    }
+                    const tx = await listener.getTransaction(submitTxFaucetClaim?.hash)
+                    console.log("tx", tx);
                 }
             }, 2000)
             return
         }
-
         if (errorFaucetClaim) {
             toast.warn('Error claiming, try again or contact support')
             return
         }
-
     }, [errorFaucetClaim, isErrorTxFaucetClaim, submitTxFaucetClaim])
 
     //SUCCESS CASE
@@ -174,11 +167,11 @@ export default function ClaimBtn() {
                     }
 
                     <button
-                        disabled={(loadingTxFaucetClaim || (secondsLeft > 0 || !readyToClaim))}
-                        className={`${(readyToClaim) ? 'bg-yellow-400' : 'bg-zinc-400'} text-black p-3 font-bold rounded-lg text-lg px-5`}
+                        disabled={(loadingTxFaucetClaim || (secondsLeft > 0 || !readyToClaim || loadingClaim))}
+                        className={`${(!readyToClaim || loadingTxFaucetClaim || loadingClaim) ? 'bg-zinc-400' : 'bg-yellow-400'} text-black p-3 font-bold rounded-lg text-lg px-5`}
                         onClick={() => claim()}
                     >
-                        {loadingTxFaucetClaim ? "Getting reward..." : <span>Claim {tokenReward} Yen Tokens <FontAwesomeIcon icon={faRocket} /></span>}
+                        {loadingTxFaucetClaim || loadingClaim ? "Getting reward..." : <span>Claim {tokenReward} Yen Tokens <FontAwesomeIcon icon={faRocket} /></span>}
                     </button>
                 </div>
                 :

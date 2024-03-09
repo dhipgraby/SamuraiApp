@@ -22,6 +22,7 @@ export interface FaucetProps {
 export interface useNFTProps {
     isMinted: boolean;
     tokenId: number;
+    nftPrice: string;
     nftTokenPrice: string;
     totalAllowance: string;
 }
@@ -30,6 +31,7 @@ export interface useNFTConfigProps {
     isMinted: boolean;
     tokenId: number;
     amount: bigint;
+    nftPrice: string;
     nftTokenPrice: string;
     totalAllowance: string;
 }

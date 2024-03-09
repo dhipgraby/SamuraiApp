@@ -4,7 +4,7 @@ import { tokenContract } from "@/contracts/contractData";
 import { parseAmount } from "@/helpers/converter";
 import { userStore } from "@/store/user";
 
-export function useUserData() {
+export function useUser() {
 
     const address = userStore((state: any) => state.address)
     const updateBalance = userStore((state: any) => state.updateBalance)

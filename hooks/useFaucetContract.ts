@@ -28,6 +28,7 @@ export function useFaucetContract({ readyToClaim }: { readyToClaim: boolean }) {
     const { data: submitTxFaucetClaim,
         error: errorFaucetClaim,
         isSuccess: successFaucetClaim,
+        isLoading: loadingClaim,
         write: FaucetClaim
     } = useContractWrite(claimConfig.config);
 
@@ -43,6 +44,7 @@ export function useFaucetContract({ readyToClaim }: { readyToClaim: boolean }) {
         FaucetClaim,
         successFaucetClaim,
         errorFaucetClaim,
+        loadingClaim,
         loadingTxFaucetClaim,
         isSuccessTxFaucetClaim,
         isErrorTxFaucetClaim,

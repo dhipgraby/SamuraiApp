@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
-import { useUserData } from './userHook';
+import { useUser } from './userHook';
 import { userStore } from '@/store/user';
 import { parseAmount } from '@/helpers/converter';
 
@@ -18,7 +18,7 @@ export const GlobalProvider = ({ children }: {
   const [isLoading, setIsLoading] = useState(true);
 
   const { address } = useAccount()
-  const { userBalance } = useUserData()
+  const { userBalance } = useUser()
   const updateUserAddress = userStore((state) => state.updateAddress)
   const updateUserBalance = userStore((state) => state.updateBalance)
 

@@ -150,13 +150,15 @@ button:hover {
   display: none;
 }
 
-.connetWalletBtn button div {
-  background-color: #bc3730;
+.connetWalletBtn button div.primary {
+  background-color: #000000;
+  justify-content: center;
   margin: auto;
+  border: solid grey 2px;
   color: white;
-  width: 140px;
+  width: 160px !important;
+  height: 100%;
 }
-
 
 @media screen and (max-width: 1200px) {
   .desktopMenu {

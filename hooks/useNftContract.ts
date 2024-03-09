@@ -3,9 +3,10 @@ import { useContractWrite, useWaitForTransaction } from "wagmi";
 import { useNFTProps } from "@/dto/tokenDto";
 import { useMintConfig } from "./config/mintConfig";
 import { ethers } from "ethers";
+import { toast } from "react-toastify"
 import useDebounce from "./useDebounce";
 
-export function useNftContract({ tokenId, nftTokenPrice, totalAllowance, isMinted }: useNFTProps) {
+export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNFTProps) {
 
     const [amount, setAmount] = useState('0')
     const debouncedAmount = useDebounce(ethers.parseEther(amount), 1000);
@@ -13,12 +14,12 @@ export function useNftContract({ tokenId, nftTokenPrice, totalAllowance, isMinte
     // ---------------------   WRITE FUNCTIONS ------------------------
     const {
         mintConfig,
-        tokenMintConfig,
-        allowanceConfig
-    } = useMintConfig({ tokenId, amount: debouncedAmount, nftTokenPrice, totalAllowance, isMinted })
+        tokenMintConfig
+    } = useMintConfig({ tokenId, amount: debouncedAmount, nftPrice, nftTokenPrice, totalAllowance, isMinted })
 
     //Mint NFT with ETH
     const {
+        data: submitMintData,
         isLoading,
         isError,
         isSuccess,
@@ -27,35 +28,27 @@ export function useNftContract({ tokenId, nftTokenPrice, totalAllowance, isMinte
     //Mint NFT with YEN TOKEN
     const {
         data: submitMintWithToken,
-        isLoading: loadingTokenMint,
-        isError: errorTokenMint,
-        isSuccess: successTokenMint,
+        isLoading: loadingMintWithToken,
+        isError: errorMintWithToken,
+        isSuccess: successMintWithToken,
         write: mintNftWithToken } = useContractWrite(tokenMintConfig)
-
-    //Token Allowance
-    const {
-        data: submitTxDataAllowance,
-        error: submitTxAllowanceError,
-        isLoading: loadingAllowance,
-        isError: errorAllowance,
-        isSuccess: successAllowance,
-        write: approve } = useContractWrite(allowanceConfig)
 
     //Set ERC20 token to mint from
     // const { write: setTokenContract } = useContractWrite(setTokenConfig)
 
     // ---------------------   WAIT FOR TXS ------------------------
 
-    //Wait for alloance approval
+    //Wait Nft mint with Eth transaction
     const {
-        isLoading: submitTxAllowanceLoading,
-        isSuccess: submitTxAllowanceSuccess,
-        error: submitConfirmTxAllowanceError } = useWaitForTransaction({
-            chainId: 31337,
-            confirmations: 1,
-            cacheTime: Infinity,
-            hash: submitTxDataAllowance?.hash
-        });
+        isLoading: loadingTxMint,
+        isSuccess: isSuccessTxMint,
+        error: isErrorTxMint
+    } = useWaitForTransaction({
+        chainId: 31337,
+        confirmations: 1,
+        cacheTime: Infinity,
+        hash: submitMintData?.hash
+    });
 
     //Wait for Yen Token mint transaction
     const {
@@ -68,26 +61,45 @@ export function useNftContract({ tokenId, nftTokenPrice, totalAllowance, isMinte
             hash: submitMintWithToken?.hash
         });
 
+
+    async function mint() {
+        try {
+            console.log('minting');
+            minNft?.()
+        } catch (error) {
+            console.log('mint fail: ', error);
+            toast.warn("Error minting. Try again or contact support")
+        }
+    }
+
+    async function mintWithToken() {
+        try {
+            console.log('minting usin yen');
+            console.log('mintNftWithToken', mintNftWithToken);
+
+            mintNftWithToken?.()
+        } catch (error) {
+            console.log('mint with yen fail: ', error);
+            toast.warn("Error minting. Try again or contact support")
+        }
+    }
+
     return {
         isLoading,
-        loadingTokenMint,
-        loadingAllowance,
-        isSuccess,        
-        successTokenMint,
-        successAllowance,
+        loadingMintWithToken,
+        isSuccess,
         isError,
-        errorTokenMint,
-        errorAllowance,
-        approve,
-        minNft,
-        mintNftWithToken,
+        successMintWithToken,
+        errorMintWithToken,
+        mint,
+        mintWithToken,
         setAmount,
-        // wait txs
-        submitTxDataAllowance,
-        submitTxAllowanceLoading,
-        submitTxAllowanceSuccess,
+        // wait txs        
         loadingTxMintWithToken,
         isSuccessTxMintWithToken,
-        isErrorTxMintWithToken
+        isErrorTxMintWithToken,
+        loadingTxMint,
+        isSuccessTxMint,
+        isErrorTxMint
     };
 }

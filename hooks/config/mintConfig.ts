@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { handlePrepareMintError } from "@/helpers/txHelper";
 import { useNFTConfigProps } from "@/dto/tokenDto";
 
-export function useMintConfig({ tokenId, amount, nftTokenPrice, totalAllowance, isMinted }: useNFTConfigProps) {
+export function useMintConfig({ tokenId, amount, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNFTConfigProps) {
 
     // ---------------------   WRITE FUNCTIONS ------------------------
 
@@ -13,7 +13,7 @@ export function useMintConfig({ tokenId, amount, nftTokenPrice, totalAllowance, 
         ...samuraiContract,
         functionName: 'userMint',
         args: [BigInt(tokenId)],
-        value: ethers.parseEther("0.19"),
+        value: ethers.parseEther(nftPrice),
         enabled: !isMinted,
     })
 
@@ -36,11 +36,11 @@ export function useMintConfig({ tokenId, amount, nftTokenPrice, totalAllowance, 
         args: [samuraiContract.address, amount],
     })
 
-    const { config: setTokenConfig } = usePrepareContractWrite({
-        ...samuraiContract,
-        functionName: 'setERC20TokenAddress',
-        args: [tokenContract.address],
-    })
+    // const { config: setTokenConfig } = usePrepareContractWrite({
+    //     ...samuraiContract,
+    //     functionName: 'setERC20TokenAddress',
+    //     args: [tokenContract.address],
+    // })
 
     return {
         mintConfig,
