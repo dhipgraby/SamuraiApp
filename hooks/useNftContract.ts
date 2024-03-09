@@ -86,20 +86,20 @@ export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowanc
 
     return {
         isLoading,
-        loadingMintWithToken,
         isSuccess,
         isError,
+        mint,
+        setAmount,
+        loadingTxMint,
+        isSuccessTxMint,
+        isErrorTxMint,
+        //Mint with Yen token
+        loadingMintWithToken,
         successMintWithToken,
         errorMintWithToken,
-        mint,
         mintWithToken,
-        setAmount,
-        // wait txs        
         loadingTxMintWithToken,
         isSuccessTxMintWithToken,
         isErrorTxMintWithToken,
-        loadingTxMint,
-        isSuccessTxMint,
-        isErrorTxMint
     };
 }

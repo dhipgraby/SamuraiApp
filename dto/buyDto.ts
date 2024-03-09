@@ -19,3 +19,15 @@ export interface mintYenDto {
     loadingTxMint: boolean;
 }
 
+
+export interface mintYenDto {
+    nftPrice: string;
+    nftTokenPrice: string;
+    tokenId: number;
+    isMinted: boolean;
+    setIsMinted: (bool: boolean) => void;
+    totalAllowance: string;
+    needAllowance: boolean;
+    setNeedAllowance: (bool: boolean) => void;
+    setTotalAllowance: (amount: string) => void;
+}

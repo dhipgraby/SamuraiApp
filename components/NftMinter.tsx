@@ -31,11 +31,7 @@ export default function NftMinter({
   //ALLOWANCE FOR YEN TOKEN 
   const {
     allowanceData,
-    successAllowance,
-    errorAllowance,
-    submitTxAllowanceSuccess,
     setAmount,
-    submitTxAllowanceError,
   } = useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted })
 
   //INFORMATION ABOUT NFT CONTRACT, LIKE TOKEN PRICE OR OWNER OF
@@ -67,29 +63,6 @@ export default function NftMinter({
     const allowance = (allowanceData) ? ethers.formatEther(allowanceData.toString()) : '0';
     setData(price, tokenPrice, allowance)
   }, [])
-
-  // // Success Allowance
-  // useEffect(() => {
-  //   if (submitTxAllowanceSuccess) {
-  //     toast.success('Approval success, ready to mint with Yen token')
-  //     setNeedAllowance(false)
-  //     setTotalAllowance(nftTokenPrice)
-  //     return
-  //   }
-
-  //   if (successAllowance) {
-  //     toast.success('Approving contract...')
-  //     setNeedAllowance(false)
-  //     setTotalAllowance(nftTokenPrice)
-  //     return
-  //   }
-
-  // }, [successAllowance, submitTxAllowanceSuccess])
-
-  // // Error Allowance
-  // useEffect(() => {
-  //   if (errorAllowance || submitTxAllowanceError) toast.warn('Approval error. Try again or contact support')
-  // }, [errorAllowance, submitTxAllowanceError])
 
   return (
     <div className={styles.box}>
@@ -132,7 +105,6 @@ export default function NftMinter({
               </>
             </div>
           )}
-
         </div>
       </div>
       {(isMinted) && (
