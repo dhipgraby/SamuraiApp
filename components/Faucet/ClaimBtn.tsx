@@ -12,9 +12,13 @@ import YenIcon from "../YenIcon";
 import TxListener from "@/contracts/functions/txListener";
 import ConnectWalletBtn from "../ConnectWalletBtn";
 
+const MAX_RETRY_COUNT = 10; // Max retries 
+const RETRY_DELAY = 2000; // When try to refetch transaction submited
+
 export default function ClaimBtn() {
 
     const listener = new TxListener()
+    const [retryCount, setRetryCount] = useState(0);
 
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [secondsLeft, setSecondsLeft] = useState(0);
@@ -103,25 +107,27 @@ export default function ClaimBtn() {
         checkCooldown()
     }, [userAddress])
 
-    //ERROR CASE
     useEffect(() => {
-        if (submitTxFaucetClaim) console.log("submitTxFaucetClaim", submitTxFaucetClaim);
         if (isErrorTxFaucetClaim) {
-            toast.info('Transaction track error. Refreshing current transactions...')
-            setTimeout(async () => {
-                refetchTxFaucetClaim()
-                if (submitTxFaucetClaim) {
-                    const tx = await listener.getTransaction(submitTxFaucetClaim?.hash)
-                    console.log("tx", tx);
+            toast.info('Transaction tracking error. Re-fetching current transaction, please wait...')
+            const timerId = setTimeout(async () => {
+                if (retryCount < MAX_RETRY_COUNT) {
+                    setRetryCount(retryCount + 1);
+                    refetchTxFaucetClaim();
+                    // if (submitTxFaucetClaim) {
+                    //     await listener.getTransaction(submitTxFaucetClaim?.hash)
+                    // }
+                } else {
+                    toast.warn('Max retry limit reached. Please try again later.');
                 }
-            }, 2000)
-            return
+            }, RETRY_DELAY * (retryCount + 1)); // Exponential backoff for retry delay
+            return () => clearTimeout(timerId); // Cleanup on component unmount
         }
         if (errorFaucetClaim) {
-            toast.warn('Error claiming, try again or contact support')
-            return
+            toast.warn('Error claiming, try again or contact support');
         }
-    }, [errorFaucetClaim, isErrorTxFaucetClaim, submitTxFaucetClaim])
+    }, [errorFaucetClaim, isErrorTxFaucetClaim, refetchTxFaucetClaim, retryCount]);
+
 
     //SUCCESS CASE
     useEffect(() => {
@@ -130,6 +136,7 @@ export default function ClaimBtn() {
             fetchFaucetBalance()
             updateUserBalance()
             checkCooldown()
+            setRetryCount(0)
             return
         }
 
@@ -159,20 +166,22 @@ export default function ClaimBtn() {
         <div>
             <div className="box">Faucet Balance : {faucetBalance} <YenIcon /></div>
             {userAddress ?
-                <div className={`mt-4 text-center`}>
-                    {secondsLeft > 0 &&
-                        <CountdownTimer
-                            secondsLeft={secondsLeft}
-                        />
-                    }
+                <div className="mt-4 text-center">
+                    {!loadingLastAccessTime ? (
+                        <>
+                            {secondsLeft > 0 && <CountdownTimer secondsLeft={secondsLeft} />}
 
-                    <button
-                        disabled={(loadingTxFaucetClaim || (secondsLeft > 0 || !readyToClaim || loadingClaim))}
-                        className={`${(!readyToClaim || loadingTxFaucetClaim || loadingClaim) ? 'bg-zinc-400' : 'bg-yellow-400'} text-black p-3 font-bold rounded-lg text-lg px-5`}
-                        onClick={() => claim()}
-                    >
-                        {loadingTxFaucetClaim || loadingClaim ? "Getting reward..." : <span>Claim {tokenReward} Yen Tokens <FontAwesomeIcon icon={faRocket} /></span>}
-                    </button>
+                            <button
+                                disabled={(loadingTxFaucetClaim || (secondsLeft > 0 || !readyToClaim || loadingClaim))}
+                                className={`${(!readyToClaim || loadingTxFaucetClaim || loadingClaim) ? 'bg-zinc-400' : 'bg-yellow-400'} text-black p-3 font-bold rounded-lg text-lg px-5`}
+                                onClick={() => claim()}
+                            >
+                                {loadingTxFaucetClaim || loadingClaim ? "Getting reward..." : <span>Claim {tokenReward} Yen Tokens <FontAwesomeIcon icon={faRocket} /></span>}
+                            </button>
+                        </>
+                    ) : (
+                        <div>Loading...</div>
+                    )}
                 </div>
                 :
                 <div className="ta-c mt-5 box">

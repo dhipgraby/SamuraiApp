@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useBalance } from 'wagmi';
 import { useUser } from './userHook';
 import { userStore } from '@/store/user';
 import { parseAmount } from '@/helpers/converter';
@@ -18,16 +18,22 @@ export const GlobalProvider = ({ children }: {
   const [isLoading, setIsLoading] = useState(true);
 
   const { address } = useAccount()
-  const { userBalance } = useUser()
+  const { userBalance, ethBalance } = useUser()
+
   const updateUserAddress = userStore((state) => state.updateAddress)
   const updateUserBalance = userStore((state) => state.updateBalance)
+  const updateEthBalance = userStore((state) => state.updateEthBalance)
 
   useEffect(() => {
+
+    console.log('result:', ethBalance?.formatted);
 
     if (address) {
       updateUserAddress(address)
       const balance = userBalance ? parseAmount(userBalance.toString()) : '0';
-      if (balance) updateUserBalance(balance)
+      const ethereumBalance = ethBalance ? ethBalance.formatted : '0';
+      updateUserBalance(balance)
+      updateEthBalance(ethereumBalance)
     } else {
       updateUserAddress('')
     }
@@ -38,7 +44,7 @@ export const GlobalProvider = ({ children }: {
     };
     fetchData();
 
-  }, [userBalance, address])
+  }, [userBalance, address, ethBalance])
 
   if (isLoading) return <div>Loading...</div>;
 

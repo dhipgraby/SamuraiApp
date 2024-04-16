@@ -1,4 +1,4 @@
-import { useContractRead } from "wagmi";
+import { useContractRead, useBalance } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
 import { tokenContract } from "@/contracts/contractData";
 import { parseAmount } from "@/helpers/converter";
@@ -6,8 +6,14 @@ import { userStore } from "@/store/user";
 
 export function useUser() {
 
-    const address = userStore((state: any) => state.address)
-    const updateBalance = userStore((state: any) => state.updateBalance)
+    const address = userStore((state) => state.address)
+    const updateBalance = userStore((state) => state.updateBalance)
+    const updateEthBalance = userStore((state) => state.updateEthBalance)
+
+    const { data: ethBalance } = useBalance({
+        address: address as any,
+        enabled: (address as any && address !== undefined)
+    })
 
     const { data: userBalance, refetch: refetchUserBalance } = useContractRead({
         ...tokenContract,
@@ -22,9 +28,18 @@ export function useUser() {
         updateBalance(updatedBalance)
     }
 
+    async function updateUserEthBalance() {
+        if (ethBalance) {
+            const updatedBalance = parseAmount(ethBalance.formatted.toString());
+            updateEthBalance(updatedBalance)
+        }
+    }
+
     return {
+        ethBalance,
         userBalance,
         refetchUserBalance,
-        updateUserBalance
+        updateUserBalance,
+        updateUserEthBalance
     };
 }

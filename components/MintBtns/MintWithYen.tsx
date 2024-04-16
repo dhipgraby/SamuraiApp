@@ -3,8 +3,10 @@ import { toast } from "react-toastify";
 import { useNftContract } from "@/hooks/useNftContract";
 import { mintYenDto } from "@/dto/buyDto";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { faYenSign } from "@fortawesome/free-solid-svg-icons";
 import { useAllowance } from "@/hooks/useAllowance";
+import { userStore } from "@/store/user";
 
 export default function MintWithYen({
     nftPrice,
@@ -17,6 +19,8 @@ export default function MintWithYen({
     setNeedAllowance,
     setTotalAllowance
 }: mintYenDto) {
+
+    const tokenBalance = userStore((state) => state.tokenBalance);
 
     const {
         loadingMintWithToken,
@@ -42,18 +46,16 @@ export default function MintWithYen({
     //Success Mint
     useEffect(() => {
 
-        if (successMintWithToken) {
-            toast.success('Transaction sent for bloodline #:' + tokenId)
-            setIsMinted(true)
-            return
-        }
-
         if (isSuccessTxMintWithToken) {
             toast.success('Transaction complete! Minted bloodline #:' + tokenId)
             setIsMinted(true)
             return
         }
 
+        if (successMintWithToken) {
+            toast.success('Transaction sent for bloodline #:' + tokenId)
+            return
+        }
     }, [successMintWithToken, isSuccessTxMintWithToken])
 
 
@@ -88,9 +90,9 @@ export default function MintWithYen({
 
     return (
         <div className="mt-4">
-            {nftPrice != null ? (
+            {nftTokenPrice != null ? (
                 <p>Price: <span className="text-yellow-400">
-                    {parseInt(nftPrice)} <FontAwesomeIcon icon={faYenSign} />
+                    {parseInt(nftTokenPrice)} <FontAwesomeIcon icon={faYenSign} />
                 </span></p>
             ) :
                 <p>Loading price...</p>
@@ -98,13 +100,19 @@ export default function MintWithYen({
 
             {(needAllowance)
                 ?
-                <button
-                    className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg`}
-                    disabled={loadingAllowance}
-                    onClick={() => approveSpend()}
-                >
-                    {(loadingAllowance || submitTxAllowanceLoading) ? "APPROVING..." : "APPROVE"} <FontAwesomeIcon icon={faYenSign} />
-                </button>
+                <>
+                    {(Number(tokenBalance) < Number(nftTokenPrice)) &&
+                        <p className="opacity-80 text-red-300 my-2 bg-black p-2 border-2 border-gray-500 rounded-lg">
+                            <FontAwesomeIcon icon={faExclamationCircle} /> Not enough tokens to mint
+                        </p>}
+                    <button
+                        className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg`}
+                        disabled={loadingAllowance}
+                        onClick={() => approveSpend()}
+                    >
+                        {(loadingAllowance || submitTxAllowanceLoading) ? "APPROVING..." : "APPROVE"} <FontAwesomeIcon icon={faYenSign} />
+                    </button>
+                </>
                 :
                 <button
                     className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg`}

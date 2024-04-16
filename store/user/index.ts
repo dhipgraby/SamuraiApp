@@ -1,25 +1,30 @@
-import { create } from 'zustand'
+import { create } from 'zustand';
 
 type State = {
-    address: string
-    tokenBalance: string
-}
+    address: string;
+    ethBalance: string;
+    tokenBalance: string;
+};
 
-const initialState = {
+const initialState: State = {
     address: '',
-    tokenBalance: '0'
-}
+    ethBalance: '0',
+    tokenBalance: '0',
+};
 
-type Action = {
-    updateAddress: (address: State['address']) => void
-    updateBalance: (tokenBalance: State['tokenBalance']) => void
-}
+type Actions = {
+    updateAddress: (address: string) => void;
+    updateBalance: (tokenBalance: string) => void;
+    updateEthBalance: (ethBalance: string) => void;
+    reset: () => void;
+};
 
-export const userStore: any = create<State & Action>((set) => ({
+export const userStore = create<State & Actions>((set) => ({
     ...initialState,
-    updateAddress: (address) => set(() => ({ address: address })),
-    updateBalance: (tokenBalance) => set(() => ({ tokenBalance: tokenBalance })),
-    reset: () => {
-        set(initialState)
-    },
-}))
+    updateAddress: (address) => set({ address }),
+    updateBalance: (tokenBalance) => set({ tokenBalance }),
+    updateEthBalance: (ethBalance) => set({ ethBalance }),
+    reset: () => set(initialState),
+}));
+
+export type UserStoreType = State & Actions;

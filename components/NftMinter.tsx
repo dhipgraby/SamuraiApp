@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import styles from "./css/NftMinter.module.css";
 import MintWithEth from "./MintBtns/MintWithEth"
+import MintWithYen from "./MintBtns/MintWithYen"
 import Image from "next/image";
 import { nftImg } from "@/helpers/nftHelper";
 import { ethers } from "ethers";
@@ -10,6 +11,9 @@ import { userStore } from "@/store/user";
 import { useReadNftContract } from "@/hooks/useReadNftContract";
 import { useAllowance } from "@/hooks/useAllowance";
 import ConnectWalletBtn from "./ConnectWalletBtn";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faYenSign } from "@fortawesome/free-solid-svg-icons";
+import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 
 interface minterProps {
   tokenId: number
@@ -22,17 +26,17 @@ export default function NftMinter({
   const { isDisconnected } = useAccount();
 
   const userAddress = userStore((state) => state.address)
+
+
   const [nftPrice, setNftPrice] = useState('0')
+  const [paymentMethod, setPaymentMethod] = useState(0)
   const [nftTokenPrice, setNftTokenPrice] = useState('0')
   const [needAllowance, setNeedAllowance] = useState(true)
   const [isMinted, setIsMinted] = useState(true)
   const [totalAllowance, setTotalAllowance] = useState('')
 
   //ALLOWANCE FOR YEN TOKEN 
-  const {
-    allowanceData,
-    setAmount,
-  } = useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted })
+  const { allowanceData } = useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted })
 
   //INFORMATION ABOUT NFT CONTRACT, LIKE TOKEN PRICE OR OWNER OF
   const {
@@ -43,7 +47,6 @@ export default function NftMinter({
 
   function setData(price: string, tokenPrice: string, allowance: string) {
     if (Number(allowance) >= Number(tokenPrice)) setNeedAllowance(false)
-    if (tokenPrice !== null) setAmount(tokenPrice)
     setTotalAllowance(allowance)
     setNftTokenPrice(tokenPrice)
     setNftPrice(price)
@@ -89,14 +92,42 @@ export default function NftMinter({
                     {nftPrice !== null && nftTokenPrice !== null &&
                       (
                         <>
-                          <MintWithEth
-                            nftPrice={nftPrice}
-                            nftTokenPrice={nftTokenPrice}
-                            tokenId={tokenId}
-                            isMinted={isMinted}
-                            setIsMinted={setIsMinted}
-                            totalAllowance={totalAllowance}
-                          />
+                          <p className="text-yellow-200 my-4">Select Eth or Yen token</p>
+                          <div className="flex gap-5">
+                            <button
+                              onClick={() => setPaymentMethod(0)}
+                              className={`w-40 bg-black rounded-lg p-1 border-2 ${(paymentMethod === 0) ? "border-yellow-500" : "border-gray-500 text-slate-400"}  text-3xl font-normal`}>
+                              <FontAwesomeIcon icon={faEthereum} />
+                            </button>
+                            <button
+                              onClick={() => setPaymentMethod(1)}
+                              className={`w-40 bg-black rounded-lg p-1 border-2 ${(paymentMethod === 1) ? "border-yellow-500" : "border-gray-500 text-slate-400"}  text-3xl font-normal`}>
+                              <FontAwesomeIcon icon={faYenSign} />
+                            </button>
+                          </div>
+                          {paymentMethod === 0 ? (
+                            <MintWithEth
+                              nftPrice={nftPrice}
+                              nftTokenPrice={nftTokenPrice}
+                              tokenId={tokenId}
+                              isMinted={isMinted}
+                              setIsMinted={setIsMinted}
+                              totalAllowance={totalAllowance}
+                            />
+                          ) :
+                            <MintWithYen
+                              nftPrice={nftPrice}
+                              nftTokenPrice={nftTokenPrice}
+                              tokenId={tokenId}
+                              isMinted={isMinted}
+                              setIsMinted={setIsMinted}
+                              totalAllowance={totalAllowance}
+                              needAllowance={needAllowance}
+                              setNeedAllowance={setNeedAllowance}
+                              setTotalAllowance={setTotalAllowance}
+                            />
+                          }
+
                         </>
                       )
                     }

@@ -32,13 +32,16 @@ export function useFaucetContract({ readyToClaim }: { readyToClaim: boolean }) {
         write: FaucetClaim
     } = useContractWrite(claimConfig.config);
 
-    const { isLoading: loadingTxFaucetClaim, isSuccess: isSuccessTxFaucetClaim, error: isErrorTxFaucetClaim, refetch: refetchTxFaucetClaim }
-        = useWaitForTransaction({
-            chainId: 31337,
-            confirmations: 1,
-            cacheTime: Infinity,
-            hash: submitTxFaucetClaim?.hash
-        });
+    const { isLoading: loadingTxFaucetClaim,
+        isSuccess: isSuccessTxFaucetClaim,
+        error: isErrorTxFaucetClaim,
+        refetch: refetchTxFaucetClaim
+    } = useWaitForTransaction({
+        chainId: 31337,
+        confirmations: 1,
+        cacheTime: Infinity,
+        hash: submitTxFaucetClaim?.hash
+    });
 
     return {
         FaucetClaim,

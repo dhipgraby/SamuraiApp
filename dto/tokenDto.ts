@@ -19,18 +19,17 @@ export interface FaucetProps {
     tokenAbi: any[];
 }
 
-export interface useNFTProps {
-    isMinted: boolean;
+export interface useNftProps {
     tokenId: number;
+    isMinted: boolean;
     nftPrice: string;
     nftTokenPrice: string;
     totalAllowance: string;
 }
 
-export interface useNFTConfigProps {
+export interface useNftConfigProps {
     isMinted: boolean;
     tokenId: number;
-    amount: bigint;
     nftPrice: string;
     nftTokenPrice: string;
     totalAllowance: string;

@@ -2,19 +2,22 @@
 import { usePrepareContractWrite } from "wagmi";
 import { samuraiContract, tokenContract } from "@/contracts/contractData";
 import { ethers } from "ethers";
-import { handlePrepareMintError } from "@/helpers/txHelper";
-import { useNFTConfigProps } from "@/dto/tokenDto";
+import { useNftConfigProps } from "@/dto/tokenDto";
+import { userStore } from "@/store/user";
 
-export function useMintConfig({ tokenId, amount, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNFTConfigProps) {
+export function useMintConfig({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNftConfigProps) {
 
-    // ---------------------   WRITE FUNCTIONS ------------------------
+    const ethBalance = userStore((state) => state.ethBalance)
+    const tokenBalance = userStore((state) => state.tokenBalance)
+
+    // ---------------------   WRITE FUNCTIONS ------------------------    
 
     const { config: mintConfig } = usePrepareContractWrite({
         ...samuraiContract,
         functionName: 'userMint',
         args: [BigInt(tokenId)],
         value: ethers.parseEther(nftPrice),
-        enabled: !isMinted,
+        enabled: (!isMinted && Number(ethBalance) >= Number(nftPrice)),
     })
 
     const { config: tokenMintConfig } = usePrepareContractWrite({
@@ -32,8 +35,8 @@ export function useMintConfig({ tokenId, amount, nftPrice, nftTokenPrice, totalA
     const { config: allowanceConfig } = usePrepareContractWrite({
         ...tokenContract,
         functionName: 'increaseAllowance',
-        enabled: Boolean(amount.toString() !== '0' && amount.toString() !== '' && amount.toString() >= nftTokenPrice),
-        args: [samuraiContract.address, amount],
+        enabled: Boolean(Number(tokenBalance) >= Number(nftTokenPrice)),
+        args: [samuraiContract.address, ethers.parseEther(nftPrice)],
     })
 
     // const { config: setTokenConfig } = usePrepareContractWrite({

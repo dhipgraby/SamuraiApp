@@ -9,19 +9,6 @@ export interface buyDto {
 
 export interface mintYenDto {
     nftPrice: string;
-    mint: () => void;
-    isLoading: boolean;
-    loadingAllowance: boolean;
-    approveSpend: () => void;
-    needAllowance: boolean;
-    submitTxAllowanceLoading: boolean;
-    loadingTxMintWithToken: boolean;
-    loadingTxMint: boolean;
-}
-
-
-export interface mintYenDto {
-    nftPrice: string;
     nftTokenPrice: string;
     tokenId: number;
     isMinted: boolean;

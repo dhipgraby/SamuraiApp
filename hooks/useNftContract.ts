@@ -1,21 +1,20 @@
 import { useState } from "react";
 import { useContractWrite, useWaitForTransaction } from "wagmi";
-import { useNFTProps } from "@/dto/tokenDto";
+import { useNftProps } from "@/dto/tokenDto";
 import { useMintConfig } from "./config/mintConfig";
 import { ethers } from "ethers";
 import { toast } from "react-toastify"
 import useDebounce from "./useDebounce";
 
-export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNFTProps) {
+export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNftProps) {
 
-    const [amount, setAmount] = useState('0')
-    const debouncedAmount = useDebounce(ethers.parseEther(amount), 1000);
+    // const debouncedAmount = useDebounce(ethers.parseEther(amount), 1000);
 
     // ---------------------   WRITE FUNCTIONS ------------------------
     const {
         mintConfig,
         tokenMintConfig
-    } = useMintConfig({ tokenId, amount: debouncedAmount, nftPrice, nftTokenPrice, totalAllowance, isMinted })
+    } = useMintConfig({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted })
 
     //Mint NFT with ETH
     const {
@@ -89,7 +88,6 @@ export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowanc
         isSuccess,
         isError,
         mint,
-        setAmount,
         loadingTxMint,
         isSuccessTxMint,
         isErrorTxMint,
