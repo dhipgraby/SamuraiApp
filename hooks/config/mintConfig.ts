@@ -35,8 +35,7 @@ export function useMintConfig({ tokenId, nftPrice, nftTokenPrice, totalAllowance
     const { config: allowanceConfig } = usePrepareContractWrite({
         ...tokenContract,
         functionName: 'increaseAllowance',
-        enabled: Boolean(Number(tokenBalance) >= Number(nftTokenPrice)),
-        args: [samuraiContract.address, ethers.parseEther(nftPrice)],
+        args: [samuraiContract.address, ethers.parseEther(nftTokenPrice)],
     })
 
     // const { config: setTokenConfig } = usePrepareContractWrite({

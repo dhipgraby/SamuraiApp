@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useNftContract } from "@/hooks/useNftContract";
 import { mintYenDto } from "@/dto/buyDto";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -33,58 +33,63 @@ export default function MintWithYen({
     } = useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted })
 
     const {
+        refetchAllowance,
         loadingAllowance,
         successAllowance,
         errorAllowance,
         submitTxAllowanceSuccess,
         submitTxAllowanceLoading,
         submitTxAllowanceError,
-        approveSpend
-    } = useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted })
+        approve
+    } = useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted });
 
+    async function approveSpend() {
+        try {
+            approve?.()
+        } catch (error) {
+            console.log('approve fail: ', error);
+            toast.warning("Error approving. Try again or contact support")
+        }
+    }
 
     //Success Mint
     useEffect(() => {
-
         if (isSuccessTxMintWithToken) {
-            toast.success('Transaction complete! Minted bloodline #:' + tokenId)
-            setIsMinted(true)
+            toast.success('Transaction complete! Minted bloodline #' + tokenId);
+            refetchAllowance();
+            setIsMinted(true);
             return
         }
 
         if (successMintWithToken) {
-            toast.success('Transaction sent for bloodline #:' + tokenId)
+            toast.info('Transaction sent for bloodline #' + tokenId)
             return
         }
+        //eslint-disable-next-line
     }, [successMintWithToken, isSuccessTxMintWithToken])
 
 
     //Mint Error handling
     useEffect(() => {
-        if (errorMintWithToken || isErrorTxMintWithToken) toast.warn(`Mint error. Try again or contact support:  ${errorMintWithToken}`)
+        if (errorMintWithToken || isErrorTxMintWithToken) toast.warning(`Mint error. Try again or contact support:  ${errorMintWithToken}`)
     }, [errorMintWithToken, isErrorTxMintWithToken])
 
     // Success Allowance
     useEffect(() => {
         if (submitTxAllowanceSuccess) {
-            toast.success('Approval success, ready to mint with Yen token')
-            setNeedAllowance(false)
-            setTotalAllowance(nftTokenPrice)
+            toast.success('Approval success, ready to mint with Yen token');
+            refetchAllowance();
             return
         }
 
-        if (successAllowance) {
-            toast.success('Approving contract...')
-            setNeedAllowance(false)
-            setTotalAllowance(nftTokenPrice)
-            return
-        }
+        if (successAllowance) toast.info('Approving contract...');
 
+        //eslint-disable-next-line
     }, [successAllowance, submitTxAllowanceSuccess])
 
     // Allowance error handling
     useEffect(() => {
-        if (errorAllowance || submitTxAllowanceError) toast.warn('Approval error. Try again or contact support')
+        if (errorAllowance || submitTxAllowanceError) toast.warning('Approval error. Try again or contact support')
     }, [errorAllowance, submitTxAllowanceError])
 
 
@@ -106,8 +111,8 @@ export default function MintWithYen({
                             <FontAwesomeIcon icon={faExclamationCircle} /> Not enough tokens to mint
                         </p>}
                     <button
-                        className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg`}
-                        disabled={loadingAllowance}
+                        className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg ${(loadingAllowance || submitTxAllowanceLoading) ? "bg-slate-400" : ""}`}
+                        disabled={loadingAllowance || submitTxAllowanceLoading}
                         onClick={() => approveSpend()}
                     >
                         {(loadingAllowance || submitTxAllowanceLoading) ? "APPROVING..." : "APPROVE"} <FontAwesomeIcon icon={faYenSign} />
@@ -115,7 +120,7 @@ export default function MintWithYen({
                 </>
                 :
                 <button
-                    className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg`}
+                    className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg ${(loadingMintWithToken || loadingTxMintWithToken) ? "bg-slate-400" : ""}`}
                     disabled={loadingMintWithToken || loadingTxMintWithToken}
                     onClick={() => mintWithToken()}
                 >

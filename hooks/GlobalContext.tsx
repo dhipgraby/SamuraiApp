@@ -1,9 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { useAccount, useBalance } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useUser } from './userHook';
 import { userStore } from '@/store/user';
 import { parseAmount } from '@/helpers/converter';
+import Image from 'next/image';
 
 export const GlobalContext = React.createContext({});
 
@@ -25,9 +26,6 @@ export const GlobalProvider = ({ children }: {
   const updateEthBalance = userStore((state) => state.updateEthBalance)
 
   useEffect(() => {
-
-    console.log('result:', ethBalance?.formatted);
-
     if (address) {
       updateUserAddress(address)
       const balance = userBalance ? parseAmount(userBalance.toString()) : '0';
@@ -46,7 +44,10 @@ export const GlobalProvider = ({ children }: {
 
   }, [userBalance, address, ethBalance])
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return (
+    <div className='inset-center'>
+      <Image width={400} height={400} className=' bounce-scale' src={"/logosquare.jpg"} alt='logoloading...' />
+    </div>);
 
   return (
     <GlobalContext.Provider value={{}} >

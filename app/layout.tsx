@@ -1,11 +1,12 @@
 "use client";
 import './globals.css'
 import './site.css'
+import './animations.css'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import 'react-toastify/dist/ReactToastify.css';
 import { WagmiConfig, createConfig } from "wagmi";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
-import { ToastContainer } from 'react-toastify';
+import { Toaster } from "@/components/ui/sonner"
 // import { localhost } from "@/contracts/connection"
 import Navbar from "@/components/navigation";
 import { GlobalProvider } from '@/hooks/GlobalContext';
@@ -39,7 +40,15 @@ export default function RootLayout({
           <body>
             <Providers>
               <GlobalProvider>
-                <ToastContainer />
+                <Toaster
+                  position="top-right"
+                  richColors
+                  closeButton
+                  visibleToasts={9}
+                  toastOptions={{
+                    duration: 10000
+                  }}
+                />
                 <Navbar />
                 <div className={"container mx-auto pt-8 px-4 pb-5"}>
                   <div>{children}</div>

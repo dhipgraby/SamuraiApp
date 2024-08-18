@@ -1,9 +1,51 @@
+import { ServerSubmitProps } from "@/types/form-types";
 import axios from "axios";
+import { formatError } from "./form-utils";
+import { toast } from "sonner";
 // import { logout } from "./actions/logout";
 // import { isRedirectError } from "next/dist/client/components/redirect";
 // import { AuthError } from "next-auth";
 
 //REQUESTS HANDLERS
+export const ServerSubmit = async ({
+    serverAction,
+    setIsLoading,
+    setErrorMsg,
+    nextStep
+}: ServerSubmitProps) => {
+    try {
+        setErrorMsg(null);
+        setIsLoading(true);
+
+        const response = await serverAction();
+        // Check if the response is defined
+        if (!response) {
+            setIsLoading(false);
+            setErrorMsg("Empty response from the server. Please try again or contact support.");
+            return;
+        }
+        // Check if the response indicates an error
+        if ((response.status && response.status !== 200) || (response.statusCode && response.statusCode !== 200)) {
+            // Check if there are specific error messages in the response
+            const errorMessage = formatError(response);
+            toast.error(errorMessage);
+            setErrorMsg(errorMessage);
+            setIsLoading(false);
+            return response;
+        } else {
+            if (nextStep) nextStep();
+            toast.success(response.message);
+            setIsLoading(false);
+            return response;
+        }
+    } catch (error: any) {
+        setIsLoading(false);
+        const errorMessage = formatError(error);
+        setErrorMsg(errorMessage);
+        toast.error(errorMessage);
+        throw error; // Ensure the error is thrown to propagate to frontend
+    }
+};
 
 export async function handleServerPost(url: string, data: any, token: string, jsonFormat: boolean = true) {
     const response = await axios.post(url,

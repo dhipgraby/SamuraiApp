@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRocket } from "@fortawesome/free-solid-svg-icons/faRocket";
-import { toast } from 'react-toastify'
+import { toast } from "sonner";
 import { useFaucetContract } from "@/hooks/useFaucetContract";
 import { useReadFaucetContract } from "@/hooks/useReadFaucetContract";
 import { useUser } from '@/hooks/userHook'
@@ -9,7 +9,7 @@ import { parseAmount } from "@/helpers/converter";
 import { userStore } from "@/store/user";
 import CountdownTimer from "./CountDownTimer";
 import YenIcon from "../YenIcon";
-import TxListener from "@/contracts/functions/txListener";
+// import TxListener from "@/contracts/functions/txListener";
 import ConnectWalletBtn from "../ConnectWalletBtn";
 
 const MAX_RETRY_COUNT = 10; // Max retries 
@@ -17,9 +17,8 @@ const RETRY_DELAY = 2000; // When try to refetch transaction submited
 
 export default function ClaimBtn() {
 
-    const listener = new TxListener()
+    // const listener = new TxListener()
     const [retryCount, setRetryCount] = useState(0);
-
     const [claimCooldown, setClaimCooldown] = useState(0);
     const [secondsLeft, setSecondsLeft] = useState(0);
     const [faucetCd, setFaucetCd] = useState(0);
@@ -27,20 +26,19 @@ export default function ClaimBtn() {
     const [faucetBalance, setFaucetBalance] = useState('0');
     const [readyToClaim, setReadyToClaim] = useState(false);
     const [loadingCooldown, setLoadingCooldown] = useState(false);
-
-    const { updateUserBalance } = useUser()
-    const userAddress = userStore((state: any) => state.address)
+    const { updateUserBalance } = useUser();
+    const userAddress = userStore((state: any) => state.address);
 
     const {
         FaucetClaim,
         successFaucetClaim,
+        submitTxFaucetClaim,
         errorFaucetClaim,
         loadingClaim,
         loadingTxFaucetClaim,
         isSuccessTxFaucetClaim,
         isErrorTxFaucetClaim,
         refetchTxFaucetClaim,
-        submitTxFaucetClaim,
     } = useFaucetContract({ readyToClaim });
 
     const {
@@ -56,7 +54,7 @@ export default function ClaimBtn() {
         try {
             FaucetClaim?.()
         } catch (error) {
-            toast.warn('Claim error, try again or contact support')
+            toast.warning('Claim error, try again or contact support')
         }
     }
 
@@ -100,11 +98,13 @@ export default function ClaimBtn() {
         const balance = parseAmount(remainingTokens)
         setFaucetBalance(balance)
         setTokenReward(reward)
+        //eslint-disable-next-line
     }, [])
 
     //CHECK USER COOLDOWN
     useEffect(() => {
         checkCooldown()
+        //eslint-disable-next-line
     }, [userAddress])
 
     useEffect(() => {
@@ -118,13 +118,13 @@ export default function ClaimBtn() {
                     //     await listener.getTransaction(submitTxFaucetClaim?.hash)
                     // }
                 } else {
-                    toast.warn('Max retry limit reached. Please try again later.');
+                    toast.warning('Max retry limit reached. Please try again later.');
                 }
             }, RETRY_DELAY * (retryCount + 1)); // Exponential backoff for retry delay
             return () => clearTimeout(timerId); // Cleanup on component unmount
         }
         if (errorFaucetClaim) {
-            toast.warn('Error claiming, try again or contact support');
+            toast.warning('Error claiming, try again or contact support');
         }
     }, [errorFaucetClaim, isErrorTxFaucetClaim, refetchTxFaucetClaim, retryCount]);
 
@@ -140,11 +140,12 @@ export default function ClaimBtn() {
             return
         }
 
-        if (successFaucetClaim) {
-            toast.success(`Claim transaction sent!`)
+        if (successFaucetClaim || submitTxFaucetClaim) {
+            toast.info(`Claim transaction sent!`)
             return
         }
-    }, [successFaucetClaim, isSuccessTxFaucetClaim])
+        //eslint-disable-next-line
+    }, [successFaucetClaim, isSuccessTxFaucetClaim, submitTxFaucetClaim])
 
     useEffect(() => {
         if (secondsLeft > 0) {
@@ -159,7 +160,7 @@ export default function ClaimBtn() {
             if (readyToClaim) return
             checkCooldown()
         }
-
+        //eslint-disable-next-line
     }, [secondsLeft]);
 
     return (
@@ -173,10 +174,10 @@ export default function ClaimBtn() {
 
                             <button
                                 disabled={(loadingTxFaucetClaim || (secondsLeft > 0 || !readyToClaim || loadingClaim))}
-                                className={`${(!readyToClaim || loadingTxFaucetClaim || loadingClaim) ? 'bg-zinc-400' : 'bg-yellow-400'} text-black p-3 font-bold rounded-lg text-lg px-5`}
+                                className={`${(!readyToClaim || loadingCooldown || loadingTxFaucetClaim || loadingClaim) ? 'bg-zinc-400' : 'bg-yellow-400'} text-black p-3 font-bold rounded-lg text-lg px-5`}
                                 onClick={() => claim()}
                             >
-                                {loadingTxFaucetClaim || loadingClaim ? "Getting reward..." : <span>Claim {tokenReward} Yen Tokens <FontAwesomeIcon icon={faRocket} /></span>}
+                                {(loadingTxFaucetClaim || loadingClaim) ? "Getting reward..." : loadingCooldown ? "Loading data..." : !readyToClaim ? "Faucet in cooldown..." : <span>Claim {tokenReward} Yen Tokens <FontAwesomeIcon icon={faRocket} /></span>}
                             </button>
                         </>
                     ) : (
