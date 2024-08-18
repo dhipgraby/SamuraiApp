@@ -25,6 +25,7 @@ export const oneWeekStaking = process.env.NEXT_PUBLIC_ONE_WEEK_STAKING!;
 export const oneMonthStaking = process.env.NEXT_PUBLIC_ONE_MONTH_STAKING!;
 export const oneYearStaking = process.env.NEXT_PUBLIC_ONE_YEAR_STAKING!;
 export const sixMonthStaking = process.env.NEXT_PUBLIC_SIX_MONTHS_STAKING!;
+export const chainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID) || 11155111;
 
 export const samuraiContract = {
     address: SAMURAI_ADDRESS as web3Address,

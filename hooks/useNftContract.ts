@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useContractWrite, useWaitForTransaction } from "wagmi";
 import { useNftProps } from "@/dto/tokenDto";
 import { useMintConfig } from "./config/mintConfig";
-import { ethers } from "ethers";
-import { toast } from "react-toastify"
-import useDebounce from "./useDebounce";
+import { toast } from "sonner";
+import { chainId } from "@/contracts/contractData";
 
 export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNftProps) {
 
@@ -43,7 +42,7 @@ export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowanc
         isSuccess: isSuccessTxMint,
         error: isErrorTxMint
     } = useWaitForTransaction({
-        chainId: 31337,
+        chainId: chainId,
         confirmations: 1,
         cacheTime: Infinity,
         hash: submitMintData?.hash
@@ -54,7 +53,7 @@ export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowanc
         isLoading: loadingTxMintWithToken,
         isSuccess: isSuccessTxMintWithToken,
         error: isErrorTxMintWithToken } = useWaitForTransaction({
-            chainId: 31337,
+            chainId: chainId,
             confirmations: 1,
             cacheTime: Infinity,
             hash: submitMintWithToken?.hash
@@ -67,19 +66,16 @@ export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowanc
             minNft?.()
         } catch (error) {
             console.log('mint fail: ', error);
-            toast.warn("Error minting. Try again or contact support")
+            toast.warning("Error minting. Try again or contact support")
         }
     }
 
     async function mintWithToken() {
         try {
-            console.log('minting usin yen');
-            console.log('mintNftWithToken', mintNftWithToken);
-
             mintNftWithToken?.()
         } catch (error) {
             console.log('mint with yen fail: ', error);
-            toast.warn("Error minting. Try again or contact support")
+            toast.warning("Error minting. Try again or contact support")
         }
     }
 

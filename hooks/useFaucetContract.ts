@@ -1,9 +1,9 @@
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi";
 import { BaseError, ContractFunctionRevertedError, ContractFunctionExecutionError } from 'viem';
 import { web3Address } from "@/dto/tokenDto";
-import { faucetContract } from "@/contracts/contractData";
+import { chainId, faucetContract } from "@/contracts/contractData";
 import { ethers } from "ethers";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 export function useFaucetContract({ readyToClaim }: { readyToClaim: boolean }) {
 
@@ -37,7 +37,7 @@ export function useFaucetContract({ readyToClaim }: { readyToClaim: boolean }) {
         error: isErrorTxFaucetClaim,
         refetch: refetchTxFaucetClaim
     } = useWaitForTransaction({
-        chainId: 31337,
+        chainId: chainId,
         confirmations: 1,
         cacheTime: Infinity,
         hash: submitTxFaucetClaim?.hash

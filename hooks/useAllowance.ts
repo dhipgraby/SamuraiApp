@@ -2,10 +2,9 @@ import { useState } from "react";
 import { useContractWrite, useContractRead, useWaitForTransaction } from "wagmi";
 import { useNftProps } from "@/dto/tokenDto";
 import { useMintConfig } from "./config/mintConfig";
-import { toast } from "react-toastify"
 import { web3Address } from "@/dto/tokenDto";
 import { userStore } from "@/store/user";
-import { samuraiContract, tokenContract } from "@/contracts/contractData";
+import { chainId, samuraiContract, tokenContract } from "@/contracts/contractData";
 import useDebounce from "./useDebounce";
 
 export function useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNftProps) {
@@ -47,31 +46,20 @@ export function useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance,
         isSuccess: submitTxAllowanceSuccess,
         error: submitConfirmTxAllowanceError
     } = useWaitForTransaction({
-        chainId: 31337,
+        chainId: chainId,
         confirmations: 1,
         cacheTime: Infinity,
         hash: submitTxDataAllowance?.hash
     });
 
     // ---------------------   FUNCTIONS ------------------------
-
-    async function approveSpend() {
-        try {
-            console.log('approving');
-            approve?.()
-        } catch (error) {
-            console.log('approve fail: ', error);
-            toast.warn("Error approving. Try again or contact support")
-        }
-    }
-
     return {
         allowanceData,
         refetchAllowance,
         loadingAllowance,
         successAllowance,
         errorAllowance,
-        approveSpend,
+        approve,
         // wait txs
         submitTxDataAllowance,
         submitTxAllowanceLoading,

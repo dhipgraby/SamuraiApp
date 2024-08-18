@@ -1,7 +1,7 @@
 import { usePrepareContractWrite, useContractWrite, useContractRead, useWaitForTransaction } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
 import { userStore } from "@/store/user";
-import { faucetContract, tokenContract } from "@/contracts/contractData";
+import { chainId, faucetContract, tokenContract } from "@/contracts/contractData";
 
 interface FaucetProps {
     amountTo: bigint;
@@ -29,7 +29,7 @@ export function useYenContract({ amountTo = BigInt('0') }: FaucetProps) {
 
     const { isLoading: loadingTxIncreasseAllowance, isSuccess: isSuccessTxIncreasseAllowance, error: isErrorTxIncreasseAllowance }
         = useWaitForTransaction({
-            chainId: 31337,
+            chainId: chainId,
             confirmations: 1,
             cacheTime: Infinity,
             hash: submitTxIncreasseAllowance?.hash

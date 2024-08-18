@@ -27,7 +27,6 @@ export default function NftMinter({
 
   const userAddress = userStore((state) => state.address)
 
-
   const [nftPrice, setNftPrice] = useState('0')
   const [paymentMethod, setPaymentMethod] = useState(0)
   const [nftTokenPrice, setNftTokenPrice] = useState('0')
@@ -61,11 +60,13 @@ export default function NftMinter({
 
   //Setting nft price data
   useEffect(() => {
+    console.log('triggering allowanceData', allowanceData);
     const price = parseAmount(initialPriceData);
     const tokenPrice = (initialTokenPriceData) ? ethers.formatEther(initialTokenPriceData) : '0';
     const allowance = (allowanceData) ? ethers.formatEther(allowanceData.toString()) : '0';
-    setData(price, tokenPrice, allowance)
-  }, [])
+    setData(price, tokenPrice, allowance);
+    //eslint-disable-next-line
+  }, [allowanceData])
 
   return (
     <div className={styles.box}>
