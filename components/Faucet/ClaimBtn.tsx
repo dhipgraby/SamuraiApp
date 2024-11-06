@@ -109,6 +109,8 @@ export default function ClaimBtn() {
 
     useEffect(() => {
         if (isErrorTxFaucetClaim) {
+            console.log('isSuccessTxFaucetClaim', isSuccessTxFaucetClaim);
+            console.log('isErrorTxFaucetClaim', isErrorTxFaucetClaim);
             toast.info('Transaction tracking error. Re-fetching current transaction, please wait...')
             const timerId = setTimeout(async () => {
                 if (retryCount < MAX_RETRY_COUNT) {
@@ -131,6 +133,8 @@ export default function ClaimBtn() {
 
     //SUCCESS CASE
     useEffect(() => {
+        console.log('isSuccessTxFaucetClaim', isSuccessTxFaucetClaim);
+
         if (isSuccessTxFaucetClaim) {
             toast.success(`Claim success! + ${tokenReward}  YenTokens`)
             fetchFaucetBalance()
