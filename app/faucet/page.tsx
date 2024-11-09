@@ -5,7 +5,6 @@ import Faucet from "@/components/Faucet";
 export default async function FaucetPage() {
 
     const yenIcon = <span className="text-yellow-400"><FontAwesomeIcon icon={faYenSign} /></span>
-
     return (
         <div>
             <div className={"text-center"}>

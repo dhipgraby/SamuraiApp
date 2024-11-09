@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useQueryClient } from 'wagmi';
 import { useUser } from './userHook';
 import { userStore } from '@/store/user';
 import { parseAmount } from '@/helpers/converter';
@@ -24,6 +24,8 @@ export const GlobalProvider = ({ children }: {
   const updateUserAddress = userStore((state) => state.updateAddress)
   const updateUserBalance = userStore((state) => state.updateBalance)
   const updateEthBalance = userStore((state) => state.updateEthBalance)
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (address) {
