@@ -3,12 +3,14 @@ import { usePrepareContractWrite } from "wagmi";
 import { samuraiContract, tokenContract } from "@/contracts/contractData";
 import { ethers } from "ethers";
 import { useNftConfigProps } from "@/dto/tokenDto";
-import { userStore } from "@/store/user";
+import { useUser } from "@/hooks/userQuery";
+import { useAccount } from "wagmi";
 
 export function useMintConfig({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNftConfigProps) {
+    
+      const { address: userAddress } = useAccount();
+      const { tokenBalance, ethBalance, updateBalances } = useUser(userAddress);
 
-    const ethBalance = userStore((state) => state.ethBalance)
-    const tokenBalance = userStore((state) => state.tokenBalance)
 
     // ---------------------   WRITE FUNCTIONS ------------------------    
 

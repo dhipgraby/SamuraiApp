@@ -7,22 +7,22 @@ import { nftImg } from "@/helpers/nftHelper";
 import { ethers } from "ethers";
 import { parseAmount } from "@/helpers/converter";
 import { useAccount } from "wagmi";
-import { userStore } from "@/store/user";
 import { useReadNftContract } from "@/hooks/useReadNftContract";
 import { useAllowance } from "@/hooks/useAllowance";
 import ConnectWalletBtn from "./ConnectWalletBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faYenSign } from "@fortawesome/free-solid-svg-icons";
 import { faEthereum } from "@fortawesome/free-brands-svg-icons";
+import { useUser } from "@/hooks/userQuery";
 
 interface minterProps {
   tokenId: number;
 }
 
 export default function NftMinter({ tokenId }: minterProps) {
+  const { address: userAddress } = useAccount();
+  const { tokenBalance, ethBalance, updateBalances } = useUser(userAddress);
   const { isDisconnected } = useAccount();
-
-  const userAddress = userStore((state) => state.address);
 
   const [nftPrice, setNftPrice] = useState("0");
   const [paymentMethod, setPaymentMethod] = useState(0);
@@ -95,8 +95,8 @@ export default function NftMinter({ tokenId }: minterProps) {
                   You can mint this NFT with Ethereum or YenToken
                 </p>
                 {isDisconnected ||
-                userAddress === "" ||
-                userAddress.length < 10 ? (
+                userAddress?.toString() === "" ||
+                (userAddress?.length ?? 0) < 10 ? (
                   <div>
                     <p>Connect your wallet to get started</p>
                     <ConnectWalletBtn className="mt-5" />

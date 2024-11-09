@@ -6,128 +6,155 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { faYenSign } from "@fortawesome/free-solid-svg-icons";
 import { useAllowance } from "@/hooks/useAllowance";
-import { userStore } from "@/store/user";
+import { useUser } from "@/hooks/userQuery";
+import { useAccount } from "wagmi";
 
 export default function MintWithYen({
+  nftPrice,
+  nftTokenPrice,
+  tokenId,
+  isMinted,
+  setIsMinted,
+  totalAllowance,
+  needAllowance,
+  setNeedAllowance,
+  setTotalAllowance,
+}: mintYenDto) {
+  const { address: userAddress } = useAccount();
+  const { tokenBalance, ethBalance, updateBalances } = useUser(userAddress);
+  const {
+    loadingMintWithToken,
+    successMintWithToken,
+    errorMintWithToken,
+    mintWithToken,
+    loadingTxMintWithToken,
+    isSuccessTxMintWithToken,
+    isErrorTxMintWithToken,
+  } = useNftContract({
+    tokenId,
     nftPrice,
     nftTokenPrice,
-    tokenId,
-    isMinted,
-    setIsMinted,
     totalAllowance,
-    needAllowance,
-    setNeedAllowance,
-    setTotalAllowance
-}: mintYenDto) {
+    isMinted,
+  });
 
-    const tokenBalance = userStore((state) => state.tokenBalance);
+  const {
+    refetchAllowance,
+    loadingAllowance,
+    successAllowance,
+    errorAllowance,
+    submitTxAllowanceSuccess,
+    submitTxAllowanceLoading,
+    submitTxAllowanceError,
+    approve,
+  } = useAllowance({
+    tokenId,
+    nftPrice,
+    nftTokenPrice,
+    totalAllowance,
+    isMinted,
+  });
 
-    const {
-        loadingMintWithToken,
-        successMintWithToken,
-        errorMintWithToken,
-        mintWithToken,
-        loadingTxMintWithToken,
-        isSuccessTxMintWithToken,
-        isErrorTxMintWithToken,
-    } = useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted })
+  async function approveSpend() {
+    try {
+      approve?.();
+    } catch (error) {
+      console.log("approve fail: ", error);
+      toast.warning("Error approving. Try again or contact support");
+    }
+  }
 
-    const {
-        refetchAllowance,
-        loadingAllowance,
-        successAllowance,
-        errorAllowance,
-        submitTxAllowanceSuccess,
-        submitTxAllowanceLoading,
-        submitTxAllowanceError,
-        approve
-    } = useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted });
-
-    async function approveSpend() {
-        try {
-            approve?.()
-        } catch (error) {
-            console.log('approve fail: ', error);
-            toast.warning("Error approving. Try again or contact support")
-        }
+  //Success Mint
+  useEffect(() => {
+    if (isSuccessTxMintWithToken) {
+      toast.success("Transaction complete! Minted bloodline #" + tokenId);
+      refetchAllowance();
+      setIsMinted(true);
+      return;
     }
 
-    //Success Mint
-    useEffect(() => {
-        if (isSuccessTxMintWithToken) {
-            toast.success('Transaction complete! Minted bloodline #' + tokenId);
-            refetchAllowance();
-            setIsMinted(true);
-            return
-        }
+    if (successMintWithToken) {
+      toast.info("Transaction sent for bloodline #" + tokenId);
+      return;
+    }
+    //eslint-disable-next-line
+  }, [successMintWithToken, isSuccessTxMintWithToken]);
 
-        if (successMintWithToken) {
-            toast.info('Transaction sent for bloodline #' + tokenId)
-            return
-        }
-        //eslint-disable-next-line
-    }, [successMintWithToken, isSuccessTxMintWithToken])
+  //Mint Error handling
+  useEffect(() => {
+    if (errorMintWithToken || isErrorTxMintWithToken)
+      toast.warning(
+        `Mint error. Try again or contact support:  ${errorMintWithToken}`
+      );
+  }, [errorMintWithToken, isErrorTxMintWithToken]);
 
+  // Success Allowance
+  useEffect(() => {
+    if (submitTxAllowanceSuccess) {
+      toast.success("Approval success, ready to mint with Yen token");
+      refetchAllowance();
+      return;
+    }
 
-    //Mint Error handling
-    useEffect(() => {
-        if (errorMintWithToken || isErrorTxMintWithToken) toast.warning(`Mint error. Try again or contact support:  ${errorMintWithToken}`)
-    }, [errorMintWithToken, isErrorTxMintWithToken])
+    if (successAllowance) toast.info("Approving contract...");
 
-    // Success Allowance
-    useEffect(() => {
-        if (submitTxAllowanceSuccess) {
-            toast.success('Approval success, ready to mint with Yen token');
-            refetchAllowance();
-            return
-        }
+    //eslint-disable-next-line
+  }, [successAllowance, submitTxAllowanceSuccess]);
 
-        if (successAllowance) toast.info('Approving contract...');
+  // Allowance error handling
+  useEffect(() => {
+    if (errorAllowance || submitTxAllowanceError)
+      toast.warning("Approval error. Try again or contact support");
+  }, [errorAllowance, submitTxAllowanceError]);
 
-        //eslint-disable-next-line
-    }, [successAllowance, submitTxAllowanceSuccess])
+  return (
+    <div className="mt-4">
+      {nftTokenPrice != null ? (
+        <p>
+          Price:{" "}
+          <span className="text-yellow-400">
+            {parseInt(nftTokenPrice)} <FontAwesomeIcon icon={faYenSign} />
+          </span>
+        </p>
+      ) : (
+        <p>Loading price...</p>
+      )}
 
-    // Allowance error handling
-    useEffect(() => {
-        if (errorAllowance || submitTxAllowanceError) toast.warning('Approval error. Try again or contact support')
-    }, [errorAllowance, submitTxAllowanceError])
-
-
-    return (
-        <div className="mt-4">
-            {nftTokenPrice != null ? (
-                <p>Price: <span className="text-yellow-400">
-                    {parseInt(nftTokenPrice)} <FontAwesomeIcon icon={faYenSign} />
-                </span></p>
-            ) :
-                <p>Loading price...</p>
-            }
-
-            {(needAllowance)
-                ?
-                <>
-                    {(Number(tokenBalance) < Number(nftTokenPrice)) &&
-                        <p className="opacity-80 text-red-300 my-2 bg-black p-2 border-2 border-gray-500 rounded-lg">
-                            <FontAwesomeIcon icon={faExclamationCircle} /> Not enough tokens to mint
-                        </p>}
-                    <button
-                        className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg ${(loadingAllowance || submitTxAllowanceLoading) ? "bg-slate-400" : ""}`}
-                        disabled={loadingAllowance || submitTxAllowanceLoading}
-                        onClick={() => approveSpend()}
-                    >
-                        {(loadingAllowance || submitTxAllowanceLoading) ? "APPROVING..." : "APPROVE"} <FontAwesomeIcon icon={faYenSign} />
-                    </button>
-                </>
-                :
-                <button
-                    className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg ${(loadingMintWithToken || loadingTxMintWithToken) ? "bg-slate-400" : ""}`}
-                    disabled={loadingMintWithToken || loadingTxMintWithToken}
-                    onClick={() => mintWithToken()}
-                >
-                    {(loadingMintWithToken || loadingTxMintWithToken) ? "MINTING..." : "MINT NOW"} <FontAwesomeIcon icon={faYenSign} />
-                </button>
-            }
-        </div>
-    );
-
+      {needAllowance ? (
+        <>
+          {Number(tokenBalance) < Number(nftTokenPrice) && (
+            <p className="opacity-80 text-red-300 my-2 bg-black p-2 border-2 border-gray-500 rounded-lg">
+              <FontAwesomeIcon icon={faExclamationCircle} /> Not enough tokens
+              to mint
+            </p>
+          )}
+          <button
+            className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg ${
+              loadingAllowance || submitTxAllowanceLoading ? "bg-slate-400" : ""
+            }`}
+            disabled={loadingAllowance || submitTxAllowanceLoading}
+            onClick={() => approveSpend()}
+          >
+            {loadingAllowance || submitTxAllowanceLoading
+              ? "APPROVING..."
+              : "APPROVE"}{" "}
+            <FontAwesomeIcon icon={faYenSign} />
+          </button>
+        </>
+      ) : (
+        <button
+          className={`bg-white text-black p-3 rounded-lg mt-2 w-full text-lg ${
+            loadingMintWithToken || loadingTxMintWithToken ? "bg-slate-400" : ""
+          }`}
+          disabled={loadingMintWithToken || loadingTxMintWithToken}
+          onClick={() => mintWithToken()}
+        >
+          {loadingMintWithToken || loadingTxMintWithToken
+            ? "MINTING..."
+            : "MINT NOW"}{" "}
+          <FontAwesomeIcon icon={faYenSign} />
+        </button>
+      )}
+    </div>
+  );
 }
