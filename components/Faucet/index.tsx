@@ -14,9 +14,9 @@ export default function Page() {
     return (
         <>
             <div className="mt-5 ta-c">
-                <button onClick={() => refetch()}>refetch</button>
+                
                 <Image width={150} height={150} src='/icons/rewardblackbox.png' alt="yengold" />
-                {balanceQuery && balanceQuery?.userBalance}
+
                 <h1 className="text-xl">
                     Come claim every 24 hours free Yen Token.
                     <br />
