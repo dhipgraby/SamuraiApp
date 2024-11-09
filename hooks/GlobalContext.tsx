@@ -1,53 +1,58 @@
-// GlobalContext.tsx
-"use client";
-import React, { useState, useEffect } from "react";
-import { useAccount } from "wagmi";
-import { useUser } from "./userQuery";
-import Image from "next/image";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+'use client'
+import React, { useState, useEffect } from 'react';
+import { useAccount } from 'wagmi';
+import { useUser } from './userHook';
+import { userStore } from '@/store/user';
+import { parseAmount } from '@/helpers/converter';
+import Image from 'next/image';
 
 export const GlobalContext = React.createContext({});
 
-const GlobalProviderContent = ({ children }: { children: React.ReactNode }) => {
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const GlobalProvider = ({ children }: {
+  children: React.ReactNode
+}) => {
+
   const [isLoading, setIsLoading] = useState(true);
-  const { address } = useAccount();
-  const { tokenBalance, ethBalance } = useUser(address);
+
+  const { address } = useAccount()
+  const { userBalance, ethBalance } = useUser()
+
+  const updateUserAddress = userStore((state) => state.updateAddress)
+  const updateUserBalance = userStore((state) => state.updateBalance)
+  const updateEthBalance = userStore((state) => state.updateEthBalance)
 
   useEffect(() => {
+    if (address) {
+      updateUserAddress(address)
+      const balance = userBalance ? parseAmount(userBalance.toString()) : '0';
+      const ethereumBalance = ethBalance ? ethBalance.formatted : '0';
+      updateUserBalance(balance)
+      updateEthBalance(ethereumBalance)
+    } else {
+      updateUserAddress('')
+    }
+
     const fetchData = async () => {
       await sleep(1000);
-      setIsLoading(false);
+      setIsLoading(false)
     };
     fetchData();
-  }, []);
 
-  if (isLoading)
-    return (
-      <div className="inset-center">
-        <Image
-          width={400}
-          height={400}
-          className="bounce-scale"
-          src="/logosquare.jpg"
-          alt="logoloading..."
-        />
-      </div>
-    );
+  }, [userBalance, address, ethBalance])
 
-  return <GlobalContext.Provider value={{}}>{children}</GlobalContext.Provider>;
-};
+  if (isLoading) return (
+    <div className='inset-center'>
+      <Image width={400} height={400} className=' bounce-scale' src={"/logosquare.jpg"} alt='logoloading...' />
+    </div>);
 
-export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <GlobalProviderContent>{children}</GlobalProviderContent>
-    </QueryClientProvider>
+    <GlobalContext.Provider value={{}} >
+      {children}
+    </GlobalContext.Provider>
   );
 };
 

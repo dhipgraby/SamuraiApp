@@ -1,13 +1,11 @@
 import { useContractRead } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
+import { userStore } from "@/store/user";
 import { faucetContract } from "@/contracts/contractData";
-import { useAccount } from "wagmi";
-
 
 export function useReadFaucetContract() {
-    
-    const { address } = useAccount();
 
+    const address = userStore((state) => state.address)
 
     // ---------------------   READ FUNCTIONS ------------------------
 

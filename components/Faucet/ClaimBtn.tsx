@@ -4,24 +4,18 @@ import { faRocket } from "@fortawesome/free-solid-svg-icons/faRocket";
 import { toast } from "sonner";
 import { useFaucetContract } from "@/hooks/useFaucetContract";
 import { useReadFaucetContract } from "@/hooks/useReadFaucetContract";
+import { useUser } from "@/hooks/userHook";
 import { parseAmount } from "@/helpers/converter";
-import { useAccount } from "wagmi";
+import { userStore } from "@/store/user";
 import CountdownTimer from "./CountDownTimer";
 import YenIcon from "../YenIcon";
 // import TxListener from "@/contracts/functions/txListener";
 import ConnectWalletBtn from "../ConnectWalletBtn";
-import { useUser } from "@/hooks/userQuery";
 
 const MAX_RETRY_COUNT = 10; // Max retries
 const RETRY_DELAY = 2000; // When try to refetch transaction submited
 
 export default function ClaimBtn() {
-  const { address: userAddress } = useAccount();
-  const {
-    tokenBalance,
-    ethBalance,
-    updateBalances: updateUserBalance,
-  } = useUser(userAddress);
   // const listener = new TxListener()
   const [retryCount, setRetryCount] = useState(0);
   const [claimCooldown, setClaimCooldown] = useState(0);
@@ -31,6 +25,8 @@ export default function ClaimBtn() {
   const [faucetBalance, setFaucetBalance] = useState("0");
   const [readyToClaim, setReadyToClaim] = useState(false);
   const [loadingCooldown, setLoadingCooldown] = useState(false);
+  const { updateUserBalance } = useUser();
+  const userAddress = userStore((state: any) => state.address);
 
   const {
     FaucetClaim,
