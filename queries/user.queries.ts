@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ServerSubmitProps } from "@/types/form-types";
 import { ServerSubmit } from "@/lib/server-handler";
 
+
 type State = {
     address: `0x${string}` | undefined;
     ethBalance: string;
@@ -32,6 +33,21 @@ export const useSubmitMutation = () => {
     return {
         submitMutation
     }
+};
+
+//USER BALANCES
+export const useUserBalances = () => {
+    const queryClient = useQueryClient();
+    return useQuery({
+        queryKey: ['user-balances', { userBalance: '0', ethBalance: '0' }],
+        queryFn: () => {
+            const data = queryClient.getQueryData(['user-balances']);
+            console.log('data_----------------', data);
+            return data || { userBalance: '0', ethBalance: '0' };
+        },
+        refetchOnWindowFocus: false,
+        enabled: true
+    });
 };
 
 //USER SESSION

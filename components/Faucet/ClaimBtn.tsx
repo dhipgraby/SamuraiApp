@@ -94,9 +94,9 @@ export default function ClaimBtn() {
     //eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    console.log("errorFaucetClaim ----> ", errorFaucetClaim);
-  }, [errorFaucetClaim]);
+  // useEffect(() => {
+  //   console.log("errorFaucetClaim ----> ", errorFaucetClaim);
+  // }, [errorFaucetClaim]);
 
   //SET FAUCET DATA
   useEffect(() => {

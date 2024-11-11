@@ -3,9 +3,11 @@ import { web3Address } from "@/dto/tokenDto";
 import { tokenContract } from "@/contracts/contractData";
 import { parseAmount } from "@/helpers/converter";
 import { userStore } from "@/store/user";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function useUser() {
 
+    const queryClient = useQueryClient();
     const address = userStore((state) => state.address)
     const updateBalance = userStore((state) => state.updateBalance)
     const updateEthBalance = userStore((state) => state.updateEthBalance)
@@ -34,6 +36,11 @@ export function useUser() {
             updateEthBalance(updatedBalance)
         }
     }
+
+    const balance = userBalance ? parseAmount(userBalance.toString()) : '0';
+    const ethereumBalance = ethBalance ? ethBalance.formatted : '0';
+    queryClient.setQueryData(['user-balances'], { userBalance: balance, ethBalance: ethereumBalance });
+    queryClient.invalidateQueries({ queryKey: ['user-balances'] });
 
     return {
         ethBalance,
