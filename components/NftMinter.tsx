@@ -13,7 +13,7 @@ import ConnectWalletBtn from "./ConnectWalletBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faYenSign } from "@fortawesome/free-solid-svg-icons";
 import { faEthereum } from "@fortawesome/free-brands-svg-icons";
-import { useUser } from "@/hooks/userHook";
+import { useUserAddress } from "@/queries/user.queries";
 
 interface minterProps {
   tokenId: number;
@@ -22,7 +22,7 @@ interface minterProps {
 export default function NftMinter({ tokenId }: minterProps) {
   const { isDisconnected } = useAccount();
 
-  const { address: userAddress } = useUser();
+  const userAddress = useUserAddress().toString();
 
   const [nftPrice, setNftPrice] = useState("0");
   const [paymentMethod, setPaymentMethod] = useState(0);
