@@ -1,9 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useAccount } from "wagmi";
 import { useUser } from "./userHook";
-import { userStore } from "@/store/user";
-import { parseAmount } from "@/helpers/converter";
 import Image from "next/image";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -17,22 +14,14 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(true);
 
-  const { address } = useAccount();
-  const { userBalance, ethBalance } = useUser();
-
-  const updateUserAddress = userStore((state) => state.updateAddress);
-  const updateUserBalance = userStore((state) => state.updateBalance);
-  const updateEthBalance = userStore((state) => state.updateEthBalance);
+  const { address, userBalance, ethBalance } = useUser();
 
   useEffect(() => {
     if (address) {
-      updateUserAddress(address);
-      const balance = userBalance ? parseAmount(userBalance.toString()) : "0";
-      const ethereumBalance = ethBalance ? ethBalance.formatted : "0";
-      updateUserBalance(balance);
-      updateEthBalance(ethereumBalance);
+      queryClient.invalidateQueries({ queryKey: ["user-address"] });
+      queryClient.invalidateQueries({ queryKey: ["user-balances"] });
     } else {
-      updateUserAddress("");
+      const address = "";
     }
 
     const fetchData = async () => {

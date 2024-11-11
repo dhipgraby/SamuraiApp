@@ -3,15 +3,16 @@ import { useContractWrite, useContractRead, useWaitForTransaction } from "wagmi"
 import { useNftProps } from "@/dto/tokenDto";
 import { useMintConfig } from "./config/mintConfig";
 import { web3Address } from "@/dto/tokenDto";
-import { userStore } from "@/store/user";
 import { chainId, samuraiContract, tokenContract } from "@/contracts/contractData";
 import useDebounce from "./useDebounce";
+import { useUserAddress } from "@/queries/user.queries";
 
 export function useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNftProps) {
 
     // const debouncedAmount = useDebounce(ethers.parseEther(amount), 1000);
 
-    const userAddress = userStore((state) => state.address)
+    const {data } = useUserAddress();
+    const userAddress = data as web3Address;
 
     // ---------------------   CONFIG ------------------------
     const {

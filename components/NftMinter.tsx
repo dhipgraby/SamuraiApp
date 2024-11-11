@@ -7,13 +7,13 @@ import { nftImg } from "@/helpers/nftHelper";
 import { ethers } from "ethers";
 import { parseAmount } from "@/helpers/converter";
 import { useAccount } from "wagmi";
-import { userStore } from "@/store/user";
 import { useReadNftContract } from "@/hooks/useReadNftContract";
 import { useAllowance } from "@/hooks/useAllowance";
 import ConnectWalletBtn from "./ConnectWalletBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faYenSign } from "@fortawesome/free-solid-svg-icons";
 import { faEthereum } from "@fortawesome/free-brands-svg-icons";
+import { useUser } from "@/hooks/userHook";
 
 interface minterProps {
   tokenId: number;
@@ -22,7 +22,7 @@ interface minterProps {
 export default function NftMinter({ tokenId }: minterProps) {
   const { isDisconnected } = useAccount();
 
-  const userAddress = userStore((state) => state.address);
+  const { address: userAddress } = useUser();
 
   const [nftPrice, setNftPrice] = useState("0");
   const [paymentMethod, setPaymentMethod] = useState(0);

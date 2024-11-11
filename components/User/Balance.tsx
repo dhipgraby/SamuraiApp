@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import YenIcon from "../YenIcon";
-import { userStore } from "@/store/user";
 import ConnectWalletBtn from "../ConnectWalletBtn";
 import { ConnectKitButton } from "connectkit";
 import { useUserBalances } from "@/queries/user.queries";
+import { useUserAddress } from "@/queries/user.queries";
 
 interface BalanceQuery {
   userBalance: string;
@@ -15,8 +15,7 @@ export default function Balance() {
   const { data, isLoading } = useUserBalances();
   const balanceQuery = data as BalanceQuery;
   const userBalance = balanceQuery?.userBalance;
-  const userAddress = userStore((state) => state.address);
-  // const userBalance = userStore((state) => state.tokenBalance);
+  const userAddress = useUserAddress().toString();
 
   const handleBalanceClick = () => {
     // Select the button inside the div with id "connectBtn" and trigger a click

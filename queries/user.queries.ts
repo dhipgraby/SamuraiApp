@@ -50,13 +50,17 @@ export const useUserBalances = () => {
     });
 };
 
-//USER SESSION
-export const useUserSession = () => {
+//USER ADDRESS
+export const useUserAddress = () => {
+    const queryClient = useQueryClient();
     return useQuery({
-        queryKey: ["user-session"],
+        queryKey: ["user-address"],
         queryFn: async () => {
-            return true;
+            const data = queryClient.getQueryData(['user-address']);
+            console.log('data_----------------', data);
+            return data || "";
         },
         refetchOnWindowFocus: false
     });
 };
+

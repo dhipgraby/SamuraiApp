@@ -1,7 +1,7 @@
 import { usePrepareContractWrite, useContractWrite, useContractRead, useWaitForTransaction } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
-import { userStore } from "@/store/user";
 import { chainId, faucetContract, tokenContract } from "@/contracts/contractData";
+import { useUserAddress } from "@/queries/user.queries";
 
 interface FaucetProps {
     amountTo: bigint;
@@ -9,7 +9,8 @@ interface FaucetProps {
 
 export function useYenContract({ amountTo = BigInt('0') }: FaucetProps) {
 
-    const address = userStore((state) => state.address)
+    const {data } = useUserAddress();
+    const address = data as web3Address
 
     // ---------------------   WRITE FUNCTIONS ------------------------
 

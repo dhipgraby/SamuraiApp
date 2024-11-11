@@ -6,7 +6,6 @@ import { useFaucetContract } from "@/hooks/useFaucetContract";
 import { useReadFaucetContract } from "@/hooks/useReadFaucetContract";
 import { useUser } from "@/hooks/userHook";
 import { parseAmount } from "@/helpers/converter";
-import { userStore } from "@/store/user";
 import CountdownTimer from "./CountDownTimer";
 import YenIcon from "../YenIcon";
 // import TxListener from "@/contracts/functions/txListener";
@@ -25,8 +24,7 @@ export default function ClaimBtn() {
   const [faucetBalance, setFaucetBalance] = useState("0");
   const [readyToClaim, setReadyToClaim] = useState(false);
   const [loadingCooldown, setLoadingCooldown] = useState(false);
-  const { updateUserBalance } = useUser();
-  const userAddress = userStore((state: any) => state.address);
+  const { address: userAddress } = useUser();
 
   const {
     FaucetClaim,
@@ -146,7 +144,7 @@ export default function ClaimBtn() {
     if (isSuccessTxFaucetClaim) {
       toast.success(`Claim success! + ${tokenReward}  YenTokens`);
       fetchFaucetBalance();
-      updateUserBalance();
+
       checkCooldown();
       setRetryCount(0);
       return;

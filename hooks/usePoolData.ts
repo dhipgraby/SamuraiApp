@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useStakingReadContract } from "./useStakingReadContract";
-import { userStore } from "@/store/user";
 import { stakingStore } from "@/store/contracts/StakingStore";
 import { PoolProps } from "@/dto/stakingDto";
+import { useUserAddress } from "@/queries/user.queries";
 
 export function usePoolData() {
 
@@ -10,7 +10,7 @@ export function usePoolData() {
   const updateStakingData = stakingStore((state) => state.updatePools)
   const updateLoadingData = stakingStore((state) => state.updateLoading)
   const isLoading = stakingStore((state) => state.isLoading)
-  const userAddress = userStore((state) => state.address);
+  const userAddress = useUserAddress();
 
   const stakingContracts: any = [];
 
