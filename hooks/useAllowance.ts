@@ -41,7 +41,7 @@ export function useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance,
 
     // ---------------------   WAIT FOR TXS ------------------------
 
-    //Wait for alloance approval
+    //Wait for allowance approval
     const {
         isLoading: submitTxAllowanceLoading,
         isSuccess: submitTxAllowanceSuccess,
@@ -65,6 +65,7 @@ export function useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance,
         submitTxDataAllowance,
         submitTxAllowanceLoading,
         submitTxAllowanceSuccess,
-        submitTxAllowanceError
+        submitTxAllowanceError,
+        submitConfirmTxAllowanceError
     };
 }

@@ -59,7 +59,11 @@ export default function MintWithEth({
 
   useEffect(() => {
     if (isError || isErrorTxMint)
-      toast.warning(`Mint error. Try again or contact support:  ${isError}`);
+      if (isErrorTxMint?.message.includes("User rejected")) {
+        toast.warning("User rejected transaction");
+        return;
+      }
+    toast.warning(`Mint error. Try again or contact support`);
     //eslint-disable-next-line
   }, [isError]);
 

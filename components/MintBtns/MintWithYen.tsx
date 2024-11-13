@@ -88,9 +88,9 @@ export default function MintWithYen({
   //Mint Error handling
   useEffect(() => {
     if (errorMintWithToken || isErrorTxMintWithToken)
-      toast.warning(
-        `Mint error. Try again or contact support:  ${errorMintWithToken}`
-      );
+      if (isErrorTxMintWithToken?.message.includes("User rejected"))
+        toast.error("User Rejected transaction");
+      else toast.warning(`Mint error. Try again or contact support`);
   }, [errorMintWithToken, isErrorTxMintWithToken]);
 
   // Success Allowance
@@ -109,7 +109,9 @@ export default function MintWithYen({
   // Allowance error handling
   useEffect(() => {
     if (errorAllowance || submitTxAllowanceError)
-      toast.warning("Approval error. Try again or contact support");
+      if (submitTxAllowanceError?.message.includes("User rejected"))
+        toast.error("User Rejected transaction");
+      else toast.warning("Approval error. Try again or contact support");
   }, [errorAllowance, submitTxAllowanceError]);
 
   return (
