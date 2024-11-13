@@ -3,7 +3,6 @@ import { BaseError, ContractFunctionRevertedError, ContractFunctionExecutionErro
 import { web3Address } from "@/dto/tokenDto";
 import { chainId, faucetContract } from "@/contracts/contractData";
 import { ethers } from "ethers";
-import { toast } from "sonner";
 
 export function useFaucetContract({ readyToClaim }: { readyToClaim: boolean }) {
 
@@ -19,7 +18,7 @@ export function useFaucetContract({ readyToClaim }: { readyToClaim: boolean }) {
                 const cause = error.cause
                     .walk()
                     .message
-                toast.warning(`Claim tokens contract: ${cause}`)
+                console.error(cause);
             }
         },
         value: ethers.parseEther("0.0009")

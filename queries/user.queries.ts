@@ -58,7 +58,7 @@ export const useUserAddress = () => {
         queryFn: async () => {
             const data = queryClient.getQueryData(['user-address']);
             console.log('data_----------------', data);
-            return data || "";
+            return data || null;
         },
         refetchOnWindowFocus: false
     });

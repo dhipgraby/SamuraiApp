@@ -2,11 +2,8 @@
 import ClaimBtn from "./ClaimBtn";
 import Image from "next/image";
 import { useUserBalances } from "@/queries/user.queries";
-import { useEffect } from "react";
 
 export default function Page() {
-  const { data: balanceQuery, refetch, isLoading } = useUserBalances();
-
   return (
     <>
       <div className="mt-5 ta-c">

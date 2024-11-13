@@ -1,8 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useUser } from "./userHook";
+import { useUserAddress } from "@/queries/user.queries";
+import { useUserBalances } from "@/queries/user.queries";
 import Image from "next/image";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAccount } from "wagmi";
+import { useUser } from "@/hooks/userHook";
+interface BalanceQuery {
+  userBalance: string;
+  ethBalance: string;
+}
 
 export const GlobalContext = React.createContext({});
 
@@ -12,16 +19,34 @@ function sleep(ms: number) {
 
 export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const queryClient = useQueryClient();
+  const { refetchUserBalance } = useUser(); 
   const [isLoading, setIsLoading] = useState(true);
+  useAccount({
+    onConnect: () => {
+      refetchUserBalance();
+    },
+    onDisconnect: () => {
+      queryClient.setQueryData(["user-address"], null);
+      queryClient.setQueryData(["user-balances"], null);
+      queryClient.invalidateQueries({ queryKey: ["user-address"] });
+      queryClient.invalidateQueries({ queryKey: ["user-balances"] });
+    },
+  });
 
-  const { address, userBalance, ethBalance } = useUser();
+  const { data: address } = useUserAddress();
+  const { data } = useUserBalances();
+  const userBalances = data as BalanceQuery;
+  const { userBalance, ethBalance } = userBalances || {
+    userBalance: "0",
+    ethBalance: "0",
+  };
 
   useEffect(() => {
     if (address) {
       queryClient.invalidateQueries({ queryKey: ["user-address"] });
       queryClient.invalidateQueries({ queryKey: ["user-balances"] });
     } else {
-      const address = "";
+      queryClient.setQueryData(["user-address"], null);
     }
 
     const fetchData = async () => {

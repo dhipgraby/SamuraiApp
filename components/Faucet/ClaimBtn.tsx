@@ -8,8 +8,14 @@ import { useUser } from "@/hooks/userHook";
 import { parseAmount } from "@/helpers/converter";
 import CountdownTimer from "./CountDownTimer";
 import YenIcon from "../YenIcon";
+import { useUserAddress, useUserBalances } from "@/queries/user.queries";
 // import TxListener from "@/contracts/functions/txListener";
 import ConnectWalletBtn from "../ConnectWalletBtn";
+
+interface BalanceQuery {
+  userBalance: string;
+  ethBalance: string;
+}
 
 const MAX_RETRY_COUNT = 10; // Max retries
 const RETRY_DELAY = 2000; // When try to refetch transaction submited
@@ -24,7 +30,10 @@ export default function ClaimBtn() {
   const [faucetBalance, setFaucetBalance] = useState("0");
   const [readyToClaim, setReadyToClaim] = useState(false);
   const [loadingCooldown, setLoadingCooldown] = useState(false);
-  const { address: userAddress } = useUser();
+  const { refetchUserBalance } = useUser();
+  const { data: userAddress } = useUserAddress();
+  const { data: userBalance } = useUserBalances();
+  const userBalances = userBalance as BalanceQuery;
 
   const {
     FaucetClaim,
@@ -113,6 +122,7 @@ export default function ClaimBtn() {
 
   useEffect(() => {
     if (isErrorTxFaucetClaim) {
+      console.log("isErrorTxFaucetClaim", isErrorTxFaucetClaim);
       toast.info(
         "Transaction tracking error. Re-fetching current transaction, please wait..."
       );
@@ -130,7 +140,18 @@ export default function ClaimBtn() {
       return () => clearTimeout(timerId); // Cleanup on component unmount
     }
     if (errorFaucetClaim) {
-      toast.warning("Error claiming, try again or contact support");
+      if (
+        errorFaucetClaim.message?.includes("User rejected") ||
+        errorFaucetClaim.message?.includes("User denied") ||
+        errorFaucetClaim.message?.includes("cancelled")
+      ) {
+        toast.error("Transaction was cancelled by user");
+        return;
+      }
+
+      // Handle other errors
+      toast.warning("Claim error, try again or contact support");
+      console.error("Claim error:", errorFaucetClaim);
     }
   }, [
     errorFaucetClaim,
@@ -144,6 +165,7 @@ export default function ClaimBtn() {
     if (isSuccessTxFaucetClaim) {
       toast.success(`Claim success! + ${tokenReward}  YenTokens`);
       fetchFaucetBalance();
+      refetchUserBalance();
 
       checkCooldown();
       setRetryCount(0);
@@ -152,6 +174,7 @@ export default function ClaimBtn() {
 
     if (successFaucetClaim || submitTxFaucetClaim) {
       toast.info(`Claim transaction sent!`);
+
       return;
     }
     //eslint-disable-next-line
@@ -189,13 +212,15 @@ export default function ClaimBtn() {
                   loadingTxFaucetClaim ||
                   secondsLeft > 0 ||
                   !readyToClaim ||
-                  loadingClaim
+                  loadingClaim ||
+                  userBalances?.userBalance === "0"
                 }
                 className={`${
                   !readyToClaim ||
                   loadingCooldown ||
                   loadingTxFaucetClaim ||
-                  loadingClaim
+                  loadingClaim ||
+                  userBalances?.userBalance === "0"
                     ? "bg-zinc-400"
                     : "bg-yellow-400"
                 } text-black p-3 font-bold rounded-lg text-lg px-5`}
@@ -207,6 +232,8 @@ export default function ClaimBtn() {
                   "Loading data..."
                 ) : !readyToClaim ? (
                   "Faucet in cooldown..."
+                ) : userBalances?.userBalance === "0" ? (
+                  "Insufficient balance"
                 ) : (
                   <span>
                     Claim {tokenReward} Yen Tokens{" "}

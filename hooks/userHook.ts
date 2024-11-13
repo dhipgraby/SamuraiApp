@@ -2,18 +2,20 @@ import { useContractRead, useBalance, useAccount } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
 import { tokenContract } from "@/contracts/contractData";
 import { parseAmount } from "@/helpers/converter";
-import { useQueryClient, useMutation} from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function useUser() {
 
     const queryClient = useQueryClient();
     const address = useAccount().address;
     queryClient.setQueryData(['user-address'], address);
+    queryClient.invalidateQueries({ queryKey: ['user-address'] });
+    
 
     const { data: ethBalance } = useBalance({
         address: address as any,
         enabled: (address as any && address !== undefined)
-    })
+    }) 
 
     const { data: userBalance, refetch: refetchUserBalance } = useContractRead({
         ...tokenContract,
