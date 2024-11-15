@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState, useEffect } from "react";
 import { useUserAddress } from "@/queries/user.queries";
@@ -10,6 +11,7 @@ interface BalanceQuery {
   userBalance: string;
   ethBalance: string;
 }
+
 
 export const GlobalContext = React.createContext({});
 
@@ -40,6 +42,8 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
     userBalance: "0",
     ethBalance: "0",
   };
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (address) {

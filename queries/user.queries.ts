@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ServerSubmitProps } from "@/types/form-types";
 import { ServerSubmit } from "@/lib/server-handler";
+import { useUser } from "@/hooks/userHook";
 
 
 type State = {
@@ -35,6 +36,7 @@ export const useSubmitMutation = () => {
     }
 };
 
+
 //USER BALANCES
 export const useUserBalances = () => {
     const queryClient = useQueryClient();
@@ -53,12 +55,14 @@ export const useUserBalances = () => {
 //USER ADDRESS
 export const useUserAddress = () => {
     const queryClient = useQueryClient();
+
     return useQuery({
         queryKey: ["user-address"],
         queryFn: async () => {
             const data = queryClient.getQueryData(['user-address']);
             console.log('data_----------------', data);
             return data || null;
+
         },
         refetchOnWindowFocus: false
     });

@@ -104,7 +104,6 @@ export default function ClaimBtn() {
   // useEffect(() => {
   //   console.log("errorFaucetClaim ----> ", errorFaucetClaim);
   // }, [errorFaucetClaim]);
-
   //SET FAUCET DATA
   useEffect(() => {
     const reward = parseAmount(maxAmount);

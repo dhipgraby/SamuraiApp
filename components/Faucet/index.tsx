@@ -1,7 +1,9 @@
+
 "use client";
 import ClaimBtn from "./ClaimBtn";
 import Image from "next/image";
 import { useUserBalances } from "@/queries/user.queries";
+
 
 export default function Page() {
   return (
@@ -30,4 +32,5 @@ export default function Page() {
       <ClaimBtn />
     </>
   );
+
 }
