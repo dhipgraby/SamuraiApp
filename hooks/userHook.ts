@@ -25,12 +25,6 @@ export function useUser() {
         args: [address as web3Address]
     },);
 
-
-    const balance = userBalance ? parseAmount(userBalance.toString()) : '0';
-    const ethereumBalance = ethBalance ? ethBalance.formatted : '0';
-    queryClient.setQueryData(['user-balances'], { userBalance: balance, ethBalance: ethereumBalance });
-    queryClient.invalidateQueries({ queryKey: ['user-balances'] });
-
     const balance = userBalance ? parseAmount(userBalance.toString()) : '0';
     const ethereumBalance = ethBalance ? ethBalance.formatted : '0';
     queryClient.setQueryData(['user-balances'], { userBalance: balance, ethBalance: ethereumBalance });

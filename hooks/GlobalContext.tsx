@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect } from "react";
 import { useUserAddress } from "@/queries/user.queries";
@@ -12,7 +11,6 @@ interface BalanceQuery {
   ethBalance: string;
 }
 
-
 export const GlobalContext = React.createContext({});
 
 function sleep(ms: number) {
@@ -21,7 +19,7 @@ function sleep(ms: number) {
 
 export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const queryClient = useQueryClient();
-  const { refetchUserBalance } = useUser(); 
+  const { refetchUserBalance } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   useAccount({
     onConnect: () => {
@@ -42,8 +40,6 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
     userBalance: "0",
     ethBalance: "0",
   };
-
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (address) {
