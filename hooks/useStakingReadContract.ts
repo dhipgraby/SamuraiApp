@@ -2,14 +2,15 @@ import { useContractWrite, useContractRead } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
 import { StakingReadProps } from '../dto/stakingDto';
 import { stakingPlatformContract } from "@/contracts/contractData";
-import { userStore } from "@/store/user";
+import { useUserAddress } from "@/queries/user.queries";
 
 export function useStakingReadContract({
   poolType,
   stakeId,
 }: StakingReadProps) {
 
-  const address = userStore((state: any) => state.address)
+  const {data} = useUserAddress();
+  const address = data as web3Address
   // ---------------------   READ FUNCTIONS ------------------------
 
   const getUserStakeIdsInPool = useContractRead({
