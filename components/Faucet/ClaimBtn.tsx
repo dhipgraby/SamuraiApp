@@ -231,7 +231,7 @@ export default function ClaimBtn() {
                   "Loading data..."
                 ) : !readyToClaim ? (
                   "Faucet in cooldown..."
-                ) : userBalances?.userBalance === "0" ? (
+                ) : userAddress && userBalances?.userBalance === "0" ? (
                   "Insufficient balance"
                 ) : (
                   <span>
