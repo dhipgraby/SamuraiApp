@@ -2,7 +2,7 @@
 import { TestNfts } from "@/data/nfts";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 interface NftsProps {
   id: string;
@@ -21,38 +21,49 @@ interface StatusProps {
 export default function Mint() {
   const Nfts: NftsProps[] = TestNfts;
 
-  const [status, setStatus] = useState<StatusProps[] | null>(null);
-
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const response = await fetch("http://localhost:3003/nfts/status");
-        const data = await response.json();
-        const formattedData = data.map((item: any) => ({
-          nftId: item.nftId,
-          releaseDate: new Date(item.releaseDate),
-          isMinted: item.isMinted,
-          mintDate: new Date(item.mintDate),
-        }));
-        setStatus(formattedData);
-      } catch (error) {
-        console.error("Error fetching status", error);
+  const {
+    data: status,
+    isLoading,
+    isError,
+  } = useQuery<StatusProps[]>({
+    queryKey: ["nft-status"],
+    queryFn: async () => {
+      const response = await fetch("http://localhost:3003/nfts/status");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    };
+      return response.json();
+    },
+  });
 
-    fetchStatus();
-  }, []);
+  if (isLoading) {
+    return (
+      <div className="text-center mt-12">
+        <h1 className="text-xl font-bold">Loading...</h1>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center mt-12">
+        <h1 className="text-xl font-bold text-red-500">Error loading data</h1>
+        <p className="text-gray-500">Please try again later.</p>
+      </div>
+    );
+  }
 
   // Calculate releaseStatus and group NFTs
   const categorizedNfts = Nfts.map((el) => {
     const currentStatus = status?.[parseInt(el.id) - 1];
-    const releaseDate = currentStatus?.releaseDate;
+    const releaseDateS = currentStatus?.releaseDate;
     const isMinted = currentStatus?.isMinted;
     let releaseStatus = 3;
 
-    if (releaseDate) {
+    if (releaseDateS) {
       const daysSinceRelease = Math.floor(
-        (new Date().getTime() - releaseDate.getTime()) / (1000 * 60 * 60 * 24)
+        (new Date().getTime() - new Date(releaseDateS).getTime()) /
+          (1000 * 60 * 60 * 24)
       );
       if (daysSinceRelease < 7) {
         releaseStatus = 1;
@@ -60,6 +71,7 @@ export default function Mint() {
         releaseStatus = 2;
       }
     }
+    const releaseDate = releaseDateS ? new Date(releaseDateS) : new Date(0);
 
     return {
       ...el,

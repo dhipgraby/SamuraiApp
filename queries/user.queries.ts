@@ -43,7 +43,6 @@ export const useUserBalances = () => {
         queryKey: ['user-balances', { userBalance: '0', ethBalance: '0' }],
         queryFn: () => {
             const data = queryClient.getQueryData(['user-balances']);
-            console.log('data_----------------', data);
             return data || { userBalance: '0', ethBalance: '0' };
         },
         refetchOnWindowFocus: false,
@@ -59,7 +58,6 @@ export const useUserAddress = () => {
         queryKey: ["user-address"],
         queryFn: async () => {
             const data = queryClient.getQueryData(['user-address']);
-            console.log('data_----------------', data);
             return data || null;
 
         },

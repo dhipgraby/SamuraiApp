@@ -165,6 +165,14 @@ export default function ClaimBtn() {
       toast.success(`Claim success! + ${tokenReward}  YenTokens`);
       fetchFaucetBalance();
       refetchUserBalance();
+      const claim = fetch("http://localhost:3003/nfts/claim", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ address: userAddress, amount: tokenReward }),
+      });
+      console.log("claim", claim);
 
       checkCooldown();
       setRetryCount(0);
