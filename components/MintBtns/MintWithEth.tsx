@@ -6,6 +6,7 @@ import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { useNftContract } from "@/hooks/useNftContract";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { useUserBalances } from "@/queries/user.queries";
+import { useUserAddress } from "@/queries/user.queries";
 
 interface BalanceQuery {
   userBalance: string;
@@ -40,6 +41,7 @@ export default function MintWithEth({
   const { data } = useUserBalances();
   const userBalance = data as BalanceQuery;
   const userEthBalance = userBalance?.ethBalance;
+  const { data: address } = useUserAddress();
   //   console.log("userEthBalance", userEthBalance);
 
   //Success Mint
@@ -47,6 +49,15 @@ export default function MintWithEth({
     if (isSuccessTxMint) {
       toast.success("Transaction complete! Minted bloodline #" + tokenId);
       setIsMinted(true);
+      const response = fetch("http://localhost:3003/nfts/mint", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nftId: tokenId, owner: address, token: "ETH" }),
+      });
+      console.log("response", response);
+
       return;
     }
 

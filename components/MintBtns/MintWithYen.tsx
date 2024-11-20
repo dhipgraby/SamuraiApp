@@ -7,6 +7,7 @@ import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { faYenSign } from "@fortawesome/free-solid-svg-icons";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useUserBalances } from "@/queries/user.queries";
+import { useUserAddress } from "@/queries/user.queries";
 
 interface BalanceQuery {
   userBalance: string;
@@ -25,6 +26,7 @@ export default function MintWithYen({
   setTotalAllowance,
 }: mintYenDto) {
   const { data } = useUserBalances();
+  const { data: address } = useUserAddress();
   const userBalance = data as BalanceQuery;
   const tokenBalance = userBalance?.userBalance;
   const {
@@ -75,6 +77,15 @@ export default function MintWithYen({
       toast.success("Transaction complete! Minted bloodline #" + tokenId);
       refetchAllowance();
       setIsMinted(true);
+      const response = fetch("http://localhost:3003/nfts/mint", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nftId: tokenId, owner: address, token: "YEN" }),
+      });
+      console.log("response", response);
+
       return;
     }
 
