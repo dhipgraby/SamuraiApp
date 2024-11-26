@@ -8,6 +8,7 @@ import { faYenSign } from "@fortawesome/free-solid-svg-icons";
 import { useAllowance } from "@/hooks/useAllowance";
 import { useUserBalances } from "@/queries/user.queries";
 import { useUserAddress } from "@/queries/user.queries";
+import { useAccount } from "wagmi";
 
 interface BalanceQuery {
   userBalance: string;
@@ -61,6 +62,10 @@ export default function MintWithYen({
     totalAllowance,
     isMinted,
   });
+
+  useEffect(() => {
+    refetchAllowance();
+  }, [address]);
 
   async function approveSpend() {
     try {

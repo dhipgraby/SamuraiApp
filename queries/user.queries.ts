@@ -58,6 +58,7 @@ export const useUserAddress = () => {
         queryKey: ["user-address"],
         queryFn: async () => {
             const data = queryClient.getQueryData(['user-address']);
+            console.log(data);
             return data || null;
 
         },
