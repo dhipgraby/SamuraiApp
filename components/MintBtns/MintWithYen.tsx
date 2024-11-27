@@ -62,6 +62,10 @@ export default function MintWithYen({
     isMinted,
   });
 
+  useEffect(() => {
+    refetchAllowance();
+  }, [address]);
+
   async function approveSpend() {
     try {
       approve?.();

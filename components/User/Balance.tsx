@@ -2,7 +2,7 @@
 import React from "react";
 import YenIcon from "../YenIcon";
 import ConnectWalletBtn from "../ConnectWalletBtn";
-import { ConnectKitButton } from "connectkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useUserBalances } from "@/queries/user.queries";
 import { useUserAddress } from "@/queries/user.queries";
 
@@ -49,7 +49,7 @@ export default function Balance() {
           </div>
           {/* Render the ConnectKitButton inside a div with id "connectBtn" */}
           <div id="connectBtn">
-            <ConnectKitButton />
+            <ConnectButton />
           </div>
         </div>
       )}

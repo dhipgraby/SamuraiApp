@@ -1,69 +1,66 @@
 import { useState } from "react";
-import { useContractWrite, useWaitForTransaction } from "wagmi";
+import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { useNftProps } from "@/dto/tokenDto";
 import { useMintConfig } from "./config/mintConfig";
 import { toast } from "sonner";
 import { chainId } from "@/contracts/contractData";
 
 export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNftProps) {
-
-    // const debouncedAmount = useDebounce(ethers.parseEther(amount), 1000);
-
-    // ---------------------   WRITE FUNCTIONS ------------------------
     const {
-        mintConfig,
-        tokenMintConfig
+        mintRequest,
+        tokenMintRequest,
     } = useMintConfig({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted })
 
-    //Mint NFT with ETH
+    // Mint NFT with ETH
     const {
         data: submitMintData,
-        isLoading,
+        isPending: isLoading,
         isError,
         isSuccess,
-        write: minNft } = useContractWrite(mintConfig)
+        writeContract: minNft 
+    } = useWriteContract()
 
-    //Mint NFT with YEN TOKEN
+    // Mint NFT with YEN TOKEN
     const {
         data: submitMintWithToken,
-        isLoading: loadingMintWithToken,
+        isPending: loadingMintWithToken,
         isError: errorMintWithToken,
         isSuccess: successMintWithToken,
-        write: mintNftWithToken } = useContractWrite(tokenMintConfig)
+        writeContract: mintNftWithToken 
+    } = useWriteContract()
 
-    //Set ERC20 token to mint from
-    // const { write: setTokenContract } = useContractWrite(setTokenConfig)
-
-    // ---------------------   WAIT FOR TXS ------------------------
-
-    //Wait Nft mint with Eth transaction
+    // Wait for NFT mint with Eth transaction
     const {
         isLoading: loadingTxMint,
         isSuccess: isSuccessTxMint,
         error: isErrorTxMint
-    } = useWaitForTransaction({
-        chainId: chainId,
+    } = useWaitForTransactionReceipt({
+        chainId,
         confirmations: 1,
-        cacheTime: Infinity,
-        hash: submitMintData?.hash
+        query: { 
+            enabled: !!submitMintData,
+        },
+        hash: submitMintData
     });
 
-    //Wait for Yen Token mint transaction
+    // Wait for Yen Token mint transaction
     const {
         isLoading: loadingTxMintWithToken,
         isSuccess: isSuccessTxMintWithToken,
-        error: isErrorTxMintWithToken } = useWaitForTransaction({
-            chainId: chainId,
-            confirmations: 1,
-            cacheTime: Infinity,
-            hash: submitMintWithToken?.hash
-        });
-
+        error: isErrorTxMintWithToken 
+    } = useWaitForTransactionReceipt({
+        chainId,
+        confirmations: 1,
+        query: { 
+            enabled: !!submitMintWithToken,
+        },
+        hash: submitMintWithToken
+    });
 
     async function mint() {
         try {
             console.log('minting');
-            minNft?.()
+            minNft(mintRequest!.request)
         } catch (error) {
             console.log('mint fail: ', error);
             toast.warning("Error minting. Try again or contact support")
@@ -72,7 +69,7 @@ export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowanc
 
     async function mintWithToken() {
         try {
-            mintNftWithToken?.()
+            mintNftWithToken(tokenMintRequest!.request)
         } catch (error) {
             console.log('mint with yen fail: ', error);
             toast.warning("Error minting. Try again or contact support")
@@ -87,7 +84,7 @@ export function useNftContract({ tokenId, nftPrice, nftTokenPrice, totalAllowanc
         loadingTxMint,
         isSuccessTxMint,
         isErrorTxMint,
-        //Mint with Yen token
+        // Mint with Yen token
         loadingMintWithToken,
         successMintWithToken,
         errorMintWithToken,

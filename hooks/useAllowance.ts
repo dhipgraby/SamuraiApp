@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useContractWrite, useContractRead, useWaitForTransaction } from "wagmi";
+import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { useNftProps } from "@/dto/tokenDto";
 import { useMintConfig } from "./config/mintConfig";
 import { web3Address } from "@/dto/tokenDto";
@@ -8,50 +8,53 @@ import useDebounce from "./useDebounce";
 import { useUserAddress } from "@/queries/user.queries";
 
 export function useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNftProps) {
-
-    // const debouncedAmount = useDebounce(ethers.parseEther(amount), 1000);
-
-    const {data } = useUserAddress();
+    const { data } = useUserAddress();
     const userAddress = data as web3Address;
 
     // ---------------------   CONFIG ------------------------
     const {
-        allowanceConfig
+        allowanceRequest,
     } = useMintConfig({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted })
 
     // ---------------------   READ FUNCTIONS ------------------------
-    const { data: allowanceData, refetch: refetchAllowance } = useContractRead(
+    const { data: allowanceData, refetch: refetchAllowance } = useReadContract(
         {
             ...tokenContract,
             functionName: 'allowance',
-            args: [userAddress as web3Address, samuraiContract.address as web3Address]
+            args: [userAddress as web3Address, samuraiContract.address as web3Address],
+            query: {
+                // Optional: add any query configuration if needed
+            }
         }
     );
 
     // ---------------------   WRITE FUNCTIONS ------------------------
-
-    //Token Allowance
     const {
         data: submitTxDataAllowance,
         error: submitTxAllowanceError,
-        isLoading: loadingAllowance,
+        isPending: loadingAllowance,
         isError: errorAllowance,
         isSuccess: successAllowance,
-        write: approve } = useContractWrite(allowanceConfig)
+        writeContract: approve
+    } = useWriteContract();
 
     // ---------------------   WAIT FOR TXS ------------------------
-
-    //Wait for allowance approval
     const {
         isLoading: submitTxAllowanceLoading,
         isSuccess: submitTxAllowanceSuccess,
         error: submitConfirmTxAllowanceError
-    } = useWaitForTransaction({
+    } = useWaitForTransactionReceipt({
         chainId: chainId,
         confirmations: 1,
-        cacheTime: Infinity,
-        hash: submitTxDataAllowance?.hash
+        hash: submitTxDataAllowance,
     });
+
+    // Function to trigger approval with the prepared config
+    const handleApprove = () => {
+        if (allowanceRequest) {
+            approve(allowanceRequest!.request);
+        }
+    };
 
     // ---------------------   FUNCTIONS ------------------------
     return {
@@ -60,7 +63,7 @@ export function useAllowance({ tokenId, nftPrice, nftTokenPrice, totalAllowance,
         loadingAllowance,
         successAllowance,
         errorAllowance,
-        approve,
+        approve: handleApprove,
         // wait txs
         submitTxDataAllowance,
         submitTxAllowanceLoading,

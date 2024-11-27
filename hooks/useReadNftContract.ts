@@ -1,37 +1,36 @@
 import { useMemo } from "react";
-import { useContractReads, useContractRead } from "wagmi";
+import { useReadContract } from "wagmi";
 import { samuraiContract } from "@/contracts/contractData";
 
 export function useReadNftContract({ tokenId }: { tokenId: number }) {
-
-    const { data: initialPriceData, refetch: refetchInitialPrice } = useContractRead(
-        {
-            ...samuraiContract,
-            functionName: 'initialPrice',
+    const { data: initialPriceData, refetch: refetchInitialPrice } = useReadContract({
+        ...samuraiContract,
+        functionName: 'initialPrice',
+        query: {
+            enabled: true
         }
-    )
+    });
 
-    const { data: initialTokenPriceData, refetch: refetchInitialTokenPrice } = useContractRead(
-        {
-            ...samuraiContract,
-            functionName: 'initialTokenPrice',
+    const { data: initialTokenPriceData, refetch: refetchInitialTokenPrice } = useReadContract({
+        ...samuraiContract,
+        functionName: 'initialTokenPrice',
+        query: {
+            enabled: true
         }
-    )
+    });
 
-    const { data: _ownerOfData, refetch: refetchownerOf } = useContractRead(
-        {
-            ...samuraiContract,
-            functionName: 'ownerOf',
-            args: [BigInt(tokenId)],
-            onSettled(data, error) {
-                if (data) return true
-                if (error) return false
-            }
+    const { data: _ownerOfData, refetch: refetchownerOf } = useReadContract({
+        ...samuraiContract,
+        functionName: 'ownerOf',
+        args: [BigInt(tokenId)],
+        query: {
+            enabled: true,
+            // onSettled logic is no longer directly supported
         }
-    )
+    });
 
     const ownerOfData = useMemo(() => {
-        return _ownerOfData ? true : false;
+        return Boolean(_ownerOfData);
     }, [_ownerOfData]);
 
     return {

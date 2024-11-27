@@ -1,4 +1,4 @@
-import { useContractWrite, useContractRead } from "wagmi";
+import { useReadContract } from "wagmi";
 import { web3Address } from "@/dto/tokenDto";
 import { StakingReadProps } from '../dto/stakingDto';
 import { stakingPlatformContract } from "@/contracts/contractData";
@@ -11,11 +11,13 @@ export function useStakingReadContract({
 
   const {data} = useUserAddress();
   const address = data as web3Address
+
   // ---------------------   READ FUNCTIONS ------------------------
 
-  const getUserStakeIdsInPool = useContractRead({
+  const getUserStakeIdsInPool = useReadContract({
     //Function to fetch all stake IDs for a user.
-    ...stakingPlatformContract,
+    address: stakingPlatformContract.address,
+    abi: stakingPlatformContract.abi,
     functionName: "getUserStakeIdsInPool",
     args: [
       address as web3Address,
@@ -23,14 +25,17 @@ export function useStakingReadContract({
     ],
   });
 
-  const getStakeData = useContractRead({
+  const getStakeData = useReadContract({
     //Function to fetch single stake for a user.
-    ...stakingPlatformContract,
+    address: stakingPlatformContract.address,
+    abi: stakingPlatformContract.abi,
     functionName: "getStakeData",
     args: [
       BigInt(stakeId)
     ],
-    enabled: (!stakeId)
+    query: {
+      enabled: Boolean(stakeId)
+    }
   });
 
   return {

@@ -4,7 +4,7 @@ import { useUserAddress } from "@/queries/user.queries";
 import { useUserBalances } from "@/queries/user.queries";
 import Image from "next/image";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAccount } from "wagmi";
+import { useAccountEffect } from "wagmi";
 import { useUser } from "@/hooks/userHook";
 interface BalanceQuery {
   userBalance: string;
@@ -21,7 +21,7 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const queryClient = useQueryClient();
   const { refetchUserBalance } = useUser();
   const [isLoading, setIsLoading] = useState(true);
-  useAccount({
+  useAccountEffect({
     onConnect: () => {
       refetchUserBalance();
     },
