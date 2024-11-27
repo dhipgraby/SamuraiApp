@@ -1,11 +1,13 @@
-import { ConnectKitButton } from "connectkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-type Props = { className?: string | undefined }
+type Props = { className?: string | undefined };
 
 export default function ConnectWalletBtn({ className }: Props) {
-    return (
-        <div className={`${(className !== undefined) ? className : ''} connetWalletBtn`}>
-            <ConnectKitButton />
-        </div>
-    )
+  return (
+    <div
+      className={`${className !== undefined ? className : ""} connetWalletBtn`}
+    >
+      <ConnectButton />
+    </div>
+  );
 }

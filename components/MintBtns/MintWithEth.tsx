@@ -41,9 +41,9 @@ export default function MintWithEth({
   const { data } = useUserBalances();
   const userBalance = data as BalanceQuery;
   const userEthBalance = userBalance?.ethBalance;
+
   const { data: address } = useUserAddress();
   //   console.log("userEthBalance", userEthBalance);
-
   //Success Mint
   useEffect(() => {
     if (isSuccessTxMint) {

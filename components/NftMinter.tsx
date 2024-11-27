@@ -50,7 +50,7 @@ export default function NftMinter({ tokenId }: MinterProps) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setIsBackendMinted(data.isMinted);
+        // setIsBackendMinted(data.isMinted);
         setBackendFetched(true);
         setIsMinted(data.isMinted); // Sync with backend
         setBackendError(false);
@@ -79,25 +79,30 @@ export default function NftMinter({ tokenId }: MinterProps) {
   const { initialPriceData, initialTokenPriceData, ownerOfData } =
     useReadNftContract({ tokenId });
 
+  async function recoverMintStatus() {
+    const response = await fetch("http://localhost:3003/nfts/mint", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nftId: tokenId,
+        owner: ownerOfData,
+        token: "YEN",
+      }),
+    });
+    console.log(
+      JSON.stringify({ nftId: tokenId, owner: ownerOfData, token: "YEN" })
+    ),
+      console.log("response", response);
+  }
   // Set minting status
   useEffect(() => {
     if (ownerOfData && !isBackendMinted) {
+      console.log("Minting NFT");
       setIsMinted(true);
-      fetch(`http://localhost:3003/nfts/mint/${tokenId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          tokenId,
-          owner: ownerOfData,
-          token: "YEN",
-        }),
-      }).then((res) => {
-        if (!res.ok) {
-          console.error("Failed to mint NFT");
-        }
-      });
+      recoverMintStatus();
+      return;
     }
   }, [ownerOfData]);
 

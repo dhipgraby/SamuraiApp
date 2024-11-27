@@ -110,8 +110,9 @@ export default function ClaimBtn() {
     const balance = parseAmount(remainingTokens);
     setFaucetBalance(balance);
     setTokenReward(reward);
+    console.log("Reward  and Balance", reward, balance);
     //eslint-disable-next-line
-  }, []);
+  }, [maxAmount, remainingTokens]);
 
   //CHECK USER COOLDOWN
   useEffect(() => {

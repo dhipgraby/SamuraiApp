@@ -1,7 +1,6 @@
-
-import { usePrepareContractWrite } from "wagmi";
+import { useSimulateContract, useWriteContract } from "wagmi";
 import { samuraiContract, tokenContract } from "@/contracts/contractData";
-import { ethers } from "ethers";
+import { parseEther } from "viem";
 import { useNftConfigProps } from "@/dto/tokenDto";
 import { useUserBalances } from "@/queries/user.queries";
 
@@ -11,7 +10,6 @@ interface BalanceQuery {
 }
 
 export function useMintConfig({ tokenId, nftPrice, nftTokenPrice, totalAllowance, isMinted }: useNftConfigProps) {
-
     const { data } = useUserBalances();
     const userBalance = data as BalanceQuery;
     const ethBalance = userBalance?.ethBalance;
@@ -19,41 +17,34 @@ export function useMintConfig({ tokenId, nftPrice, nftTokenPrice, totalAllowance
 
     // ---------------------   WRITE FUNCTIONS ------------------------    
 
-    const { config: mintConfig } = usePrepareContractWrite({
+    const { data: mintData } = useSimulateContract({
         ...samuraiContract,
         functionName: 'userMint',
         args: [BigInt(tokenId)],
-        value: ethers.parseEther(nftPrice),
-        enabled: (!isMinted && Number(ethBalance) >= Number(nftPrice)),
-    })
+        value: parseEther(nftPrice),
+        query: {
+            enabled: (!isMinted && Number(ethBalance) >= Number(nftPrice)),
+        }
+    });
 
-    const { config: tokenMintConfig } = usePrepareContractWrite({
+    const { data: tokenMintData } = useSimulateContract({
         ...samuraiContract,
         functionName: 'userMintWithToken',
         args: [BigInt(tokenId)],
-        onSettled(data, error) {
-            if (error) {
-                console.log("onSettled", { error, data, totalAllowance, nftTokenPrice })
-            }
-        },
-        enabled: Boolean(totalAllowance && Number(nftTokenPrice) <= Number(totalAllowance) && !isMinted)
-    })
+        query: {
+            enabled: Boolean(totalAllowance && Number(nftTokenPrice) <= Number(totalAllowance) && !isMinted)
+        }
+    });
 
-    const { config: allowanceConfig } = usePrepareContractWrite({
+    const { data: allowanceData } = useSimulateContract({
         ...tokenContract,
         functionName: 'increaseAllowance',
-        args: [samuraiContract.address, ethers.parseEther(nftTokenPrice)],
-    })
-
-    // const { config: setTokenConfig } = usePrepareContractWrite({
-    //     ...samuraiContract,
-    //     functionName: 'setERC20TokenAddress',
-    //     args: [tokenContract.address],
-    // })
+        args: [samuraiContract.address, parseEther(nftTokenPrice)],
+    });
 
     return {
-        mintConfig,
-        tokenMintConfig,
-        allowanceConfig
+        mintRequest: mintData,
+        tokenMintRequest: tokenMintData,
+        allowanceRequest: allowanceData
     };
 }
