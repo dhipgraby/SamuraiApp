@@ -50,7 +50,7 @@ export default function NftMinter({ tokenId }: MinterProps) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        // setIsBackendMinted(data.isMinted);
+        setIsBackendMinted(data.isMinted);
         setBackendFetched(true);
         setIsMinted(data.isMinted); // Sync with backend
         setBackendError(false);
@@ -65,7 +65,7 @@ export default function NftMinter({ tokenId }: MinterProps) {
       }
     }
     fetchNftStatus();
-  }, [tokenId]);
+  }, [tokenId, backendError]);
 
   // Hook logic (always called)
   const { allowanceData } = useAllowance({
@@ -104,7 +104,7 @@ export default function NftMinter({ tokenId }: MinterProps) {
       recoverMintStatus();
       return;
     }
-  }, [ownerOfData]);
+  }, [ownerOfData, isBackendMinted]);
 
   function setData(price: string, tokenPrice: string, allowance: string) {
     if (Number(allowance) >= Number(tokenPrice)) setNeedAllowance(false);
