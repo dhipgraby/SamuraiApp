@@ -4,11 +4,7 @@ import { stakingPlatformContract } from '../contractData';
 import { parseAmount } from '@/helpers/converter';
 import { stakeDataInPoolDto } from '@/dto/stakingDto';
 
-declare global {
-    interface Window {
-        ethereum: any;
-    }
-}
+
 
 export default class StakingPlatform {
     private signer: ethers.Signer | null = null;
