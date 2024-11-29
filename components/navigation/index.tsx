@@ -138,7 +138,7 @@ export default function Navbar() {
                         Subscription Successful!
                       </h2>
                       <p className="text-zinc-300">
-                        You've been subscribed to our newsletter.
+                        You&apos;ve been subscribed to our newsletter.
                       </p>
                     </div>
                   ) : (
