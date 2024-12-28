@@ -1,59 +1,71 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import { CheckCircle, TriangleAlert } from "lucide-react";
+import IconController from "../icon-controller";
 
-import { cn } from "@/lib/utils"
+interface AlertProps {
+  message?: string | null;
+  type: "success" | "error" | "warning" | "info" | "danger" | "black" | "dark";
+  className?: string | undefined;
+}
 
-const alertVariants = cva(
-  "relative w-full rounded-lg border border-slate-200 p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-slate-950 dark:border-slate-800 dark:[&>svg]:text-slate-50",
-  {
-    variants: {
-      variant: {
-        default: "bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-50",
-        destructive:
-          "border-red-500/50 text-red-500 dark:border-red-500 [&>svg]:text-red-500 dark:border-red-900/50 dark:text-red-900 dark:dark:border-red-900 dark:[&>svg]:text-red-900",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
+const Alert = ({ message, type, className }: AlertProps) => {
+  if (!message || message === null) return null;
+
+  let backgroundColor;
+  let textColor;
+  let icon;
+
+  switch (type) {
+    case "info":
+      backgroundColor = "bg-blue-100";
+      textColor = "text-blue-600";
+      icon = <IconController icon="info" className="h-5 w-5" />;
+      break;
+    case "success":
+      backgroundColor = "bg-emerald-500/15";
+      textColor = "text-emerald-500";
+      icon = <CheckCircle className="h-4 w-4 text-green-600" />;
+      break;
+    case "error":
+      backgroundColor = "bg-destructive/15";
+      textColor = "text-destructive";
+      icon = <IconController icon="info" className="h-5 w-5" />;
+      break;
+    case "warning":
+      backgroundColor = "bg-yellow-300";
+      textColor = "text-yellow-700";
+      icon = <TriangleAlert className="h-5 w-5 text-yellow-700" />;
+      break;
+    case "danger":
+      backgroundColor = "bg-yellow-300";
+      textColor = "text-yellow-700";
+      icon = <TriangleAlert className="h-5 w-5 text-yellow-700" />;
+      break;
+    case "black":
+      backgroundColor = "bg-yellow-300";
+      textColor = "text-yellow-700";
+      icon = <TriangleAlert className="h-5 w-5 text-yellow-700" />;
+      break;
+    case "dark":
+      backgroundColor = "bg-slate-800";
+      textColor = "text-slate-300";
+      icon = <TriangleAlert className="h-5 w-5 text-yellow-700" />;
+      break;
+    default:
+      backgroundColor = "bg-gray-200";
+      textColor = "text-gray-800";
+      icon = null;
   }
-)
 
-const Alert = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
->(({ className, variant, ...props }, ref) => (
-  <div
-    ref={ref}
-    role="alert"
-    className={cn(alertVariants({ variant }), className)}
-    {...props}
-  />
-))
-Alert.displayName = "Alert"
+  return (
+    <div
+      className={`p-3 rounded-md flex items-center gap-x-2 text-sm ${backgroundColor} ${textColor} ${
+        className ? className : ""
+      }`}
+    >
+      {icon}
+      <p className="font-semibold">{message}</p>
+    </div>
+  );
+};
 
-const AlertTitle = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => (
-  <h5
-    ref={ref}
-    className={cn("mb-1 font-medium leading-none tracking-tight", className)}
-    {...props}
-  />
-))
-AlertTitle.displayName = "AlertTitle"
-
-const AlertDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("text-sm [&_p]:leading-relaxed", className)}
-    {...props}
-  />
-))
-AlertDescription.displayName = "AlertDescription"
-
-export { Alert, AlertTitle, AlertDescription }
+export default Alert;
