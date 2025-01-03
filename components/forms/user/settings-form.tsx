@@ -21,7 +21,6 @@ import { toast } from "sonner";
 import { saveSettings } from "@/lib/actions/save-settings";
 import { useSession } from "@/hooks/useSession";
 import { UserRoles } from "@/types/user-types";
-import SelectDialCode from "../verify-kyc/select-dial-code";
 
 const UserSettings = ({ user, userSettings }: { user: any, userSettings: any }) => {
 
@@ -82,12 +81,6 @@ const UserSettings = ({ user, userSettings }: { user: any, userSettings: any }) 
           />
 
           <div className="flex gap-4">
-            <SelectDialCode
-              form={form}
-              fieldName="phoneDialCode"
-              fieldLabel="Dial code"
-              initialDialCode={userSettings?.phoneDialCode}
-            />
             <FormField
               control={form.control}
               name="phoneNumber"

@@ -6,7 +6,7 @@ import Loading from "@/components/loading";
 
 const SubmitButton = ({ isLoading }: { isLoading: boolean }) => {
   return (
-    <Button disabled={isLoading} type="submit" variant={"primary"} className="w-full">
+    <Button disabled={isLoading} type="submit" className="w-full">
       {isLoading ? <Loading size={16} /> : "Next step"}
     </Button>
   );
