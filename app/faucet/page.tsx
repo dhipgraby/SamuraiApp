@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faYenSign } from "@fortawesome/free-solid-svg-icons";
+import Faucet from "@/components/Faucet";
 
-export default async function FreeFaucetPage() {
+export default async function FaucetPage() {
 
     const yenIcon = <span className="text-yellow-400"><FontAwesomeIcon icon={faYenSign} /></span>
     return (
@@ -12,6 +13,7 @@ export default async function FreeFaucetPage() {
                 </h1>
                 <small>Get free Yen tokens each 24 hours</small>
             </div>
+            <Faucet />
         </div>
     )
 }
