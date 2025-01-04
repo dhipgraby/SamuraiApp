@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   const initialState = cookieToInitialState(
     getConfig(),
-    headers().get("cookie")
+    headers().get("cookie") ? decodeURIComponent(headers().get("cookie")!) : ""
   );
   return (
     <html>
