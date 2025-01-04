@@ -32,7 +32,7 @@ export const NewVerificationForm = () => {
         setSuccess(data.success);
         setError(data.error);
         if (data.status === 200) {
-          toast.success("Password changed! Redirecting to login...");
+          toast.success("Email verified! Redirecting to login...");
           setTimeout(() => {
             router.push("/auth/login");
           }, 3000);

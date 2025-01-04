@@ -54,7 +54,7 @@ const LoginForm = () => {
         serverAction: async () => await login(payload),
       });
 
-      const response = loging.serverResponse;
+      const response = await loging.serverResponse;
 
       if (response.status) {
         if (response.status === 202) {

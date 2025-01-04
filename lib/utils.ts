@@ -9,11 +9,14 @@ export const ServerSubmit = async ({
   setErrorMsg,
   nextStep
 }: ServerSubmitProps) => {
+
   try {
     setErrorMsg(null);
     setIsLoading(true);
 
+    console.log('serverAction', serverAction);
     const response = await serverAction();
+
     // Check if the response is defined
     if (!response) {
       setIsLoading(false);
